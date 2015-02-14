@@ -1,5 +1,5 @@
 #!/bin/bash
-#uninstall PersianDM
+#uninstall PDMT
 
 echo "Please enter root password"
 stty -echo
