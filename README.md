@@ -22,8 +22,8 @@ for uninstall PersianDM,
 
     $ cd
     $ cd /tmp
-    $ wget -O persiandm.tar.gz https://github.com/alireza-amirsamimi/pdmt/archive/master.tar.gz
-    $ tar  --overwrite --overwrite-dir -xf persiandm.tar.gz
+    $ wget -O pdmt.tar.gz https://github.com/alireza-amirsamimi/pdmt/archive/master.tar.gz
+    $ tar  --overwrite --overwrite-dir -xf pdmt.tar.gz
     $ cd pdmt-master
     $ sh install
 
