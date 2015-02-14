@@ -1,5 +1,5 @@
 #!/bin/bash
-#install PersianDM
+#install PDMT
 clear screen
 echo "############################################################"
 echo "###### Welcome to PDMT Version 1.00 installation ###########"
