@@ -35,7 +35,7 @@ for uninstall PersianDM,
 
 + download queue
 
-+ PersianDM can shutdown or suspend or hibernate system  after download 
++ PDMT can shutdown or suspend or hibernate system  after download 
 
 and ...
 
