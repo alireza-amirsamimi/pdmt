@@ -1,0 +1,3 @@
+Before running install file please install Prerequisites
+you must install aria2 curl pm-utils wget
+sudo apt-get install aria2 pm-utils curl wget

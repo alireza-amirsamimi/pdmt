@@ -1,0 +1,34 @@
+#!/bin/bash
+#install PersianDM
+clear screen
+echo "############################################################"
+echo "###### Welcome to PDMT Version 1.00 installation ###########"
+echo "############################################################"
+
+echo "Please enter root password"
+stty -echo
+read password_input   
+echo $password_input |sudo -S whoami  2> /dev/null
+ss=$?
+while [ $ss -ne 0 ]
+      do
+        stty echo
+        echo "WRONG password!!,Please re-enter root password"
+	stty -echo
+        read password_input
+        echo $password_input |sudo -S whoami 2> /dev/null
+        ss=$?
+done
+		
+user=$(env | grep  -e HOME | awk -F= '{ print $2 }')
+program_path="$user/.persian_download_manager_terminal"
+install_path=`pwd`
+echo $password_input|sudo -S rm -f /usr/bin/pdmt
+rm -f -r $program_path
+mkdir -p $program_path
+cp -R -f $install_path/files/* $program_path
+chmod +x $program_path/pdmt
+chmod +x $program_path/final_script
+echo $password_input|sudo -S mv -f $program_path/pdmt /usr/bin
+echo "Installation compeleted"
+exit

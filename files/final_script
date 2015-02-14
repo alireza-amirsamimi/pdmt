@@ -1,0 +1,606 @@
+#!/bin/bash
+#PerisanDM Terminal (PDMT) written by AliReza AmirSamimi(alireza.amirsamimi@gmail.com) and It is based on aria2
+#s=download status r=aria ready p=aria pid e=end status
+#0=aria ready 1=aria not ready
+#download_flag 0=completed 1=paused 2=failed 3=download 4=reconnecting 5=ctrl_c
+
+#functions
+
+finish (){
+rm -v $temp_path/"p$pdm_num".txt >/dev/null 2>&1
+rm -v $temp_path/"r$pdm_num".txt >/dev/null 2>&1
+rm -v $temp_path/"s$pdm_num".txt >/dev/null 2>&1
+rm -v $temp_path/"$pdm_num".txt  >/dev/null 2>&1
+rm -v $temp_path/"e$pdm_num".txt >/dev/null 2>&1
+rm -v $temp_path/aria_ready_file >/dev/null 2>&1
+echo "Finish!"
+}
+
+ctrl_c () {
+echo "5"> $temp_path/"s$pdm_num".txt
+echo ""
+echo "please wait! Don't close terminal until PDMT has finished"        
+aria2_pid=$(cat $temp_path/"p$pdm_num".txt) 2> /dev/null
+kill $aria2_pid 2> /dev/null
+aria_ready=$(cat $temp_path/"r$pdm_num".txt) 2> /dev/null
+while [ "$aria_ready" = "0" ]
+    do
+      sleep 1
+      aria_ready=$(cat $temp_path/"r$pdm_num".txt) 2> /dev/null
+done
+stop
+if [ "" != "$end_time" ]
+	then
+	    echo "2">$temp_path/"e$pdm_num".txt
+	    sleep 12
+	
+fi	        
+exit 
+}
+
+func_after () {
+
+end_status=$(cat $temp_path/"e$pdm_num".txt) 2> /dev/null
+if [ "" != "$end_time" ] && [ $end_status -eq 0 ]
+	then
+	echo "2"|cat >$temp_path/"e$pdm_num".txt
+	sleep 20
+fi		
+sleep 5
+finish
+
+case "$do_after" in
+    2)
+    killall aria2c 2> /dev/null
+    echo $password_input |sudo -S shutdown -h now
+    ;;
+    3)
+    killall aria2c 2> /dev/null
+    echo $password_input |sudo -S pm-suspend
+    ;;
+    4)
+    killall aria2c 2> /dev/null
+    echo $password_input |sudo -S pm-hibernate
+    ;;
+esac
+exit
+}
+
+
+download_func () {
+size_remote=$( curl -sI -x "$ip_port" -U "$user_pass" "$download_link" | awk '/Content-Length/ { print $2 }' )
+
+if [ $size_remote -eq 0 ]
+	then
+	    size_remote=$(wget --spider -e use-proxy=yes --proxy-user="$user_name" --proxy-password="$password_name" -e --http-proxy="$ip_port" "$download_link" 2>&1 | awk '/Length/ { print $2 }')
+fi
+size_m=$((size_remote/1048576))
+case $size_m in
+[2-9]|1[0-5])
+x_para=$size_m
+;;
+*)
+x_para=16
+;;
+esac
+
+if [ $x_para -gt $max_num_connections ]
+   then
+       x_parameter=$max_num_connections
+   else
+       x_parameter=$x_para
+fi    
+
+aria2c --on-download-start="$temp_path/aria_ready_file"  --all-proxy=$ip_port --summary-interval=1 --all-proxy-passwd=$password_name --all-proxy-user=$user_name --retry-wait=$retry -s 16 -x $x_parameter -k 1M -c -d $download_folder "$download_link" 2>&1 | cat > $temp_path/"$pdm_num".txt
+
+echo "1" |cat > $temp_path/"r$pdm_num".txt
+aria_status=$(cat $temp_path/"$pdm_num".txt|tail -50|egrep -a "download completed|download in-progress" )
+case $aria_status in
+		"(OK):download completed.")
+		echo "0"> $temp_path/"s$pdm_num".txt
+		echo "Please wait..."
+		;;
+		"(INPR):download in-progress.")
+		download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+		if [ "$download_flag" != "4" ] && [ "$download_flag" != "5" ] 
+  		then
+    		echo "1"> $temp_path/"s$pdm_num".txt
+		fi
+                ;;
+		*)
+		echo "2"> $temp_path/"s$pdm_num".txt
+		;;
+esac		
+
+}
+
+
+progress_dialog () {
+aria_ready=$(cat $temp_path/"r$pdm_num".txt) 2> /dev/null
+download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+
+while [ "$aria_ready" != "0" ] && [ "$download_flag" = "3" ]
+        do
+	  aria_ready=$(cat $temp_path/"r$pdm_num".txt ) 2> /dev/null
+	  download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+	  sleep 0.5	  
+done
+
+ps -A | grep -i aria2c | awk {'print $1'}|tail -1|cat > $temp_path/"p$pdm_num".txt
+aria_ready=$(cat $temp_path/"r$pdm_num".txt ) 2> /dev/null
+download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
+   do
+   clear the screen
+   logo
+   download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+   progress_title=$(cat $temp_path/"$pdm_num".txt|tail -50|awk '/CN/ {print $0 }'|tail -1)
+   download_percent=$(echo "$progress_title"| awk -F/ '{ print $2 }' | awk -F"(" '{ print $2 }' | awk -F")" '{ print $1 }'|awk -F"%" '{ print $1 }')
+   echo "$progress_title"
+   sleep 2
+done
+clear the screen
+logo
+}
+
+
+check_con (){
+aria_ready=$(cat $temp_path/"r$pdm_num".txt ) 2> /dev/null
+download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+while [ "$aria_ready" != "0" ] && [ "$download_flag" = "3" ]
+    do
+     sleep 10
+     aria_ready=$(cat $temp_path/"r$pdm_num".txt ) 2> /dev/null
+     download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null  
+done
+
+while [ "$check_connection" = "" ] && [ "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
+   do
+   check_connection=$(cat $temp_path/"$pdm_num".txt|tail -50|awk '/CN/ {print $0 }'|tail -1|awk -F":" '{print $2 }'|awk '{print $1}' )
+   sleep 2
+   aria_ready=$(cat $temp_path/"r$pdm_num".txt ) 2> /dev/null
+   download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+done
+
+if [ "$check_connection" = "1" ]
+   then
+       sleep 10
+       check_connection=$(cat $temp_path/"$pdm_num".txt|tail -50|awk '/CN/ {print $0 }'|tail -1|awk -F":" '{print $2 }'|awk '{print $1}' )
+fi 
+      
+while [ "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
+   do
+   check_connection_new=$(cat $temp_path/"$pdm_num".txt|tail -50|awk '/CN/ {print $0 }'|tail -1|awk -F":" '{print $2 }'|awk '{print $1}' )
+   if [ "$check_connection" -gt "$check_connection_new" ]
+     then
+     echo "4">$temp_path/"s$pdm_num".txt
+     sleep 0.2
+     aria2_pid=$(cat $temp_path/"p$pdm_num".txt) 2> /dev/null
+     kill $aria2_pid 2> /dev/null
+     break
+   fi        
+   sleep 120
+   aria_ready=$(cat $temp_path/"r$pdm_num".txt ) 2> /dev/null
+   download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+done           
+}
+
+
+download (){
+
+case "$reconnecting_ability" in
+        "y" | "yes")
+        (download_func) & (progress_dialog)  & (check_con)
+        ;;
+        
+        *)	
+          (download_func) & (progress_dialog)
+        ;;
+
+esac
+
+}
+
+
+stop (){
+download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+case $download_flag in
+     0)
+     echo "Download Compelete!Please Wait..."
+     echo "#################"|cat >> ~/Downloads/PersianDM/report
+     date|cat >> ~/Downloads/PersianDM/report
+     echo "$download_link"|cat >> ~/Downloads/PersianDM/report
+     echo "download complete!"|cat >> ~/Downloads/PersianDM/report
+     echo "#################"|cat >> ~/Downloads/PersianDM/report     
+     ;;
+     1)
+     echo "Download Paused!Please Wait..."
+     echo "#################"|cat >> ~/Downloads/PersianDM/report
+     date|cat >> ~/Downloads/PersianDM/report
+     echo "$download_link"|cat >> ~/Downloads/PersianDM/report
+     echo "download paused!"|cat >> ~/Downloads/PersianDM/report
+     echo "#################"|cat >> ~/Downloads/PersianDM/report
+     ;;
+     
+     2)
+     echo "Download Failed!Please Wait..."
+     echo "#################"|cat >> ~/Downloads/PersianDM/report
+     date|cat >> ~/Downloads/PersianDM/report
+     echo "$download_link"|cat >> ~/Downloads/PersianDM/report
+     echo "download Failed!"|cat >> ~/Downloads/PersianDM/report
+     echo "#################"|cat >> ~/Downloads/PersianDM/report
+     ;;
+     5)
+     if [ "$my_file" = "" ]
+     then
+         echo "Download Canceled by user!Please Wait..."
+         echo "#################"|cat >> ~/Downloads/PersianDM/report
+         date|cat >> ~/Downloads/PersianDM/report
+         echo "$download_link"|cat >> ~/Downloads/PersianDM/report
+         echo "Download Canceled by user!"|cat >> ~/Downloads/PersianDM/report
+         echo "#################"|cat >> ~/Downloads/PersianDM/report
+     else
+         echo "Queue Canceled by user!Please Wait..."
+         echo "#################"|cat >> ~/Downloads/PersianDM/report
+         date|cat >> ~/Downloads/PersianDM/report
+         echo "Queue Canceled by user!"|cat >> ~/Downloads/PersianDM/report
+         echo "#################"|cat >> ~/Downloads/PersianDM/report  
+     fi
+     ;;
+     
+esac
+     
+}
+
+
+download_single () {
+download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+while [ "$download_flag" != "0" ] && [ "$download_flag" != "2" ] && [ "$download_flag" != "1" ] && [ "$download_flag" != "5" ]
+	do
+	
+	while [ "$download_flag" = "3" ]
+		do
+		download
+		download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null		
+	done
+	
+	while [ "$download_flag" = "4" ]
+		do
+		
+		echo "reconnecting... .be patient"
+		echo "#################"|cat >> ~/Downloads/PersianDM/report
+                date|cat >> ~/Downloads/PersianDM/report
+                echo "Reconnecting"|cat >> ~/Downloads/PersianDM/report
+                echo "#################"|cat >> ~/Downloads/PersianDM/report
+                
+		while [ "$aria_ready" != "1" ]
+		      do
+		      aria_ready=$(cat $temp_path/"r$pdm_num".txt ) 2> /dev/null
+		      sleep 5
+		done
+		      
+		echo "3"> $temp_path/"s$pdm_num".txt
+	        download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+
+	done	
+done
+stop
+}
+
+
+download_queue () {
+while read -r line
+	do
+	download_link=$line
+	if [ "$download_link" = "" ]
+	   then
+	       break
+	fi   
+	echo "3"> $temp_path/"s$pdm_num".txt
+	download_single
+	sleep 1
+done < "$my_file"
+
+download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+if [ "$download_flag" != "1" ]
+  	then
+  	    echo "Queue Compelete"
+	    echo "#################"|cat >> ~/Downloads/PersianDM/report
+	    date|cat >> ~/Downloads/PersianDM/report
+            echo "Queue Compelete"|cat >> ~/Downloads/PersianDM/report
+            echo "#################"|cat >> ~/Downloads/PersianDM/report
+        else
+            echo "Queue Paused"
+	    echo "#################"|cat >> ~/Downloads/PersianDM/report
+            date|cat >> ~/Downloads/PersianDM/report
+            echo "Queue Paused"|cat >> ~/Downloads/PersianDM/report
+            echo "#################"|cat >> ~/Downloads/PersianDM/report
+fi            
+}
+
+
+download_process () {
+case "$download_type" in
+      1)
+	download_single
+        ;;
+      2)
+	download_queue  
+	;;
+      	
+esac
+func_after
+}
+
+
+logo () {
+echo "#########################################"
+echo "#########################################"
+echo "### Persian Download Manager Terminal ###"
+echo "############  (PDMT)  ###################"
+echo "#########################################"
+echo "                                         "
+}
+
+
+
+#initialization
+clear screen
+trap finish exit
+trap ctrl_c INT
+logo
+input_options=$@
+user=$(env | grep  -e HOME | awk -F= '{ print $2 }')
+download_folder="$user/Downloads/PersianDM"
+temp_path="$user/.persian_download_manager_terminal/temp"
+mkdir $download_folder >/dev/null 2>&1
+mkdir $temp_path       >/dev/null 2>&1
+if [ ! -f $temp_path/pdm_number.txt ]
+    then
+    echo "0"> $temp_path/pdm_number.txt
+    pdm_num=0
+    else
+    pdm_num=`cat $temp_path/pdm_number.txt`
+    if [ $pdm_num -ge 5000 ]
+       then
+           pdm_num=0
+    fi       
+    pdm_num=`expr $pdm_num + 1`
+    echo "$pdm_num"> $temp_path/pdm_number.txt
+fi
+
+
+#inputs
+while getopts "l:i:p:u:a:s:e:m:r:t:d:w:f:hv" options ; do
+case "${options}" in
+    l)
+    download_link=${OPTARG}
+    ;;
+    i)
+    ip_name=${OPTARG}
+    ;;
+    p)
+    port_name=${OPTARG}
+    ;;
+    u)
+    user_name=${OPTARG}
+    ;;
+    a)
+    password_name=${OPTARG}
+    ;;
+    s)
+    start_time_input=${OPTARG}
+    ;;
+    e)
+    end_time_input=${OPTARG}
+    ;;
+    m)
+    max_num_connections=${OPTARG}
+    ;;
+    r)
+    reconnecting_ability=${OPTARG}
+    ;;
+    t)
+    retry=${OPTARG}
+    ;;
+    d)
+    do_after_download=${OPTARG}
+    ;;
+    w)
+    password_input=${OPTARG}
+    ;;
+    f)
+    my_file=${OPTARG}
+    ;;
+    h)
+    cat $user/.persian_download_manager_terminal/help
+    exit
+    ;;
+    v)
+    cat $user/.persian_download_manager_terminal/about.txt
+    exit
+    ;;
+esac
+done
+
+#find link & define download type
+if [ "$my_file" != "" ]
+	then
+	    cat $my_file
+	    if [ $? -eq 0 ]
+		then
+	    	    download_type=2
+		else
+		    echo "ERROR!!File Not Exist. Adress : $my_file "
+	    	    exit
+	    fi
+	 elif   [ "$download_link" = "" ] 
+		   then
+	    		word_count=`echo $input_options|wc -w` 
+	    		for iii in `seq 1 $word_count`;
+   	        		do
+                  		word_word=$(echo $input_options | cut -d \  -f $iii)
+      	          		link_input=$(echo "$word_word"|grep -e "://" ) 
+      	          		size_link_input=${#link_input}
+      	          		if [ $size_link_input -gt 12 ]   
+      	              			then
+      	                  			download_link=$link_input
+      	                  			download_type=1
+      	          		fi                    
+             		done
+             	   else 
+             	       	download_type=1
+             		
+fi
+
+#proxy
+if [ "$ip_name" != "" ] && [ "$port_name" != "" ]
+       then ip_port="$ip_name:$port_name"
+       else ip_port=""
+fi
+if [ "$user_name" != "" ] && [ "$password_name" != "" ]
+          then user_pass="$user_name:$password_name"
+          else user_pass=":"
+fi
+#start and end time
+start_time_hour=$(echo "$start_time_input" | awk -F: '{ print $1 }')
+start_time_minute=$(echo "$start_time_input" | awk -F: '{ print $2 }')
+end_time_hour=$(echo "$end_time_input" | awk -F: '{ print $1 }')
+end_time_minute=$(echo "$end_time_input" | awk -F: '{ print $2 }')
+if [ "$start_time_input" != "" ]
+   then
+	start_time_hour_length=`expr length $start_time_hour`
+	if [ $start_time_hour_length -lt 2 ]
+	then
+	start_time_hour="0$start_time_hour"
+	fi
+	start_time_minute_length=`expr length $start_time_minute`
+	if [ $start_time_minute_length -lt 2 ]
+	then
+	start_time_minute="0$start_time_minute"
+	fi
+        start_time="$start_time_hour:$start_time_minute"
+   else start_time="$start_time_hour$start_time_minute"
+fi
+if  [ "$end_time_input" != "" ]
+    then
+	end_time_hour_length=`expr length $end_time_hour`
+	if [ $end_time_hour_length -lt 2 ]
+	then
+	end_time_hour="0$end_time_hour"
+	fi
+	end_time_minute_length=`expr length $end_time_minute`
+	if [ $end_time_minute_length -lt 2 ]
+	then
+	end_time_minute="0$end_time_minute"
+	fi
+        end_time="$end_time_hour:$end_time_minute"
+     else end_time="$end_time_hour$end_time_minute"
+fi
+#after download and input password
+case "$do_after_download" in
+
+      "shutdown")
+      do_after="2"
+      ;;
+      "hibernate")
+      do_after="3"
+      ;;
+      "suspend")
+      do_after="4"
+      ;;
+      *)
+      do_after="1"
+      ;;
+esac
+
+if [ $do_after -ne 1 ]  
+   then
+      if [ "$password_input" = "" ] 
+          then
+              echo "Please enter root password"
+              stty -echo
+              read password_input
+      fi   
+	echo $password_input |sudo -S whoami  2> /dev/null
+	ss=$?
+	while [ $ss -ne 0 ]
+              do
+                stty echo
+		echo "WRONG password!!,Please re-enter root password"
+		stty -echo
+                read password_input
+                echo $password_input |sudo -S whoami 2> /dev/null
+                ss=$?
+	done
+fi
+stty echo
+#max number of connections
+if [ "$max_num_connections" = "" ]
+    then
+        max_num_connections=16
+fi
+#retry
+if [ "$retry" = "" ]
+       then
+           retry=0
+fi           
+
+
+#download process code
+echo "#!/bin/bash" >$temp_path/aria_ready_file
+echo "echo "0"|cat > $temp_path/"r$pdm_num".txt" >> $temp_path/aria_ready_file
+echo "echo "3"|cat >$temp_path/"s$pdm_num".txt" >> $temp_path/aria_ready_file
+chmod +x $temp_path/aria_ready_file
+
+echo "3"> $temp_path/"s$pdm_num".txt
+var1=`date +%H:%M`
+if [ "" != "$start_time" ] && [ "$var1" != "$start_time" ]
+   then
+      
+      echo "Download Will be Started at $start_time !"
+      
+      while [ "$var1" != "$start_time" ]
+             do
+		sleep 10
+		var1=`date +%H:%M`
+      done
+      
+      
+      echo "#################"|cat >> $user/Downloads/PersianDM/report
+      date|cat >> $user/Downloads/PersianDM/report
+      echo "download process starting now"|cat >> $user/Downloads/PersianDM/report
+      echo "#################"|cat >> $user/Downloads/PersianDM/report
+      
+fi
+(
+if [ "" != "$end_time" ]
+	then
+	        echo "0">$temp_path/"e$pdm_num".txt
+	        end_status=$(cat $temp_path/"e$pdm_num".txt) 2> /dev/null
+	        
+		while [ "$var1" != "$end_time" ] && [ $end_status -ne 2 ]
+		do
+		sleep 10
+		end_status=$(cat $temp_path/"e$pdm_num".txt) 2> /dev/null
+		var1=`date +%H:%M`
+		done
+		
+		if [ $end_status -ne 2 ]
+		   then
+		       echo "1">$temp_path/"e$pdm_num".txt
+                       aria2_pid=$(cat $temp_path/"p$pdm_num".txt) 2> /dev/null
+		       kill $aria2_pid 2> /dev/null
+		       echo "Time is UP!"
+		       echo "#################"|cat >> $user/Downloads/PersianDM/report
+		       date|cat >> $user/Downloads/PersianDM/report
+		       echo "Time is UP!" >> $user/Downloads/PersianDM/report
+		       echo "#################"|cat >> $user/Downloads/PersianDM/report
+		   else
+		       exit
+		fi   
+fi
+) &
+(
+download_process
+)
