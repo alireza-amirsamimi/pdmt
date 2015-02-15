@@ -30,7 +30,7 @@ PDMT HELP
         yourself(1-16).default is 16.
 
 -r	(y for yes,n for no) default is no.Reconnecting ability.if aria2
-        decreases the number connections (connections failed),PDMT will 
+        decreases the number of connections (connections failed),PDMT will 
         pause and resume download.I suggest that use this option if your
         download size is bigger than 100 MB. 
 
@@ -43,7 +43,7 @@ PDMT HELP
 
 -w      Root Password.if you choose one of the after download options,you must 
         enter root password.if you don't enter password after -w or if you enter
-        wrong password,PDMT will ask you for root password.
+        wrong password,PDMT will ask you for root password before start downloading.
 
 -f      Download queue.if you have many links and you want to download them in
         queue(one by one),you can use this option.links must enterd in a file
