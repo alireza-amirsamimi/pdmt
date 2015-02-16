@@ -1,6 +1,6 @@
 PDMT HELP
 
--l      Your Download link.
+-l      Your Download link.(Use "" for links)
 
 
 -i	If you use proxy , Set Proxy IP.for example 127.0.0.1
@@ -58,7 +58,7 @@ PDMT HELP
 
 examples:
 
-pdmt -l http://www.example.com/2.iso
+pdmt -l "http://www.example.com/2.iso"
 
 or
 
@@ -66,7 +66,7 @@ pdmt -f /home/alireza/links.txt
 
 or (with proxy and start time and end time and shutdown after end time)
 
-pdmt -l http://www.example.com/2.iso  -i 128.0.0.1 -p 8580 -s 2:30 -e 7:00 -r yes -d shutdown -w mypass
+pdmt -l "http://www.example.com/2.iso"  -i 128.0.0.1 -p 8580 -s 2:30 -e 7:00 -r yes -d shutdown -w mypass
 
 or for download queue
 
