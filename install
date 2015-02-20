@@ -2,7 +2,7 @@
 #install PDMT
 clear screen
 echo "############################################################"
-echo "###### Welcome to PDMT Version 1.00 installation ###########"
+echo "###### Welcome to PDMT Version 1.01 installation ###########"
 echo "############################################################"
 
 echo "Please enter root password"
