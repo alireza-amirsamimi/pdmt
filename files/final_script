@@ -68,15 +68,7 @@ exit
 
 
 download_func () {
-size_remote=$( curl -sI -x "$ip_port" -U "$user_pass" "$download_link" | awk '/Content-Length/ { print $2 }' )
-if ! [ "$size_remote" -eq "$size_remote" ]
-    then
-        size_remote="0"
-fi
-if [ $size_remote -eq 0 ]
-	then
-	    size_remote=$(wget --spider -e use-proxy=yes --proxy-user="$user_name" --proxy-password="$password_name" -e --http-proxy="$ip_port" "$download_link" 2>&1 | awk '/Length/ { print $2 }')
-fi
+size_remote=$(wget --spider -e use-proxy=yes --proxy-user="$user_name" --proxy-password="$password_name" -e --http-proxy="$ip_port" "$download_link" 2>&1 | awk '/Length/ { print $2 }')
 size_m=$((size_remote/1048576))
 case $size_m in
 [2-9]|1[0-5])
