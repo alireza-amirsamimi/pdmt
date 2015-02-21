@@ -19,7 +19,7 @@ while [ $ss -ne 0 ]
         echo $password_input |sudo -S whoami 2> /dev/null
         ss=$?
 done
-		
+stty echo		
 user=$(env | grep  -e HOME | awk -F= '{ print $2 }')
 program_path="$user/.persian_download_manager_terminal"
 install_path=`pwd`
