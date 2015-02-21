@@ -20,13 +20,13 @@ ctrl_c () {
 echo "5"> $temp_path/"s$pdm_num".txt
 echo ""
 echo "please wait! Don't close terminal until PDMT has finished"        
-aria2_pid=$(cat $temp_path/"p$pdm_num".txt) 2> /dev/null
+aria2_pid=$(cat $temp_path/"p$pdm_num".txt 2> /dev/null) 
 kill $aria2_pid 2> /dev/null
-aria_ready=$(cat $temp_path/"r$pdm_num".txt) 2> /dev/null
+aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
 while [ "$aria_ready" = "0" ]
     do
       sleep 1
-      aria_ready=$(cat $temp_path/"r$pdm_num".txt) 2> /dev/null
+      aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
 done
 stop
 if [ "" != "$end_time" ]
@@ -40,7 +40,7 @@ exit
 
 func_after () {
 
-end_status=$(cat $temp_path/"e$pdm_num".txt) 2> /dev/null
+end_status=$(cat $temp_path/"e$pdm_num".txt 2> /dev/null) 
 if [ "" != "$end_time" ] && [ $end_status -eq 0 ]
 	then
 	echo "2"|cat >$temp_path/"e$pdm_num".txt
@@ -96,7 +96,7 @@ case $aria_status in
 		echo "Please wait..."
 		;;
 		"(INPR):download in-progress.")
-		download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 		if [ "$download_flag" != "4" ] && [ "$download_flag" != "5" ] 
   		then
     		echo "1"> $temp_path/"s$pdm_num".txt
@@ -111,24 +111,24 @@ esac
 
 
 progress_dialog () {
-aria_ready=$(cat $temp_path/"r$pdm_num".txt) 2> /dev/null
-download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
+download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null) 
 
 while [ "$aria_ready" != "0" ] && [ "$download_flag" = "3" ]
         do
-	  aria_ready=$(cat $temp_path/"r$pdm_num".txt ) 2> /dev/null
-	  download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+	  aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
+	  download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null) 
 	  sleep 0.5	  
 done
 
 ps -A | grep -i aria2c | awk {'print $1'}|tail -1|cat > $temp_path/"p$pdm_num".txt
-aria_ready=$(cat $temp_path/"r$pdm_num".txt ) 2> /dev/null
-download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
+download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null) 
 while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    do
    clear the screen
    logo
-   download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+   download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
    progress_title=$(cat $temp_path/"$pdm_num".txt|tail -50|awk '/CN/ {print $0 }'|tail -1)
    download_percent=$(echo "$progress_title"| awk -F/ '{ print $2 }' | awk -F"(" '{ print $2 }' | awk -F")" '{ print $1 }'|awk -F"%" '{ print $1 }')
    echo "$progress_title"
@@ -140,21 +140,21 @@ logo
 
 
 check_con (){
-aria_ready=$(cat $temp_path/"r$pdm_num".txt ) 2> /dev/null
-download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
+download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null) 
 while [ "$aria_ready" != "0" ] && [ "$download_flag" = "3" ]
     do
      sleep 10
-     aria_ready=$(cat $temp_path/"r$pdm_num".txt ) 2> /dev/null
-     download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null  
+     aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
+     download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)   
 done
 
 while [ "$check_connection" = "" ] && [ "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    do
    check_connection=$(cat $temp_path/"$pdm_num".txt|tail -50|awk '/CN/ {print $0 }'|tail -1|awk -F":" '{print $2 }'|awk '{print $1}' )
    sleep 2
-   aria_ready=$(cat $temp_path/"r$pdm_num".txt ) 2> /dev/null
-   download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+   aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
+   download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null) 
 done
 
 if [ "$check_connection" = "1" ]
@@ -170,13 +170,13 @@ while [ "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
      then
      echo "4">$temp_path/"s$pdm_num".txt
      sleep 0.2
-     aria2_pid=$(cat $temp_path/"p$pdm_num".txt) 2> /dev/null
+     aria2_pid=$(cat $temp_path/"p$pdm_num".txt 2> /dev/null)
      kill $aria2_pid 2> /dev/null
      break
    fi        
    sleep 120
-   aria_ready=$(cat $temp_path/"r$pdm_num".txt ) 2> /dev/null
-   download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+   aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
+   download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null) 
 done           
 }
 
@@ -198,7 +198,7 @@ esac
 
 
 stop (){
-download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 case $download_flag in
      0)
      echo "Download Compelete!Please Wait..."
@@ -249,14 +249,14 @@ esac
 
 
 download_single () {
-download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 while [ "$download_flag" != "0" ] && [ "$download_flag" != "2" ] && [ "$download_flag" != "1" ] && [ "$download_flag" != "5" ]
 	do
 	
 	while [ "$download_flag" = "3" ]
 		do
 		download
-		download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null		
+		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)		
 	done
 	
 	while [ "$download_flag" = "4" ]
@@ -270,12 +270,12 @@ while [ "$download_flag" != "0" ] && [ "$download_flag" != "2" ] && [ "$download
                 
 		while [ "$aria_ready" != "1" ]
 		      do
-		      aria_ready=$(cat $temp_path/"r$pdm_num".txt ) 2> /dev/null
+		      aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
 		      sleep 5
 		done
 		      
 		echo "3"> $temp_path/"s$pdm_num".txt
-	        download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+	        download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 
 	done	
 done
@@ -296,7 +296,7 @@ while read -r line
 	sleep 1
 done < "$my_file"
 
-download_flag=$(cat $temp_path/"s$pdm_num".txt) 2> /dev/null
+download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 if [ "$download_flag" != "1" ]
   	then
   	    echo "Queue Compelete"
@@ -572,19 +572,19 @@ fi
 if [ "" != "$end_time" ]
 	then
 	        echo "0">$temp_path/"e$pdm_num".txt
-	        end_status=$(cat $temp_path/"e$pdm_num".txt) 2> /dev/null
+	        end_status=$(cat $temp_path/"e$pdm_num".txt 2> /dev/null)
 	        
 		while [ "$var1" != "$end_time" ] && [ $end_status -ne 2 ]
 		do
 		sleep 10
-		end_status=$(cat $temp_path/"e$pdm_num".txt) 2> /dev/null
+		end_status=$(cat $temp_path/"e$pdm_num".txt 2> /dev/null)
 		var1=`date +%H:%M`
 		done
 		
 		if [ $end_status -ne 2 ]
 		   then
 		       echo "1">$temp_path/"e$pdm_num".txt
-                       aria2_pid=$(cat $temp_path/"p$pdm_num".txt) 2> /dev/null
+                       aria2_pid=$(cat $temp_path/"p$pdm_num".txt 2> /dev/null) 
 		       kill $aria2_pid 2> /dev/null
 		       echo "Time is UP!"
 		       echo "#################"|cat >> $user/Downloads/PersianDM/report
