@@ -568,6 +568,7 @@ if [ "" != "$start_time" ] && [ "$var1" != "$start_time" ]
       echo "#################"|cat >> $user/Downloads/PersianDM/report
       
 fi
+echo "Please Wait..."
 (
 if [ "" != "$end_time" ]
 	then
