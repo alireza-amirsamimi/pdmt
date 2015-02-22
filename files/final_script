@@ -109,6 +109,67 @@ esac
 
 }
 
+progress_bar() {
+
+percent20=$((download_percent / 20))
+case "$percent20" in
+     0)
+     echo -n "<-"
+     ;;
+     1)
+      echo -n "<-||||||||||"
+     ;;
+     2)
+      echo -n "<-||||||||||||||||||||"
+     ;;
+     3)
+      echo -n "<-||||||||||||||||||||||||||||||"
+     ;;
+     4)
+      echo -n "<-||||||||||||||||||||||||||||||||||||||||"
+     ;;
+     5)
+      echo -n "<-||||||||||||||||||||||||||||||||||||||||||||||||||"
+     ;;
+esac     
+percent_res=$((download_percent-20*percent20))
+percent_res2=$((percent_res / 2))
+case "$percent_res2" in
+     0)
+     echo  "->"
+     ;;
+     1)
+      echo  "|->"
+     ;;
+     2)
+      echo  "||->"
+     ;;
+     3)
+      echo  "|||->"
+     ;;
+     4)
+      echo  "||||->"
+     ;;
+     5)
+      echo  "|||||->"
+     ;;
+     6)
+      echo  "||||||->"
+     ;;
+     7)
+      echo  "|||||||->"
+     ;;
+     8)
+      echo  "||||||||->"
+     ;;
+     9)
+      echo  "|||||||||->"
+     ;;
+esac     
+
+
+}
+
 
 progress_dialog () {
 aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
@@ -132,7 +193,8 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    progress_title=$(cat $temp_path/"$pdm_num".txt|tail -50|awk '/CN/ {print $0 }'|tail -1)
    download_percent=$(echo "$progress_title"| awk -F/ '{ print $2 }' | awk -F"(" '{ print $2 }' | awk -F")" '{ print $1 }'|awk -F"%" '{ print $1 }')
    echo "$progress_title"
-   sleep 2
+   progress_bar
+   sleep 1
 done
 clear the screen
 logo
