@@ -110,7 +110,7 @@ esac
 }
 
 progress_bar() {
-
+echo -n "["
 percent20=$((download_percent / 20))
 case "$percent20" in
      0)
@@ -136,37 +136,44 @@ percent_res=$((download_percent-20*percent20))
 percent_res2=$((percent_res / 2))
 case "$percent_res2" in
      0)
-     echo  "->"
+     echo -n "->"
      ;;
      1)
-      echo  "|->"
+      echo -n "|->"
      ;;
      2)
-      echo  "||->"
+      echo -n "||->"
      ;;
      3)
-      echo  "|||->"
+      echo -n "|||->"
      ;;
      4)
-      echo  "||||->"
+      echo -n "||||->"
      ;;
      5)
-      echo  "|||||->"
+      echo -n "|||||->"
      ;;
      6)
-      echo  "||||||->"
+      echo -n "||||||->"
      ;;
      7)
-      echo  "|||||||->"
+      echo -n "|||||||->"
      ;;
      8)
-      echo  "||||||||->"
+      echo -n "||||||||->"
      ;;
      9)
-      echo  "|||||||||->"
+      echo -n "|||||||||->"
      ;;
 esac     
+percent_res4=$((download_percent / 2))
+percent_res5=$((49 - percent_res4))
 
+for ii in `seq 0 $percent_res5`;
+	do
+          echo -n " "
+done
+echo "]"  
 
 }
 
