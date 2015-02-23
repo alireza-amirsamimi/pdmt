@@ -194,7 +194,7 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    download_percent=$(echo "$progress_title"| awk -F/ '{ print $2 }' | awk -F"(" '{ print $2 }' | awk -F")" '{ print $1 }'|awk -F"%" '{ print $1 }')
    echo "$progress_title"
    progress_bar
-   sleep 1
+   sleep 1.3
 done
 clear the screen
 logo
