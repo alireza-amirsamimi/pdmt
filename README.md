@@ -14,7 +14,7 @@ You must install `aria2` , `pm-utils`, `wget` .
 
     $ sudo yum install aria2 pm-utils wget
 
-## Dependencies for Ubuntu
+## Dependencies for Archlinux
 
     $ sudo pacman -S install aria2 pm-utils wget
     
