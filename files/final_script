@@ -477,6 +477,10 @@ case "${options}" in
     cat $user/.persian_download_manager_terminal/about.txt
     exit
     ;;
+    *)
+    echo "Wrong Input!"
+    exit
+    ;;
 esac
 done
 
