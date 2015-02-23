@@ -4,12 +4,20 @@ PDMT(Persian Download Manager Terminal)
 + PDMT is a download manager which is written in bash language and it is based on aria2 and improves aria2.
 
 ### Before running install file make sure that all dependencies are installed on your system!
-
-## Dependencies for Ubuntu
 You must install `aria2` , `pm-utils`, `wget` .
 
-    $ sudo apt-get install aria2 pm-utils wget
+## Dependencies for Ubuntu
 
+    $ sudo apt-get install aria2 pm-utils wget
+    
+## Dependencies for Fedora
+
+    $ sudo yum install aria2 pm-utils wget
+
+## Dependencies for Ubuntu
+
+    $ sudo pacman -S install aria2 pm-utils wget
+    
 After installing dependencies, change your directory with cd command and run install file
 
     $ sh install
@@ -39,7 +47,7 @@ for uninstall PersianDM,
 
 and ...
 
-+ Tested on Ubuntu 14.04 , Kubuntu 14.04 , Xubuntu 14.04
++ Tested on Ubuntu 14.04 , Fedora 21 , Archlinux
 + You can see the Screenshots of PersianDM at http://amirsamimi.mihanblog.com/post/17
 
 ## Contact me
