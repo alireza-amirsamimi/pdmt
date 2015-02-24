@@ -171,7 +171,7 @@ percent_res5=$((49 - percent_res4))
 
 for ii in `seq 0 $percent_res5`;
 	do
-          echo -n " "
+          echo -n "-"
 done
 echo "]"  
 
