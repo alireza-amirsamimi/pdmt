@@ -16,7 +16,7 @@ You must install `aria2` , `pm-utils`, `wget` .
 
 ## Dependencies for Archlinux
 
-    $ sudo pacman -S install aria2 pm-utils wget
+    $ sudo pacman -S aria2 pm-utils wget
     
 After installing dependencies, change your directory with cd command and run install file
 
