@@ -199,7 +199,14 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
    progress_title=$(cat $temp_path/"$pdm_num".txt|tail -50|awk '/CN/ {print $0 }'|tail -1)
    download_percent=$(echo "$progress_title"| awk -F/ '{ print $2 }' | awk -F"(" '{ print $2 }' | awk -F")" '{ print $1 }'|awk -F"%" '{ print $1 }')
-   echo "$progress_title"
+   progress_title_percent=$(echo "$progress_title" | awk '{ print $2 }')
+   progress_title_connections=$(echo "$progress_title" | awk '{ print $3 }'| awk -F ":" '{ print $2 }')
+   progress_title_rate=$(echo "$progress_title" | awk '{ print $4 }'| awk -F ":" '{ print $2 }')
+   progress_title_estimate=$(echo "$progress_title" | awk '{ print $5 }'| awk -F ":" '{ print $2 }'| awk -F "]" '{ print $1 }')
+   echo "Downloaded : $progress_title_percent"
+   echo "Number of connections : $progress_title_connections"
+   echo "Transfer rate : $progress_title_rate"
+   echo "Estimate time left : $progress_title_estimate \n"
    progress_bar
    sleep 1.3
 done
