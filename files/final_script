@@ -196,6 +196,7 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    clear the screen
    logo
    download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
+   aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
    progress_title=$(cat $temp_path/"$pdm_num".txt|tail -50|awk '/CN/ {print $0 }'|tail -1)
    download_percent=$(echo "$progress_title"| awk -F/ '{ print $2 }' | awk -F"(" '{ print $2 }' | awk -F")" '{ print $1 }'|awk -F"%" '{ print $1 }')
    progress_title_percent=$(echo "$progress_title" | awk '{ print $2 }')
