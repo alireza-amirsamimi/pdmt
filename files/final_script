@@ -189,7 +189,6 @@ while [ "$aria_ready" != "0" ] && [ "$download_flag" = "3" ]
 	  sleep 0.5	  
 done
 
-ps -A | grep -i aria2c | awk {'print $1'}|tail -1|cat > $temp_path/"p$pdm_num".txt
 aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null) 
 while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
@@ -626,6 +625,7 @@ fi
 echo "#!/bin/bash" >$temp_path/aria_ready_file
 echo "echo "0"|cat > $temp_path/"r$pdm_num".txt" >> $temp_path/aria_ready_file
 echo "echo "3"|cat >$temp_path/"s$pdm_num".txt" >> $temp_path/aria_ready_file
+echo "ps -A | grep -i aria2c | awk {'print \$1'}|tail -1|cat > $temp_path/"p$pdm_num".txt" >> $temp_path/aria_ready_file
 chmod +x $temp_path/aria_ready_file
 
 echo "3"> $temp_path/"s$pdm_num".txt
