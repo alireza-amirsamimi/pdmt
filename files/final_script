@@ -68,7 +68,7 @@ exit
 
 
 download_func () {
-size_remote=$(wget --spider -O salam  --no-check-certificate -t 3 -e use-proxy=yes --proxy-user="$user_name" --proxy-password="$password_name" -e --http-proxy="$ip_port" "$download_link" 2>&1 | awk '/Length/ { print $2 }')
+size_remote=$(wget --spider -O salam  --no-check-certificate -T 5 -t 3 -e use-proxy=yes --proxy-user="$user_name" --proxy-password="$password_name" -e --http-proxy="$ip_port" "$download_link" 2>&1 | awk '/Length/ { print $2 }')
 size_m=$((size_remote/1048576))
 case $size_m in
 [2-9]|1[0-5])
