@@ -238,7 +238,8 @@ if [ "$check_connection" = "1" ]
        sleep 10
        check_connection=$(cat $temp_path/"$pdm_num".txt|tail -50|awk '/CN/ {print $0 }'|tail -1|awk -F":" '{print $2 }'|awk '{print $1}' )
 fi 
-      
+aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
+download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)      
 while [ "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    do
    check_connection_new=$(cat $temp_path/"$pdm_num".txt|tail -50|awk '/CN/ {print $0 }'|tail -1|awk -F":" '{print $2 }'|awk '{print $1}' )
