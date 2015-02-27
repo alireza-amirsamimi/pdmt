@@ -16,28 +16,6 @@ rm -v $temp_path/aria_ready_file >/dev/null 2>&1
 echo "Finish!"
 }
 
-ctrl_c () {
-echo "5"> $temp_path/"s$pdm_num".txt
-echo ""
-echo "please wait! Don't close terminal until PDMT has finished"        
-aria2_pid=$(cat $temp_path/"p$pdm_num".txt 2> /dev/null) 
-kill $aria2_pid 2> /dev/null
-aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
-while [ "$aria_ready" = "0" ]
-    do
-      sleep 1
-      aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
-done
-stop
-if [ "" != "$end_time" ]
-	then
-	    echo "2">$temp_path/"e$pdm_num".txt
-	    sleep 12
-	
-fi	        
-exit 
-}
-
 func_after () {
 
 end_status=$(cat $temp_path/"e$pdm_num".txt 2> /dev/null) 
@@ -99,7 +77,13 @@ case $aria_status in
 		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 		if [ "$download_flag" != "4" ] 
   		then
-    		echo "5"> $temp_path/"s$pdm_num".txt
+    			echo "5"> $temp_path/"s$pdm_num".txt
+    			if [ "" != "$end_time" ]
+				then
+	    			echo "2">$temp_path/"e$pdm_num".txt
+	    			sleep 12
+	
+		fi	    
 		fi
                 ;;
 		*)
@@ -419,7 +403,7 @@ echo "                                         "
 #initialization
 clear screen
 trap finish exit
-trap ctrl_c INT
+trap '' 2
 logo
 input_options=$@
 user=$(env | grep  -e HOME | awk -F= '{ print $2 }')
