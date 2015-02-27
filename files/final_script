@@ -262,7 +262,7 @@ download (){
 
 case "$reconnecting_ability" in
         "y" | "yes")
-        (download_func) & (progress_dialog)  & (check_con)
+        (download_func) & (progress_dialog)  #& (check_con)
         ;;
         
         *)	
