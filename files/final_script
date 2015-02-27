@@ -97,9 +97,9 @@ case $aria_status in
 		;;
 		"(INPR):download in-progress.")
 		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-		if [ "$download_flag" != "4" ] && [ "$download_flag" != "5" ] 
+		if [ "$download_flag" != "4" ] 
   		then
-    		echo "1"> $temp_path/"s$pdm_num".txt
+    		echo "5"> $temp_path/"s$pdm_num".txt
 		fi
                 ;;
 		*)
