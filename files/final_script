@@ -69,14 +69,17 @@ aria2c --on-download-start="$temp_path/aria_ready_file"  --all-proxy=$ip_port --
 
 echo "1" |cat > $temp_path/"r$pdm_num".txt
 aria_status=$(cat $temp_path/"$pdm_num".txt|tail -50|egrep -a "download completed|download in-progress" )
-case $aria_status in
+end_status=$(cat $temp_path/"e$pdm_num".txt 2> /dev/null)
+if [ "$end_status" != "1" ]
+     then
+	case $aria_status in
 		"(OK):download completed.")
 		echo "0"> $temp_path/"s$pdm_num".txt
 		echo "Please wait..."
 		;;
 		"(INPR):download in-progress.")
 		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-		if [ "$download_flag" != "4" ] 
+		if [ "$download_flag" != "4" ]
   		then
     			echo "5"> $temp_path/"s$pdm_num".txt
     			if [ "" != "$end_time" ]
@@ -90,7 +93,11 @@ case $aria_status in
 		*)
 		echo "2"> $temp_path/"s$pdm_num".txt
 		;;
-esac		
+esac
+    else
+     	echo "1"> $temp_path/"s$pdm_num".txt	
+fi
+		
 
 }
 
@@ -271,12 +278,21 @@ case $download_flag in
      echo "#################"|cat >> ~/Downloads/PersianDM/report     
      ;;
      1)
-     echo "Download Paused!Please Wait..."
-     echo "#################"|cat >> ~/Downloads/PersianDM/report
-     date|cat >> ~/Downloads/PersianDM/report
-     echo "$download_link"|cat >> ~/Downloads/PersianDM/report
-     echo "download paused!"|cat >> ~/Downloads/PersianDM/report
-     echo "#################"|cat >> ~/Downloads/PersianDM/report
+     if [ "$my_file" = "" ]
+        then
+     		echo "Download Paused!Please Wait..."
+     		echo "#################"|cat >> ~/Downloads/PersianDM/report
+     		date|cat >> ~/Downloads/PersianDM/report
+     		echo "$download_link"|cat >> ~/Downloads/PersianDM/report
+     		echo "download paused!"|cat >> ~/Downloads/PersianDM/report
+     		echo "#################"|cat >> ~/Downloads/PersianDM/report
+        else
+                echo "Queue Paused"
+	        echo "#################"|cat >> ~/Downloads/PersianDM/report
+                date|cat >> ~/Downloads/PersianDM/report
+                echo "Queue Paused"|cat >> ~/Downloads/PersianDM/report
+                echo "#################"|cat >> ~/Downloads/PersianDM/report
+     fi           
      ;;
      
      2)
@@ -349,7 +365,8 @@ download_queue () {
 while read -r line
 	do
 	download_link=$line
-	if [ "$download_link" = "" ]
+	download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
+	if [ "$download_link" = "" ] || [ "$download_flag" = "1" ] || [ "$download_flag" = "5" ]
 	   then
 	       break
 	fi   
@@ -359,20 +376,16 @@ while read -r line
 done < "$my_file"
 
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-if [ "$download_flag" != "1" ]
+if [ "$download_flag" != "1" ] && [ "$download_flag" != "5" ]
   	then
   	    echo "Queue Compelete"
 	    echo "#################"|cat >> ~/Downloads/PersianDM/report
 	    date|cat >> ~/Downloads/PersianDM/report
             echo "Queue Compelete"|cat >> ~/Downloads/PersianDM/report
             echo "#################"|cat >> ~/Downloads/PersianDM/report
-        else
-            echo "Queue Paused"
-	    echo "#################"|cat >> ~/Downloads/PersianDM/report
-            date|cat >> ~/Downloads/PersianDM/report
-            echo "Queue Paused"|cat >> ~/Downloads/PersianDM/report
-            echo "#################"|cat >> ~/Downloads/PersianDM/report
+            
 fi            
+         
 }
 
 
