@@ -87,11 +87,23 @@ if [ "$end_status" != "1" ]
 	    			echo "2">$temp_path/"e$pdm_num".txt
 	    			sleep 12
 	
-		fi	    
+		        fi	    
 		fi
                 ;;
 		*)
-		echo "2"> $temp_path/"s$pdm_num".txt
+		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
+		if [ "$download_flag" = "4" ] || [ "$download_flag" = "3" ]
+  		  then
+		        echo "2"> $temp_path/"s$pdm_num".txt
+		  else
+		        echo "5"> $temp_path/"s$pdm_num".txt
+    			if [ "" != "$end_time" ]
+				then
+	    			echo "2">$temp_path/"e$pdm_num".txt
+	    			sleep 12
+	
+		        fi	    
+		fi       
 		;;
 esac
     else
