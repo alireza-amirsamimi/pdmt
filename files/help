@@ -25,8 +25,8 @@ PDMT HELP
         for example 2:25
 	Download will be Paused at end time.
 
--m	PDMT selects maximum
-        possible number automatically.but you can choose maximum number
+-m	PDMT selects maximum possible 
+        number of connections automatically.but you can choose maximum number
         yourself(1-16).default is 16.
 
 -r	(y for yes,n for no) default is no.Reconnecting ability.if aria2
