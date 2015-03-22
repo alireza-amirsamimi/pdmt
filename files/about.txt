@@ -1,4 +1,4 @@
-PDMT Version 1.05
+PDMT Version 1.06
 AliReza AmirSamimi 
 http://amirsamimi.mihanblog.com
 alireza.amirsamimi@ubuntu.ir
