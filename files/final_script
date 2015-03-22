@@ -48,7 +48,7 @@ exit
 
 
 download_func () {
-size_remote=$(wget --spider -O "$temp_path/salam"  --no-check-certificate -T 5 -t 3 -e use-proxy=yes --proxy-user="$user_name" --proxy-password="$password_name" -e --http-proxy="$ip_port" "$download_link" 2>&1 | awk '/Length/ { print $2 }')
+size_remote=$(wget --spider -O "$temp_path/salam"  --no-check-certificate -T 5 -t 3 -e use-proxy=yes --proxy-user="$user_name" --proxy-password="$password_name" -e --http-proxy="$ip_port" --user="$site_user" --password="$site_password" "$download_link" 2>&1 | awk '/Length/ { print $2 }')
 size_m=$((size_remote/1048576))
 case $size_m in
 [2-9]|1[0-5])
@@ -66,7 +66,7 @@ if [ $x_para -gt $max_num_connections ]
        x_parameter=$x_para
 fi    
 
-aria2c --on-download-start="$temp_path/aria_ready_file"  --all-proxy=$ip_port --summary-interval=1 --all-proxy-passwd=$password_name --all-proxy-user=$user_name --retry-wait=$retry -s 16 -x $x_parameter -k 1M -c -d $download_folder "$download_link" 2>&1 | cat > $temp_path/"$pdm_num".txt
+aria2c --on-download-start="$temp_path/aria_ready_file"  --all-proxy=$ip_port --summary-interval=1 --all-proxy-passwd=$password_name --all-proxy-user=$user_name --http-user=$site_user --http-passwd=$site_password -s 16 -x $x_parameter -k 1M -c -d $download_folder "$download_link" 2>&1 | cat > $temp_path/"$pdm_num".txt
 
 echo "1" |cat > $temp_path/"r$pdm_num".txt
 aria_status=$(cat $temp_path/"$pdm_num".txt|tail -50|egrep -a "download completed|download in-progress" )
@@ -460,7 +460,7 @@ fi
 
 
 #inputs
-while getopts "l:i:p:u:a:s:e:m:r:t:d:w:f:hv" options ; do
+while getopts "l:i:p:u:a:j:k:s:e:m:r:t:d:w:f:hv" options ; do
 case "${options}" in
     l)
     download_link=${OPTARG}
@@ -500,6 +500,12 @@ case "${options}" in
     ;;
     f)
     my_file=${OPTARG}
+    ;;
+    j)
+    site_user=${OPTARG}
+    ;;
+    k)
+    site_password=${OPTARG}
     ;;
     h)
     cat $user/.persian_download_manager_terminal/help
