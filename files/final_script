@@ -74,7 +74,7 @@ if [ $x_para -gt $max_num_connections ]
        x_parameter=$x_para
 fi    
 
-aria2c --on-download-start="$temp_path/aria_ready_file"  --all-proxy=$ip_port --summary-interval=1 --all-proxy-passwd=$password_name --all-proxy-user=$user_name --http-user=$site_user --http-passwd=$site_password -s 16 -x $x_parameter -k 1M -c -d $download_folder "$download_link" 2>&1 | cat > $temp_path/"$pdm_num".txt
+aria2c --on-download-start="$temp_path/aria_ready_file"  --all-proxy=$ip_port --summary-interval=1 --all-proxy-passwd=$password_name --all-proxy-user=$user_name --http-user=$site_user --http-passwd=$site_password -s 16 -x $x_parameter -k 1M -c -d $download_folder $aria2_options "$download_link" 2>&1 | cat > $temp_path/"$pdm_num".txt
 
 echo "1" |cat > $temp_path/"r$pdm_num".txt
 aria_status=$(cat $temp_path/"$pdm_num".txt|tail -50|egrep -a "download completed|download in-progress" )
@@ -468,7 +468,7 @@ fi
 
 
 #inputs
-while getopts "l:i:p:u:a:j:k:s:e:m:r:t:d:w:f:hv" options ; do
+while getopts "l:i:p:u:a:j:k:s:e:m:r:o:d:w:f:hv" options ; do
 case "${options}" in
     l)
     download_link=${OPTARG}
@@ -497,8 +497,8 @@ case "${options}" in
     r)
     reconnecting_ability=${OPTARG}
     ;;
-    t)
-    retry=${OPTARG}
+    o)
+    aria2_options=${OPTARG}
     ;;
     d)
     do_after_download=${OPTARG}
@@ -647,11 +647,6 @@ if [ "$max_num_connections" = "" ]
     then
         max_num_connections=16
 fi
-#retry
-if [ "$retry" = "" ]
-       then
-           retry=0
-fi           
 
 
 #download process code
