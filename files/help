@@ -77,3 +77,4 @@ pdmt -l "http://www.example.com/2.iso"  -i 127.0.0.1 -p 8580 -s 2:30 -e 7:00 -r 
 or for download queue
 
 pdmt -f /home/alireza/links.txt  -i 127.0.0.1 -p 8580 -s 2:30 -e 7:00 -r yes -d shutdown -w mypass
+
