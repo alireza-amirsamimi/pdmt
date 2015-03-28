@@ -28,6 +28,7 @@ cp -R -f $install_path/files/* $program_path
 chmod +x $program_path/pdmt
 chmod +x $program_path/final_script
 chmod +x $program_path/pdmt_flashgot
+chmod +x $program_path/pdmt_flashgot_gtk
 echo $password_input|sudo -S mv -f $program_path/pdmt /usr/bin
 echo "Installation compeleted"
 exit
