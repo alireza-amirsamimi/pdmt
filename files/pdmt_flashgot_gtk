@@ -1,0 +1,82 @@
+#!/bin/bash
+link="$1"
+download_info=`zenity --forms  --text="Enter Download link \n (If you don't use an option,leave the field empty!)" --title="PDMT" --add-entry="IP:"  --add-entry="Port:" --add-entry="Proxy UserName:" --add-password="Proxy PassWord:" --add-entry="Download UserName:" --add-password="Download PassWord:"  --add-entry="Start Time(24 hour format):" --add-entry="End Time(24 hour format):" --add-list="What does PDMT do after Download?" --list-values="nothing|shutdown|hibernate|suspend"`
+if [ $? -eq 1 ]
+   then
+       exit
+fi
+echo "$download_info"
+ip=$(echo "$download_info" | awk -F"|" '{ print $1 }')
+if [ "$ip" = "" ]
+   then
+       ip="chroniccoughallergies"
+fi       
+port=$(echo "$download_info" | awk -F"|" '{ print $2 }')
+if [ "$port" = "" ]
+   then
+       port="chroniccoughallergies"
+fi       
+
+proxy_user=$(echo "$download_info" | awk -F"|" '{ print $3 }')
+if [ "$proxy_user" = "" ]
+   then
+       proxy_user="chroniccoughallergies"
+fi       
+proxy_pass=$(echo "$download_info" | awk -F"|" '{ print $4 }')
+if [ "$proxy_pass" = "" ]
+   then
+       proxy_pass="chroniccoughallergies"
+fi       
+download_user=$(echo "$download_info" | awk -F"|" '{ print $5 }')
+if [ "$download_user" = "" ]
+   then
+       download_user="chroniccoughallergies"
+fi       
+download_pass=$(echo "$download_info" | awk -F"|" '{ print $6 }')
+if [ "$download_pass" = "" ]
+   then
+       download_pass="chroniccoughallergies"
+fi       
+start_time=$(echo "$download_info" | awk -F"|" '{ print $7 }')
+if [ "$start_time" = "" ]
+   then
+       start_time="chroniccoughallergies"
+fi       
+end_time=$(echo "$download_info" | awk -F"|" '{ print $8 }')
+if [ "$end_time" = "" ]
+   then
+       end_time="chroniccoughallergies"
+fi       
+do_after_download=$(echo "$download_info" | awk -F"|" '{ print $9 }')
+
+case "$do_after_download" in
+      "shutdown" | "hibernate" | "suspend" )
+      do_after="1"
+      ;;
+      * )
+      do_after="2"
+      ;;
+      
+esac
+
+if [ "$do_after" -eq "1" ]
+   then
+       password_input=`zenity --entry --hide-text --title="PDMT"  text="Please enter your ROOT password"`
+       if [ $? -eq 1 ]
+          then
+              exit
+       fi
+       echo $password_input |sudo -S whoami
+       ss=$?
+       while [ $ss -ne 0 ]
+              do
+              password_input=`zenity --entry --hide-text --title="PDMT"  text="Wrong password! Try again!"`
+              if [ $? -eq 1 ]
+                then
+                   exit
+              fi
+              echo $password_input |sudo -S whoami
+              ss=$?
+              done
+fi
+xterm -e pdmt -l "$link" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input"
