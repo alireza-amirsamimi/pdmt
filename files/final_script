@@ -49,6 +49,10 @@ exit
 
 download_func () {
 size_remote=$(wget --spider -O "$temp_path/salam"  --no-check-certificate -T 5 -t 3 -e use-proxy=yes --proxy-user="$user_name" --proxy-password="$password_name" -e --http-proxy="$ip_port" --user="$site_user" --password="$site_password" "$download_link" 2>&1 | awk '/Length/ { print $2 }')
+if [ "$size_remote" = "" ]
+   then
+       size_remote="0"
+fi              
 size_remote=`echo "scale=0;$size_remote / 1048576"| bc`
 case $size_m in
 [2-9]|1[0-5])
