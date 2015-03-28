@@ -4,19 +4,23 @@ PDMT(Persian Download Manager Terminal)
 + PDMT is a download manager which is written in bash language and it is based on aria2 and improves aria2.
 
 ### Before running install file make sure that all dependencies are installed on your system!
-You must install `aria2` , `pm-utils`, `wget` , `xterm` (for flashgot). 
+You must install `aria2` , `pm-utils`, `wget` , `bc` 
+For using flash got on firefox , you must install `xterm` , `zenity`
 
 ## Dependencies for Ubuntu
 
-    $ sudo apt-get install aria2 pm-utils wget xterm
+    $ sudo apt-get install aria2 pm-utils wget bc
+    $ sudo apt-get install xterm zenity
     
 ## Dependencies for Fedora
 
-    $ sudo yum install aria2 pm-utils wget xterm
+    $ sudo yum install aria2 pm-utils wget bc
+    $ sudo yum install xterm zenity
 
 ## Dependencies for Archlinux
 
-    $ sudo pacman -S aria2 pm-utils wget xterm
+    $ sudo pacman -S aria2 pm-utils wget
+    $ sudo pacman -S xterm zenity
     
 After installing dependencies, change your directory with cd command and run install file
 
