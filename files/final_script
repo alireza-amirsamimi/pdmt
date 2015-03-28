@@ -57,7 +57,6 @@ case ${size_remote#[-+]} in
    size_m=0
    ;;
 esac
-size_m=$((size_remote/1048576))
 case $size_m in
 [2-9]|1[0-5])
 x_para=$size_m
@@ -74,7 +73,21 @@ if [ $x_para -gt $max_num_connections ]
        x_parameter=$x_para
 fi    
 
-aria2c --on-download-start="$temp_path/aria_ready_file"  --all-proxy=$ip_port --summary-interval=1 --all-proxy-passwd=$password_name --all-proxy-user=$user_name --http-user=$site_user --http-passwd=$site_password -s 16 -x $x_parameter -k 1M -c -d $download_folder $aria2_options "$download_link" 2>&1 | cat > $temp_path/"$pdm_num".txt
+echo "$download_link"|grep -e "ftp://"
+if [ "$?" -eq "0" ]
+   then
+     site_user_http=""
+     site_password_http=""
+     site_user_ftp="$site_user"
+     site_password_ftp="$site_password"
+   else
+     site_user_http="$site_user"
+     site_password_http="$site_password"
+     site_user_ftp=""
+     site_password_ftp=""
+fi     
+
+aria2c --on-download-start="$temp_path/aria_ready_file"  --all-proxy=$ip_port --summary-interval=1 --all-proxy-passwd=$password_name --all-proxy-user=$user_name --http-user=$site_user_http --http-passwd=$site_password_http --ftp-user=$site_user_ftp --ftp-passwd=$site_password_ftp -s 16 -x $x_parameter -k 1M -c -d $download_folder $aria2_options "$download_link" 2>&1 | cat > $temp_path/"$pdm_num".txt
 
 echo "1" |cat > $temp_path/"r$pdm_num".txt
 aria_status=$(cat $temp_path/"$pdm_num".txt|tail -50|egrep -a "download completed|download in-progress" )
@@ -91,7 +104,7 @@ if [ "$end_status" != "1" ]
 		if [ "$download_flag" != "4" ]
   		then
     			echo "5"> $temp_path/"s$pdm_num".txt
-    			if [ "" != "$end_time" ]
+    			if [ "$end_time" != "" ]
 				then
 	    			echo "2">$temp_path/"e$pdm_num".txt
 	    			sleep 12
@@ -114,7 +127,7 @@ if [ "$end_status" != "1" ]
 		        fi	    
 		fi       
 		;;
-esac
+        esac
     else
      	echo "1"> $temp_path/"s$pdm_num".txt	
 fi
@@ -208,8 +221,8 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    do
    clear the screen
    logo
-   file_name=$(cat $temp_path/"$pdm_num".txt|tail -50|awk '/FILE:/ {print $0 }'|tail -1)
-   progress_title=$(cat $temp_path/"$pdm_num".txt|tail -50|awk '/CN/ {print $0 }'|tail -1)
+   file_name=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/FILE:/ {print $0 }'|tail -1)
+   progress_title=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1)
    download_percent=$(echo "$progress_title"| awk -F/ '{ print $2 }' | awk -F"(" '{ print $2 }' | awk -F")" '{ print $1 }'|awk -F"%" '{ print $1 }')
    progress_title_percent=$(echo "$progress_title" | awk '{ print $2 }')
    progress_title_connections=$(echo "$progress_title" | awk '{ print $3 }'| awk -F ":" '{ print $2 }')
@@ -254,23 +267,90 @@ if [ "$check_connection" = "1" ]
        sleep 10
        check_connection=$(cat $temp_path/"$pdm_num".txt|tail -50|awk '/CN/ {print $0 }'|tail -1|awk -F":" '{print $2 }'|awk '{print $1}' )
 fi 
+
 aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
-download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)      
-while [ "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
+download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)     
+check_con_exit="1" 
+
+while [ "$aria_ready" = "0" ] && [ "$download_flag" = "3" ] && [ "$check_con_exit" = "1" ]
    do
-   check_connection_new=$(cat $temp_path/"$pdm_num".txt|tail -50|awk '/CN/ {print $0 }'|tail -1|awk -F":" '{print $2 }'|awk '{print $1}' )
-   if [ "$check_connection" -gt "$check_connection_new" ]
-     then
-     echo "4">$temp_path/"s$pdm_num".txt
-     sleep 0.2
-     aria2_pid=$(cat $temp_path/"p$pdm_num".txt 2> /dev/null)
-     kill $aria2_pid 2> /dev/null
-     break
-   fi        
-   sleep 120
-   aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
-   download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null) 
-done           
+     if [ "$end_time_input" != "" ]
+     	then
+     		date_hour=`date +%H`
+     		date_minute=`date +%M`
+     		date_hour_60=$(( date_hour * 60 ))
+     		sum_date=` expr $date_hour_60 + $date_minute `
+     		end_time_hour_60=$(( end_time_hour * 60 ))
+     		sum_end=` expr $end_time_hour_60 + $end_time_minute - $sum_date `
+     	   
+     		if [ "$sum_end" -lt "0" ]
+     		    then
+     		        sum_end=` expr $sum_end  + 1440 `
+     		fi
+        else
+            sum_end="6"
+     fi  
+     
+     check_con_size_type=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1| awk -F/ '{ print $2 }'|awk -F"(" '{ print $1 }' | tail -c 4)
+     a=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1 | awk -F/ '{ print $2 }'|awk -F"(" '{ print $1 }' )
+     b=`expr length $a`
+     c=`expr $b - 3`  
+     check_con_size=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1| awk -F/ '{ print $2 }'|awk -F"(" '{ print $1 }' | head -c $c)
+     check_con_percent=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1|awk -F/ '{ print $2 }' | awk -F"(" '{ print $2 }' | awk -F")" '{ print $1 }'|awk -F"%" '{ print $1 }')        
+     check_con_percent_res=`expr 100 - $check_con_percent `
+     case "$check_con_size_type" in
+         "GiB")
+          check_con_size_mb=`echo "scale=0;$check_con_size * 1024 * $check_con_percent_res / 100"| bc`  
+         ;;
+          "MiB")
+          check_con_size_mb=`echo "scale=0;$check_con_size * $check_con_percent_res / 100"| bc`
+         ;;
+          *)
+          check_con_size_mb="0"
+     esac     
+     if      [ "$sum_end" -lt "5" ] || [ "$check_con_size_mb" -lt "40" ]
+     	then
+            check_con_exit="0"
+     
+     fi	
+         
+     check_connection_new=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1|awk -F":" '{print $2 }'|awk '{print $1}' )
+          
+     if [ "$check_connection" -gt "$check_connection_new" ] && [ "$check_con_exit" = "1" ]
+        then
+        
+            aria2_pid=$(cat $temp_path/"p$pdm_num".txt 2> /dev/null)
+            kill $aria2_pid 2> /dev/null
+          
+            if [ "$?" -eq  "0" ]
+               then
+                    echo "4">$temp_path/"s$pdm_num".txt
+                    check_con_exit="0"
+                else
+                    check_con_exit="0"    
+            fi        
+             
+     fi     
+     
+     if    [ "$check_con_exit" = "1" ] 
+     	then
+     	sleep 120
+     fi	
+     aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
+     download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
+     if [ "$?" -ne  "0" ]
+               then
+                   check_con_exit="0"
+     fi              
+             
+done   
+
+while [ "$aria_ready" = "0" ]
+     do 
+        sleep 2
+        aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
+done      
+        
 }
 
 
@@ -278,7 +358,7 @@ download (){
 
 case "$reconnecting_ability" in
         "y" | "yes")
-        (download_func) & (progress_dialog)  #& (check_con)
+        (download_func) & (progress_dialog)  & (check_con)
         ;;
         
         *)	
@@ -370,6 +450,7 @@ while [ "$download_flag" != "0" ] && [ "$download_flag" != "2" ] && [ "$download
 		echo "reconnecting... .be patient"
 		echo "#################"|cat >> ~/Downloads/PersianDM/report
                 date|cat >> ~/Downloads/PersianDM/report
+                echo "$download_link"|cat >> ~/Downloads/PersianDM/report
                 echo "Reconnecting"|cat >> ~/Downloads/PersianDM/report
                 echo "#################"|cat >> ~/Downloads/PersianDM/report
                 
@@ -378,10 +459,12 @@ while [ "$download_flag" != "0" ] && [ "$download_flag" != "2" ] && [ "$download
 		      aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
 		      sleep 5
 		done
-		      
-		echo "3"> $temp_path/"s$pdm_num".txt
-	        download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-
+		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
+		if   [ "$download_flag" = "4" ]
+		     then    
+		         echo "3"> $temp_path/"s$pdm_num".txt
+                fi
+                download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 	done	
 done
 stop
@@ -530,9 +613,51 @@ case "${options}" in
 esac
 done
 
+#flashgot_gtk input correction
+if [ "$ip_name" = "chroniccoughallergies" ]
+   then
+       ip_name=""
+fi       
+
+if [ "$port_name" = "chroniccoughallergies" ]
+   then
+       port_name=""
+fi       
+
+if [ "$user_name" = "chroniccoughallergies" ]
+   then
+       user_name=""
+fi       
+
+if [ "$password_name" = "chroniccoughallergies" ]
+   then
+       password_name=""
+fi       
+
+if [ "$start_time_input" = "chroniccoughallergies" ]
+   then
+       start_time_input=""
+fi       
+
+if [ "$end_time_input" = "chroniccoughallergies" ]
+   then
+       end_time_input=""
+fi       
+
+if [ "$site_user" = "chroniccoughallergies" ]
+   then
+       site_user=""
+fi       
+
+if [ "$site_password" = "chroniccoughallergies" ]
+   then
+       site_password=""
+fi       
+
 #find link & define download type
 if [ "$my_file" != "" ]
 	then
+	
 	    cat $my_file
 	    if [ $? -eq 0 ]
 		then
@@ -541,22 +666,9 @@ if [ "$my_file" != "" ]
 		    echo "ERROR!!File Not Exist. Adress : $my_file "
 	    	    exit
 	    fi
-	 elif   [ "$download_link" = "" ] 
-		   then
-	    		word_count=`echo $input_options|wc -w` 
-	    		for iii in `seq 1 $word_count`;
-   	        		do
-                  		word_word=$(echo $input_options | cut -d \  -f $iii)
-      	          		link_input=$(echo "$word_word"|grep -e "://" ) 
-      	          		size_link_input=${#link_input}
-      	          		if [ $size_link_input -gt 12 ]   
-      	              			then
-      	                  			download_link=$link_input
-      	                  			download_type=1
-      	          		fi                    
-             		done
-             	   else 
-             	       	download_type=1
+  	
+  	else 
+                   download_type=1
              		
 fi
 
@@ -602,7 +714,7 @@ if  [ "$end_time_input" != "" ]
 	end_time_minute="0$end_time_minute"
 	fi
         end_time="$end_time_hour:$end_time_minute"
-     else end_time="$end_time_hour$end_time_minute"
+     else end_time="$end_time_hour$end_time_minute"          
 fi
 #after download and input password
 case "$do_after_download" in
