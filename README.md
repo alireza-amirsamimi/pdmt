@@ -19,7 +19,7 @@ For using flash got on firefox , you must install `xterm` , `zenity`
 
 ## Dependencies for Archlinux
 
-    $ sudo pacman -S aria2 pm-utils wget
+    $ sudo pacman -S aria2 pm-utils wget bc
     $ sudo pacman -S xterm zenity
     
 After installing dependencies, change your directory with cd command and run install file
