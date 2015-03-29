@@ -19,7 +19,7 @@ echo "Finish!"
 }
 
 func_after () {
-
+download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 end_status=$(cat $temp_path/"e$pdm_num".txt 2> /dev/null) 
 if [ "" != "$end_time" ] && [ $end_status -eq 0 ]
 	then
@@ -28,6 +28,11 @@ if [ "" != "$end_time" ] && [ $end_status -eq 0 ]
 fi		
 sleep 5
 finish
+
+if [ "$download_flag" -eq "5" ]
+    then
+        do_after="1"
+fi        
 
 case "$do_after" in
     2)
