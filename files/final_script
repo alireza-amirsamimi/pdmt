@@ -656,6 +656,11 @@ if [ "$site_password" = "chroniccoughallergies" ]
        site_password=""
 fi       
 
+if [ "$reconnecting_ability" = "chroniccoughallergies" ]
+   then
+       reconnecting_ability=""
+fi       
+
 #find link & define download type
 if [ "$my_file" != "" ]
 	then
