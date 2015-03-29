@@ -5,30 +5,20 @@ echo "############################################################"
 echo "############# Welcome to PDMT installation #################"
 echo "############################################################"
 
-echo "Please enter root password"
-stty -echo
-read password_input   
-echo $password_input |sudo -S whoami  2> /dev/null
-ss=$?
-while [ $ss -ne 0 ]
-      do
-        stty echo
-        echo "WRONG password!!,Please re-enter root password"
-	stty -echo
-        read password_input
-        echo $password_input |sudo -S whoami 2> /dev/null
-        ss=$?
-done
-stty echo		
 user=$(env | grep  -e HOME | awk -F= '{ print $2 }')
 program_path="$user/.persian_download_manager_terminal"
 install_path=`pwd`
-mkdir  $program_path
+mkdir  $program_path >/dev/null 2>&1
 cp -R -f $install_path/files/* $program_path
 chmod +x $program_path/pdmt
 chmod +x $program_path/final_script
 chmod +x $program_path/pdmt_flashgot
 chmod +x $program_path/pdmt_flashgot_gtk
-echo $password_input|sudo -S mv -f $program_path/pdmt /usr/bin
-echo "Installation compeleted"
+sudo  mv -f $program_path/pdmt /usr/bin
+if [ "$?" -eq "0" ]
+   then
+      echo "Installation compeleted"
+   else
+       echo "Installation Failed!"
+fi           
 exit
