@@ -1,4 +1,4 @@
 #!/bin/bash
-user=$(env | grep  -e HOME | awk -F= '{ print $2 }')
+user=$(env | grep  -e HOME | grep -e /home | awk -F= '{ print $2 }')
 sh $user/.persian_download_manager_terminal/final_script $@ 
 exit
