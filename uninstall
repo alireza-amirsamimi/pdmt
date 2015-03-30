@@ -1,7 +1,12 @@
 #!/bin/bash
 #uninstall PDMT
 
-user=$(env | grep  -e HOME | awk -F= '{ print $2 }')
+user=$(env | grep  -e HOME | grep -e /home | awk -F= '{ print $2 }')
+if [ "$user" -eq "" ]
+   then
+       echo "Uninstallation faild!can not find home folder"
+       exit
+fi
 program_path="$user/.persian_download_manager_terminal"
 rm -f -r $program_path
 sudo  rm -f /usr/bin/pdmt
