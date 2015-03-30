@@ -6,6 +6,14 @@ echo "############# Welcome to PDMT installation #################"
 echo "############################################################"
 
 user=$(env | grep  -e HOME | grep -e /home | awk -F= '{ print $2 }')
+for iiiii in `seq 1 $home_env_num`;
+	do
+          home_env_line=$(echo "$home_env" | grep -e HOME | awk -F= '{ print $1 }'| head -$iiiii)
+          if [ "$home_env_line" = "HOME" ]
+              then
+                user=$(echo "$home_env"| grep -e HOME |  awk -F= '{ print $2 }' | head -$iiiii)
+          fi           
+done
 if [ "$user" = "" ]
    then
        echo "Installation Failed!can not find home folder"
