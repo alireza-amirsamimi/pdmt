@@ -5,7 +5,7 @@ echo "############################################################"
 echo "############# Welcome to PDMT installation #################"
 echo "############################################################"
 
-user=$(env | grep  -e HOME | awk -F= '{ print $2 }')
+user=$(env | grep  -e HOME | grep -e /home | awk -F= '{ print $2 }')
 program_path="$user/.persian_download_manager_terminal"
 install_path=`pwd`
 echo "mkdir  $program_path"
