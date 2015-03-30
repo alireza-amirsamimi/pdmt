@@ -539,7 +539,7 @@ for iiiii in `seq 1 $home_env_num`;
           home_env_line=$(echo "$home_env" | grep -e HOME | awk -F= '{ print $1 }'| head -$iiiii)
           if [ "$home_env_line" = "HOME" ]
               then
-                user=$(echo "$home_env"| grep -e HOME |  awk -F= '{ print $2 }' | head -$iiiii)
+                user=$(echo "$home_env"| grep -e HOME |  awk -F= '{ print $2 }' | head -$iiiii | grep -e /home)
           fi           
 done
 download_folder="$user/Downloads/PersianDM"
