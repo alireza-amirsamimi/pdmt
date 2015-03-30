@@ -2,7 +2,15 @@
 #uninstall PDMT
 
 user=$(env | grep  -e HOME | grep -e /home | awk -F= '{ print $2 }')
-if [ "$user" -eq "" ]
+for iiiii in `seq 1 $home_env_num`;
+	do
+          home_env_line=$(echo "$home_env" | grep -e HOME | awk -F= '{ print $1 }'| head -$iiiii)
+          if [ "$home_env_line" = "HOME" ]
+              then
+                user=$(echo "$home_env"| grep -e HOME |  awk -F= '{ print $2 }' | head -$iiiii)
+          fi           
+done
+if [ "$user" = "" ]
    then
        echo "Uninstallation faild!can not find home folder"
        exit
