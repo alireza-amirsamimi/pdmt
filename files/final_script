@@ -532,7 +532,7 @@ trap finish exit
 trap '' 2
 logo
 input_options=$@
-user=$(env | grep  -e HOME | awk -F= '{ print $2 }')
+user=$(env | grep  -e HOME |grep -e /home | awk -F= '{ print $2 }')
 download_folder="$user/Downloads/PersianDM"
 temp_path="$user/.persian_download_manager_terminal/temp"
 mkdir $download_folder >/dev/null 2>&1
