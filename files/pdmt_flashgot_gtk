@@ -1,5 +1,19 @@
 #!/bin/bash
+#flashgot_status=0 ready , flashgot_status=1 not ready
 link="$1"
+home_env=$(env | grep -e HOME )
+home_env_num=$(echo "$home_env" | grep ^ | wc -l)
+for iiiii in `seq 1 $home_env_num`;
+	do
+          home_env_line=$(echo "$home_env" | grep -e HOME | awk -F= '{ print $1 }'| head -$iiiii)
+          if [ "$home_env_line" = "HOME" ]
+              then
+                user=$(echo "$home_env"| grep -e HOME |  awk -F= '{ print $2 }' | head -$iiiii)
+          fi           
+done
+
+flashgot_function() {
+
 download_info=`zenity --forms  --text="Enter Download link \n (If you don't use an option,leave the field empty!)" --title="PDMT" --add-entry="IP:"  --add-entry="Port:" --add-entry="Proxy UserName:" --add-password="Proxy PassWord:" --add-entry="Download UserName:" --add-password="Download PassWord:"  --add-entry="Start Time(24 hour format):" --add-entry="End Time(24 hour format):" --add-entry="Reconnecting(yes/no) , default is no"  --add-list="What does PDMT do after Download?" --list-values="nothing|shutdown|hibernate|suspend"`
 if [ $? -eq 1 ]
    then
@@ -87,4 +101,25 @@ if [ "$do_after" -eq "1" ]
               ss=$?
               done
 fi
-xterm -e pdmt -l "$link" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -r "$reconnecting_ability" -d "$do_after_download" -w "$password_input"
+}
+
+
+temp_path="$user/.persian_download_manager_terminal/temp"
+
+flashgot_status=$(cat $temp_path/flashgot.txt ) 
+
+if [ "$flashgot_status" != "1" ]
+   then
+       echo "1" > $temp_path/flashgot.txt
+       echo "$link" > $temp_path/flashgot_queue.txt
+       sleep 2
+       echo "0" > $temp_path/flashgot.txt
+       flashgot_function
+   else
+       echo "$link" >> $temp_path/flashgot_queue.txt
+       exit
+fi 
+           
+
+xterm -e pdmt -f $temp_path/flashgot_queue.txt -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -r "$reconnecting_ability" -d "$do_after_download" -w "$password_input" 
+exit       
