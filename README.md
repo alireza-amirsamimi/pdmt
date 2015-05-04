@@ -1,6 +1,6 @@
 PDMT(Persian Download Manager Terminal)
 =============
-+ version : 1.1
++ version : 1.11
 + PDMT is a download manager which is written in bash language and it is based on aria2 and improves aria2.
 
 ### Before running install file make sure that all dependencies are installed on your system!
