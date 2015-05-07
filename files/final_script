@@ -221,7 +221,7 @@ aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null) 
 while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    do
-   clear the screen
+   tput cup 0 0
    logo
    file_name=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/FILE:/ {print $0 }'|tail -1)
    progress_title=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1)
@@ -528,6 +528,7 @@ echo "                                         "
 
 #initialization
 clear screen
+tput civis      -- invisible
 trap finish exit
 trap '' 2
 logo
