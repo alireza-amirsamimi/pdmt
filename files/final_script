@@ -220,7 +220,8 @@ while [ "$aria_ready" != "0" ] && [ "$download_flag" = "3" ]
 	  download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null) 
 	  sleep 0.5	  
 done
-
+clear
+logo
 aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null) 
 while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
