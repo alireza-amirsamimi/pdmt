@@ -215,13 +215,14 @@ aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null) 
 clear
 logo
+echo "Download Starting Now!"
 while [ "$aria_ready" != "0" ] && [ "$download_flag" = "3" ]
         do
 	  aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
 	  download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null) 
 	  sleep 0.5	  
 done
-
+clear
 aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null) 
 while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
