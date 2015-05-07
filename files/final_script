@@ -17,6 +17,7 @@ rm -v $temp_path/"d$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/aria_ready_file >/dev/null 2>&1
 echo "Finish!"
 tput cnorm   -- normal
+tput smam 
 }
 
 func_after () {
@@ -532,6 +533,7 @@ echo "                                         "
 #initialization
 clear screen
 tput civis      -- invisible
+tput rmam
 trap finish exit
 trap '' 2
 logo
