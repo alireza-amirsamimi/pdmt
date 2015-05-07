@@ -138,6 +138,8 @@ fi
 }
 
 progress_bar() {
+tput cup 12 0
+echo ""	
 echo -n "["
 percent20=$((download_percent / 20))
 case "$percent20" in
