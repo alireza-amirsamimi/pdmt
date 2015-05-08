@@ -243,7 +243,13 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    echo "Transfer rate : $progress_title_rate"
    echo "Estimate time left : $progress_title_estimate \n"
    progress_bar
+   line_number1=`tput lines`
    sleep 2.2
+   line_number2=`tput lines`
+   if [ "$line_number1" -ne "$line_number2" ]
+        then
+            clear
+   fi       
    download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
    aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
 done
