@@ -241,7 +241,7 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    echo "$progress_title_percent Downloaded " > $temp_path/"d$pdm_num".txt
    echo "Number of connections : $progress_title_connections"
    echo "Transfer rate : $progress_title_rate"
-   echo "Estimate time left : $progress_title_estimate \n"
+   echo "Estimate time left : $progress_title_estimate "
    progress_bar
    line_number1=`tput lines`
    sleep 2.2
