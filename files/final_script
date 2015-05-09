@@ -403,7 +403,7 @@ case $download_flag in
      		date|cat >> ~/Downloads/PersianDM/report
      		echo "$download_link"|cat >> ~/Downloads/PersianDM/report
      		echo "download paused!"|cat >> ~/Downloads/PersianDM/report
-     		cat $temp_path/"d$pdm_num".txt >> ~/Downloads/PersianDM/report
+     		cat $temp_path/"d$pdm_num".txt >> ~/Downloads/PersianDM/report 2> /dev/null
      		echo "#################"|cat >> ~/Downloads/PersianDM/report
         else
                 echo "Queue Paused"
@@ -420,7 +420,7 @@ case $download_flag in
      date|cat >> ~/Downloads/PersianDM/report
      echo "$download_link"|cat >> ~/Downloads/PersianDM/report
      echo "download Failed!"|cat >> ~/Downloads/PersianDM/report
-     cat $temp_path/"d$pdm_num".txt >> ~/Downloads/PersianDM/report
+     cat $temp_path/"d$pdm_num".txt >> ~/Downloads/PersianDM/report 2> /dev/null
      echo "#################"|cat >> ~/Downloads/PersianDM/report
      ;;
      5)
@@ -431,7 +431,7 @@ case $download_flag in
          date|cat >> ~/Downloads/PersianDM/report
          echo "$download_link"|cat >> ~/Downloads/PersianDM/report
          echo "Download Canceled by user!"|cat >> ~/Downloads/PersianDM/report
-         cat $temp_path/"d$pdm_num".txt >> ~/Downloads/PersianDM/report
+         cat $temp_path/"d$pdm_num".txt >> ~/Downloads/PersianDM/report 2> /dev/null
          echo "#################"|cat >> ~/Downloads/PersianDM/report
      else
          echo "Queue Canceled by user!Please Wait..."
