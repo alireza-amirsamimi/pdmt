@@ -1,0 +1,42 @@
+#!/bin/bash
+#install PDMT
+clear screen
+echo "############################################################"
+echo "############# Welcome to PDMT installation #################"
+echo "############################################################"
+
+home_env=$(env | grep -e HOME )
+home_env_num=$(echo "$home_env" | grep ^ | wc -l)
+for iiiii in `seq 1 $home_env_num`;
+	do
+          home_env_line=$(echo "$home_env" | grep -e HOME | awk -F= '{ print $1 }'| head -$iiiii)
+          if [ "$home_env_line" = "HOME" ]
+              then
+                user=$(echo "$home_env"| grep -e HOME |  awk -F= '{ print $2 }' | head -$iiiii | grep -e /home)
+          fi           
+done
+if [ "$user" = "" ]
+   then
+       echo "Installation Failed!can not find home folder"
+       exit
+fi       
+      
+program_path="$user/.persian_download_manager_terminal"
+install_path=`pwd`
+echo "mkdir  $program_path"
+mkdir  $program_path >/dev/null 2>&1
+echo "cp -R -f $install_path/files/* $program_path"
+cp -R -f $install_path/files/* $program_path
+chmod +x $program_path/pdmt
+chmod +x $program_path/final_script
+chmod +x $program_path/pdmt_flashgot
+chmod +x $program_path/pdmt_flashgot_gtk
+echo "sudo  mv -f $program_path/pdmt /usr/bin"
+sudo  mv -f $program_path/pdmt /usr/bin
+if [ "$?" -eq "0" ]
+   then
+      echo "Installation compeleted"
+   else
+       echo "Installation Failed!"
+fi           
+exit
