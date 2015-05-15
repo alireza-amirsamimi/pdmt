@@ -675,7 +675,7 @@ if [ "$color_config" = "yes" ]
 fi
 if [ "$remove_char_retry" = "" ]
 	then
-	    remove_char_retry="10"
+	    remove_char_retry="5"
 fi
 	                
 logo
