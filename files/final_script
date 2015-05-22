@@ -435,6 +435,7 @@ case $download_flag in
                 echo " Queue Paused"
 	        echo "#################"|cat >> $download_folder/report
                 date|cat >> $download_folder/report
+                echo "$download_link"|cat >> $download_folder/report
                 echo "Queue Paused"|cat >> $download_folder/report
                 echo "#################"|cat >> $download_folder/report
      fi           
