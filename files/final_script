@@ -939,7 +939,7 @@ var1=`date +%H:%M`
 if [ "" != "$start_time" ] && [ "$var1" != "$start_time" ]
    then
       
-      echo " Download will be wtarted at $start_time !"
+      echo " Download will be started at $start_time !"
       
       while [ "$var1" != "$start_time" ]
              do
