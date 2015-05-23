@@ -2,7 +2,7 @@
 #PerisanDM Terminal (PDMT) written by AliReza AmirSamimi(alireza.amirsamimi@gmail.com) and It is based on aria2
 #s=download status r=aria ready p=aria pid e=end status d=downloaded
 #0=aria ready 1=aria not ready
-#download_flag 0=completed 1=paused 2=failed 3=download 4=reconnecting 5=ctrl_c
+#download_flag 0=completed 1=paused 2=failed 3=download 4=reconnecting
 #end_status 0=not end yet 1=time is up 2=download completed or canceled or...
 
 #functions
@@ -21,7 +21,45 @@ echo -e "$normal_color   "
 tput cnorm   -- normal
 tput smam 
 }
+finish2 () {
+aria_ready=$(cat $temp_path/"r$pdm_num".txt 2>/dev/null)
+if [ "$aria_ready" != "0" ]
+	then 
+	    finish
+	    kill $$
+	else
+	    clear
+	    logo
+	    if [ "$my_file" = "" ]
+     		then
+         		echo " Download Canceled by user!Please Wait..."
+         		echo -e "$text_color PDMT will resume download if you start download this file again.    "
+         		echo -e " You can find summary & history of downloads & download links in \n $download_folder/report "
+         		echo  "#################"|cat >> $download_folder/report
+         		date|cat >> $download_folder/report
+         		echo "$download_link"|cat >> $download_folder/report
+         		echo "Download Canceled by user!"|cat >> $download_folder/report
+         		cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
+         		echo "#################"|cat >> $download_folder/report
+     		else
+         		echo " Queue Canceled by user!Please Wait..."
+         		echo -e "$text_color PDMT will resume download if you start download this file again.    "
+         		echo -e " You can find summary & history of downloads & download links in \n $download_folder/report   "         
+         		echo "#################"|cat >> $download_folder/report
+         		date|cat >> $download_folder/report
+         		echo "$download_link"|cat >> $download_folder/report
+         		echo "Queue Canceled by user!"|cat >> $download_folder/report
+         		echo "#################"|cat >> $download_folder/report  
+     	    fi
+	         
+            kill $$    
+fi	    
 
+}
+ctrl_c () {
+
+finish2
+}
 
 func_after () {
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
@@ -33,11 +71,6 @@ if [ "" != "$end_time" ] && [ $end_status -eq 0 ]
 fi		
 sleep 5
 finish
-
-if [ "$download_flag" -eq "5" ]
-    then
-        do_after="1"
-fi        
 
 case "$do_after" in
     2)
@@ -125,30 +158,12 @@ if [ "$end_status" != "1" ]
 		;;
 		"(INPR):download in-progress.")
 		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-		if [ "$download_flag" != "4" ]
-  		then
-    			echo "5"> $temp_path/"s$pdm_num".txt
-    			if [ "$end_time" != "" ]
-				then
-	    			echo "2">$temp_path/"e$pdm_num".txt
-	    			sleep 12
-	
-		fi	    
-		fi
                 ;;
 		*)
 		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 		if [ "$download_flag" = "4" ] || [ "$download_flag" = "3" ]
   		  then
-  		        fail_reconnecting
-		  else
-		        echo "5"> $temp_path/"s$pdm_num".txt
-    			if [ "" != "$end_time" ]
-				then
-	    			echo "2">$temp_path/"e$pdm_num".txt
-	    			sleep 12
-	
-		        fi	    
+  		        fail_reconnecting	    
 		fi       
 		;;
         esac
@@ -426,6 +441,8 @@ case $download_flag in
      if [ "$my_file" = "" ]
         then
      		echo " Download Paused!Please Wait..."
+	        echo -e "$text_color PDMT will resume download if you start download this file again.    "
+                echo -e " You can find summary & history of downloads & download links in \n $download_folder/report "
      		echo "#################"|cat >> $download_folder/report
      		date|cat >> $download_folder/report
      		echo "$download_link"|cat >> $download_folder/report
@@ -434,6 +451,8 @@ case $download_flag in
      		echo "#################"|cat >> $download_folder/report
         else
                 echo " Queue Paused"
+                echo -e "$text_color PDMT will resume download if you start download this file again.    "
+                echo -e " You can find summary & history of downloads & download links in \n $download_folder/report "  
 	        echo "#################"|cat >> $download_folder/report
                 date|cat >> $download_folder/report
                 echo "$download_link"|cat >> $download_folder/report
@@ -444,6 +463,8 @@ case $download_flag in
      
      2)
      echo " Download Failed!Please Wait..."
+     echo -e "$text_color PDMT will resume download if you start download this file again.    "
+     echo -e " You can find summary & history of downloads & download links in \n $download_folder/report "
      if [ "$sound_config" = "yes" ]
 	  then
 	      mpg123 -q $notifications_path/fail.mp3
@@ -455,25 +476,7 @@ case $download_flag in
      cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
      echo "#################"|cat >> $download_folder/report
      ;;
-     5)
-     if [ "$my_file" = "" ]
-     then
-         echo " Download Canceled by user!Please Wait..."
-         echo "#################"|cat >> $download_folder/report
-         date|cat >> $download_folder/report
-         echo "$download_link"|cat >> $download_folder/report
-         echo "Download Canceled by user!"|cat >> $download_folder/report
-         cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
-         echo "#################"|cat >> $download_folder/report
-     else
-         echo " Queue Canceled by user!Please Wait..."
-         echo "#################"|cat >> $download_folder/report
-         date|cat >> $download_folder/report
-         echo "$download_link"|cat >> $download_folder/report
-         echo "Queue Canceled by user!"|cat >> $download_folder/report
-         echo "#################"|cat >> $download_folder/report  
-     fi
-     ;;
+     
      
 esac
      
@@ -482,7 +485,7 @@ esac
 
 download_single () {
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-while [ "$download_flag" != "0" ] && [ "$download_flag" != "2" ] && [ "$download_flag" != "1" ] && [ "$download_flag" != "5" ]
+while [ "$download_flag" != "0" ] && [ "$download_flag" != "2" ] && [ "$download_flag" != "1" ]
 	do
 	
 	while [ "$download_flag" = "3" ]
@@ -523,7 +526,7 @@ while read -r line
 	do
 	download_link=$line
 	download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-	if [ "$download_link" = "" ] || [ "$download_flag" = "1" ] || [ "$download_flag" = "5" ]
+	if [ "$download_link" = "" ] || [ "$download_flag" = "1" ]
 	   then
 	       break
 	fi   
@@ -533,7 +536,7 @@ while read -r line
 done < "$my_file"
 
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-if [ "$download_flag" != "1" ] && [ "$download_flag" != "5" ]
+if [ "$download_flag" != "1" ]
   	then
   	    echo " Queue Compelete"
 	    if [ "$sound_config" = "yes" ]
@@ -652,7 +655,7 @@ clear screen
 tput civis      -- invisible
 tput rmam
 trap finish exit
-trap '' 2
+trap ctrl_c 2
 ls ~/.persian_download_manager_terminal/config &> /dev/null
 if [ "$?" != "0" ]
 	then 
