@@ -1,2 +1,0 @@
-#!/bin/bash
-xterm -e pdmt -l "$1"
