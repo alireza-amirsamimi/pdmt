@@ -1,17 +1,7 @@
 #!/bin/bash
 #flashgot_status=0 ready , flashgot_status=1 not ready
 link="$1"
-home_env=$(env | grep -e HOME )
-home_env_num=$(echo "$home_env" | grep ^ | wc -l)
-for iiiii in `seq 1 $home_env_num`;
-	do
-          home_env_line=$(echo "$home_env" | grep -e HOME | awk -F= '{ print $1 }'| head -$iiiii)
-          if [ "$home_env_line" = "HOME" ]
-              then
-                user=$(echo "$home_env"| grep -e HOME |  awk -F= '{ print $2 }' | head -$iiiii)
-          fi           
-done
-
+user=$HOME
 flashgot_function() {
 
 download_info=`zenity --forms  --text="Enter Download link \n (If you don't use an option,leave the field empty!)" --title="PDMT" --add-entry="IP:"  --add-entry="Port:" --add-entry="Proxy UserName:" --add-password="Proxy PassWord:" --add-entry="Download UserName:" --add-password="Download PassWord:"  --add-entry="Start Time(24 hour format):" --add-entry="End Time(24 hour format):" --add-entry="Reconnecting(yes/no) , default is no"  --add-list="What does PDMT do after Download?" --list-values="nothing|shutdown|hibernate|suspend"`
@@ -102,7 +92,6 @@ if [ "$do_after" -eq "1" ]
               done
 fi
 }
-
 
 temp_path="$user/.persian_download_manager_terminal/temp"
 
