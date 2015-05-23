@@ -22,16 +22,6 @@ tput cnorm   -- normal
 tput smam 
 }
 
-ctrl_c () {
-aria_ready=$(cat $temp_path/"r$pdm_num".txt 2>/dev/null)
-if [ "$aria_ready" != "0" ]
-	then 
-	    finish
-	    kill $$
-	    
-fi	    
-
-}
 
 func_after () {
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
@@ -662,7 +652,7 @@ clear screen
 tput civis      -- invisible
 tput rmam
 trap finish exit
-trap ctrl_c 2
+trap '' 2
 ls ~/.persian_download_manager_terminal/config &> /dev/null
 if [ "$?" != "0" ]
 	then 
