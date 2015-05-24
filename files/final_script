@@ -1,6 +1,6 @@
 #!/bin/bash
-#PerisanDM Terminal (PDMT) written by AliReza AmirSamimi(alireza.amirsamimi@gmail.com) and It is based on aria2
-#s=download status r=aria ready p=aria pid e=end status d=downloaded
+#PerisanDM Terminal (PDMT) written by AliReza AmirSamimi(alireza.amirsamimi@ubuntu.ir) and It is based on aria2
+#s=download status r=aria ready p=aria pid e=end status d=downloaded f=fail_counter l=download_link
 #0=aria ready 1=aria not ready
 #download_flag 0=completed 1=paused 2=failed 3=download 4=reconnecting
 #end_status 0=not end yet 1=time is up 2=download completed or canceled or...
@@ -16,6 +16,7 @@ rm -v $temp_path/"e$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"d$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/aria_ready_file >/dev/null 2>&1
 rm -v $temp_path/"f$pdm_num".txt >/dev/null 2>&1
+rm -v $temp_path/"l$pdm_num".txt >/dev/null 2>&1
 echo -e "$text_color0 Finish!"
 echo -e "$normal_color   "
 tput cnorm   -- normal
@@ -25,7 +26,6 @@ finish2 () {
 aria_ready=$(cat $temp_path/"r$pdm_num".txt 2>/dev/null)
 if [ "$aria_ready" != "0" ]
 	then 
-	    finish
 	    kill $$
 	else
 	    clear
@@ -42,6 +42,7 @@ if [ "$aria_ready" != "0" ]
          		cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
          		echo "#################"|cat >> $download_folder/report
      		else
+     		        download_link=$(cat $temp_path/"l$pdm_num".txt 2>/dev/null)
          		echo " Queue Canceled by user!Please Wait..."
          		echo -e "$text_color PDMT will resume download if you start download this file again.    "
          		echo -e " You can find summary & history of downloads & download links in \n $download_folder/report   "         
@@ -57,7 +58,6 @@ fi
 
 }
 ctrl_c () {
-
 finish2
 }
 
@@ -70,7 +70,6 @@ if [ "" != "$end_time" ] && [ $end_status -eq 0 ]
 	sleep 20
 fi		
 sleep 5
-finish
 
 case "$do_after" in
     2)
@@ -91,13 +90,14 @@ exit
 
 fail_reconnecting (){
 fail_counter=$(cat $temp_path/"f$pdm_num".txt 2> /dev/null)
-if [ "$fail_counter" = "" ]
+if [ "$fail_counter" = "0" ]
         then
  	    echo "1" > $temp_path/"f$pdm_num".txt
        	    fail_counter="1"
         else
      	    fail_counter=$((fail_counter + 1))
 	    echo "$fail_counter" > $temp_path/"f$pdm_num".txt
+	    
 fi
 if [ "$fail_counter" = "$remove_char_retry" ]
 	then
@@ -280,6 +280,7 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    echo -e "$text_color Number of connections : $progress_color$progress_title_connections"
 
    progress_bar
+   echo -e "$text_color0 \n \n Press CTRL+C for STOP downloading   "
    line_number1=`tput lines`
    sleep 2.2
    line_number2=`tput lines`
@@ -525,6 +526,7 @@ download_queue () {
 while read -r line
 	do
 	download_link=$line
+	echo "$download_link" > $temp_path/"l$pdm_num".txt 
 	download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 	if [ "$download_link" = "" ] || [ "$download_flag" = "1" ]
 	   then
@@ -937,14 +939,13 @@ echo "echo "0"|cat > $temp_path/"r$pdm_num".txt" >> $temp_path/aria_ready_file
 echo "echo "3"|cat >$temp_path/"s$pdm_num".txt" >> $temp_path/aria_ready_file
 echo "ps -A | grep -i aria2c | awk {'print \$1'}|tail -1|cat > $temp_path/"p$pdm_num".txt" >> $temp_path/aria_ready_file
 chmod +x $temp_path/aria_ready_file
-
 echo "3"> $temp_path/"s$pdm_num".txt
 var1=`date +%H:%M`
 if [ "" != "$start_time" ] && [ "$var1" != "$start_time" ]
    then
       
-      echo " Download will be started at $start_time !"
-      
+      echo -e "\n Download will be started at $start_time !"
+      echo -e "$text_color \n \n Press CTRL+C for STOP downloading   "
       while [ "$var1" != "$start_time" ]
              do
 		sleep 10
