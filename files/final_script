@@ -90,7 +90,7 @@ exit
 
 fail_reconnecting (){
 fail_counter=$(cat $temp_path/"f$pdm_num".txt 2> /dev/null)
-if [ "$fail_counter" = "0" ]
+if [ "$fail_counter" = "" ]
         then
  	    echo "1" > $temp_path/"f$pdm_num".txt
        	    fail_counter="1"
