@@ -434,7 +434,7 @@ case $download_flag in
      fi	    
      if [ "$sound_config" = "yes" ]
 	  then
-	      mpg123 -q $notifications_path/ok.mp3
+	      ogg123 -q $notifications_path/ok.ogg
      fi
      echo "#################"|cat >> $download_folder/report
      date|cat >> $download_folder/report
@@ -472,7 +472,7 @@ case $download_flag in
      echo -e " You can find summary & history of downloads & download links in \n $download_folder/report "
      if [ "$sound_config" = "yes" ]
 	  then
-	      mpg123 -q $notifications_path/fail.mp3
+	      ogg123 -q $notifications_path/fail.ogg
      fi	   
      echo "#################"|cat >> $download_folder/report
      date|cat >> $download_folder/report
@@ -548,7 +548,7 @@ if [ "$download_flag" != "1" ]
   	    xdg-open $download_folder >/dev/null 2>&1
 	    if [ "$sound_config" = "yes" ]
 	         then
-	             mpg123 -q $notifications_path/queue.mp3
+	             ogg123 -q $notifications_path/queue.ogg
             fi	  
 	    echo "#################"|cat >> $download_folder/report
 	    date|cat >> $download_folder/report
