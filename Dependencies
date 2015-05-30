@@ -1,8 +1,8 @@
 Before running install file please install Dependencies
-you must install aria2 bc pm-utils wget mpg123 
+you must install aria2 bc pm-utils wget vorbis-tools
 for debian base distributions :  debian , ubuntu , mint , ...
-sudo apt-get install aria2  wget  pm-utils  bc mpg123
+sudo apt-get install aria2  wget  pm-utils  bc vorbis-tools
 for fedora:
-sudo yum install aria2  wget  pm-utils  bc mpg123
+sudo yum install aria2  wget  pm-utils  bc vorbis-tools
 for arch:
-sudo pacman -S aria2  wget  pm-utils  bc mpg123  
+sudo pacman -S aria2  wget  pm-utils  bc vorbis-tools
