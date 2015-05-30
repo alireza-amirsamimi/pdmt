@@ -69,6 +69,7 @@ case "$do_after_download" in
       ;;
       * )
       do_after="2"
+      password_input="chroniccoughallergies"
       ;;
       
 esac
