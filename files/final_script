@@ -586,7 +586,7 @@ echo "                                              "
 config()
 {
 echo "PDMT Configuration"
-echo "If you don't want change,leave the answer emty and press enter!"
+echo "if you dont want any changes, leave the questions empty and press enter!"
 echo "Do you want colorful output?(yes/no)"
 read color_input
 echo "Do you want sound notification?(yes/no)"
