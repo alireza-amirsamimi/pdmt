@@ -271,13 +271,13 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    progress_title_connections=$(echo "$progress_title" | awk '{ print $3 }'| awk -F ":" '{ print $2 }')
    progress_title_rate=$(echo "$progress_title" | awk '{ print $4 }'| awk -F ":" '{ print $2 }')
    progress_title_estimate=$(echo "$progress_title" | awk '{ print $5 }'| awk -F ":" '{ print $2 }'| awk -F "]" '{ print $1 }')
-   echo -e "$text_color Link : $progress_color$download_link"
-   echo -e "$text_color Save as : $progress_color$file_name"  
-   echo -e "$text_color Downloaded : $progress_color$progress_title_percent"
+   echo -e "$text_color Link : $progress_color$download_link   "
+   echo -e "$text_color Save as : $progress_color$file_name   "  
+   echo -e "$text_color Downloaded : $progress_color$progress_title_percent    "
    echo -e "$text_color $progress_title_percent$progress_color Downloaded " > $temp_path/"d$pdm_num".txt
-   echo -e "$text_color Transfer rate : $progress_color$progress_title_rate"
-   echo -e "$text_color Estimate time left : $progress_color$progress_title_estimate "
-   echo -e "$text_color Number of connections : $progress_color$progress_title_connections"
+   echo -e "$text_color Transfer rate : $progress_color$progress_title_rate    "
+   echo -e "$text_color Estimate time left : $progress_color$progress_title_estimate    "
+   echo -e "$text_color Number of connections : $progress_color$progress_title_connections     "
 
    progress_bar
    echo -e "$text_color0 \n \n Press CTRL+C for STOP downloading   "
