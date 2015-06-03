@@ -589,7 +589,7 @@ echo "PDMT Configuration"
 echo "if you dont want any changes, leave the questions empty and press enter!"
 echo "Do you want colorful output?(yes/no)"
 read color_input
-echo "Do you want sound notification?(yes/no)"
+echo "Do you want notification sound?(yes/no)"
 read sound_input
 echo "Please enter download directory?(for example ~/Downloads)"
 read download_folder_input
