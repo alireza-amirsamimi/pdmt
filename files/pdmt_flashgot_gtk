@@ -112,7 +112,7 @@ if [ "$flashgot_status" != "1" ]
        exit
 fi 
            
-for terminal in $TERMINAL x-terminal-emulator konsole urxvt rxvt terminator Eterm aterm gnome-terminal roxterm xfce4-terminal termite lxterminal xterm ; do
+for terminal in $TERMINAL x-terminal-emulator gnome-terminal xfce4-terminal lxterminal konsole mate-terminal urxvt rxvt terminator Eterm aterm roxterm termite xterm ; do
     if command -v $terminal > /dev/null 2>&1; then
         break
     fi
