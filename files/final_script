@@ -537,6 +537,7 @@ while read -r line
 	       break
 	fi   
 	echo "3"> $temp_path/"s$pdm_num".txt
+	echo "0"> $temp_path/"f$pdm_num".txt
 	download_single
 	sleep 1
 done < "$my_file"
