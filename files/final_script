@@ -346,7 +346,7 @@ while [ "$aria_ready" = "0" ] && [ "$download_flag" = "3" ] && [ "$check_con_exi
      
      check_con_size_type=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1| awk -F/ '{ print $2 }'|awk -F"(" '{ print $1 }' | tail -c 4)
      a=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1 | awk -F/ '{ print $2 }'|awk -F"(" '{ print $1 }' )
-     b=`expr length $a`
+     b=${#a}
      c=$((b - 3))
      check_con_size=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1| awk -F/ '{ print $2 }'|awk -F"(" '{ print $1 }' | head -c $c)
      check_con_percent=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1|awk -F/ '{ print $2 }' | awk -F"(" '{ print $2 }' | awk -F")" '{ print $1 }'|awk -F"%" '{ print $1 }')        
