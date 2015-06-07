@@ -332,13 +332,13 @@ while [ "$aria_ready" = "0" ] && [ "$download_flag" = "3" ] && [ "$check_con_exi
      		date_hour=`date +%H`
      		date_minute=`date +%M`
      		date_hour_60=$(( date_hour * 60 ))
-     		sum_date=` expr $date_hour_60 + $date_minute `
+     		sum_date=$((date_hour_60 + date_minute)) 
      		end_time_hour_60=$(( end_time_hour * 60 ))
-     		sum_end=` expr $end_time_hour_60 + $end_time_minute - $sum_date `
+     		sum_end=$((end_time_hour_60 + end_time_minute - sum_date))
      	   
      		if [ "$sum_end" -lt "0" ]
      		    then
-     		        sum_end=` expr $sum_end  + 1440 `
+     		        sum_end=$((sum_end  + 1440 ))
      		fi
         else
             sum_end="6"
@@ -347,10 +347,10 @@ while [ "$aria_ready" = "0" ] && [ "$download_flag" = "3" ] && [ "$check_con_exi
      check_con_size_type=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1| awk -F/ '{ print $2 }'|awk -F"(" '{ print $1 }' | tail -c 4)
      a=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1 | awk -F/ '{ print $2 }'|awk -F"(" '{ print $1 }' )
      b=`expr length $a`
-     c=`expr $b - 3`  
+     c=$((b - 3))
      check_con_size=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1| awk -F/ '{ print $2 }'|awk -F"(" '{ print $1 }' | head -c $c)
      check_con_percent=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1|awk -F/ '{ print $2 }' | awk -F"(" '{ print $2 }' | awk -F")" '{ print $1 }'|awk -F"%" '{ print $1 }')        
-     check_con_percent_res=`expr 100 - $check_con_percent `
+     check_con_percent_res=$((100 - check_con_percent))
      case "$check_con_size_type" in
          "GiB")
           check_con_size_mb=`echo "scale=0;$check_con_size * 1024 * $check_con_percent_res / 100"| bc`  
@@ -711,7 +711,7 @@ if [ ! -f $temp_path/pdm_number.txt ]
        then
            pdm_num=0
     fi       
-    pdm_num=`expr $pdm_num + 1`
+    pdm_num=$((pdm_num + 1))
     echo "$pdm_num"> $temp_path/pdm_number.txt
 fi
 
