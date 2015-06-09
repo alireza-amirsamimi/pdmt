@@ -720,7 +720,15 @@ if [ "$first_char" = "~/" ]
     then
         remove_char_folder=`echo "${download_folder_config#*~}"`
         download_folder_config="$user$remove_char_folder"
-fi        
+fi   
+ls $download_folder_config &> /dev/null
+if [ "$?" != "0" ]
+        then
+            echo " Directory not exist! : $download_folder_config"
+            echo " Download file will save as $download_folder"
+	else
+	    download_folder=$download_folder_config
+fi     
 tput cup 6 0
 #inputs
 while getopts "l:i:p:u:a:j:k:s:e:m:r:o:d:w:f:hvc" options ; do
