@@ -1,5 +1,5 @@
 #!/bin/bash
-#PerisanDM Terminal (PDMT) written by AliReza AmirSamimi(alireza.amirsamimi@ubuntu.ir) and It is based on aria2
+#Perspolis Download Manager Terminal (PDMT) written by AliReza AmirSamimi(alireza.amirsamimi@ubuntu.ir) and It is based on aria2
 #s=download status r=aria ready p=aria pid e=end status d=downloaded f=fail_counter l=download_link qf=queue failed links
 #0=aria ready 1=aria not ready
 #download_flag 0=completed 1=paused 2=failed 3=download 4=reconnecting
@@ -635,7 +635,7 @@ func_after
 logo () {
 echo -e "$logo_color#########################################     "
 echo "#########################################     "
-echo "### Persian Download Manager Terminal ###     "
+echo "## Perspolis Download Manager Terminal ##     "
 echo "############  (PDMT)  ###################     "
 echo "#########################################     "
 echo "                                              "
