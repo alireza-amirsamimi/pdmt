@@ -31,6 +31,10 @@ chmod +x $program_path/pdmt
 chmod +x $program_path/final_script
 chmod +x $program_path/pdmt_flashgot
 chmod +x $program_path/pdmt_flashgot_gtk
+if [ ! -f ~/.Xresources ];then
+cp -R -f ~/.persian_download_manager_terminal/Xresources  ~/.Xresources 
+xrdb -merge ~/.Xresources
+fi		  
 echo "sudo  mv -f $program_path/pdmt /usr/bin"
 sudo  mv -f $program_path/pdmt /usr/bin
 if [ "$?" -eq "0" ]

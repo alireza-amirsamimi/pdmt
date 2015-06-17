@@ -1,6 +1,6 @@
-PDMT(Persian Download Manager Terminal)
+PDMT(Perspolis Download Manager Terminal)
 =============
-+ version : 1.13.2
++ version : 1.14
 + PDMT is a download manager which is written in bash language and it is based on aria2 and improves aria2.
 
 ### Before running install file make sure that all dependencies are installed on your system!
@@ -9,17 +9,17 @@ For using flashgot plugin on firefox , you must install `xterm` , `zenity`
 
 ## Dependencies for Ubuntu
 
-    $ sudo apt-get install aria2 pm-utils wget bc vorbis-tools
+    $ sudo apt-get install aria2 pm-utils wget bc vorbis-tools xdg-utils
     $ sudo apt-get install xterm zenity
     
 ## Dependencies for Fedora
 
-    $ sudo yum install aria2 pm-utils wget bc vorbis-tools
+    $ sudo yum install aria2 pm-utils wget bc vorbis-tools xdg-utils
     $ sudo yum install xterm zenity
 
 ## Dependencies for Archlinux
 
-    $ sudo pacman -S aria2 pm-utils wget bc vorbis-tools
+    $ sudo pacman -S aria2 pm-utils wget bc vorbis-tools xdg-utils
     $ sudo pacman -S xterm zenity
     
 After installing dependencies, change your directory with cd command and run install file
@@ -49,6 +49,10 @@ for uninstall PersianDM,
 
 + PDMT can shutdown or suspend or hibernate system  after download 
 
++ If download failed by aria2,PDMT retries to download failed links
+
++ Compatible with Firefox flashgot
+
 and ...
 
 + Tested on Ubuntu 14.04 , Fedora 21 , Archlinux 
@@ -63,3 +67,6 @@ http://amirsamimi.mihanblog.com
 
 My email adress:
 alireza.amirsamimi@ubuntu.ir
+
+## Read more about PERSPOLIS
+https://en.wikipedia.org/wiki/Persepolis

@@ -43,7 +43,8 @@ PDMT HELP
         download size is bigger than 100 MB. 
 
 -o	Aria2 options
-        you can write aria2 options after o
+        you can write aria2 options after o,for example:
+        pdmt -l "https://www.google.com/images/srpr/logo11w.png" -o --max-download-limit=10k
         
         
 -d	After download PDMT can shutdown , hibernate , suspend computer.

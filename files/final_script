@@ -1,6 +1,6 @@
 #!/bin/bash
 #PerisanDM Terminal (PDMT) written by AliReza AmirSamimi(alireza.amirsamimi@ubuntu.ir) and It is based on aria2
-#s=download status r=aria ready p=aria pid e=end status d=downloaded f=fail_counter l=download_link
+#s=download status r=aria ready p=aria pid e=end status d=downloaded f=fail_counter l=download_link qf=queue failed links
 #0=aria ready 1=aria not ready
 #download_flag 0=completed 1=paused 2=failed 3=download 4=reconnecting
 #end_status 0=not end yet 1=time is up 2=download completed or canceled or...
@@ -17,6 +17,7 @@ rm -v $temp_path/"d$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/aria_ready_file >/dev/null 2>&1
 rm -v $temp_path/"f$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"l$pdm_num".txt >/dev/null 2>&1
+rm -v $temp_path/"qf$pdm_num".txt >/dev/null 2>&1
 echo -e "$text_color0 Finish!"
 echo -e "$normal_color   "
 tput cnorm   -- normal
@@ -92,19 +93,50 @@ fail_reconnecting (){
 fail_counter=$(cat $temp_path/"f$pdm_num".txt 2> /dev/null)
 if [ "$fail_counter" = "" ]
         then
- 	    echo "1" > $temp_path/"f$pdm_num".txt
-       	    fail_counter="1"
+ 	    echo "0" > $temp_path/"f$pdm_num".txt
+       	    fail_counter="0"
         else
      	    fail_counter=$((fail_counter + 1))
 	    echo "$fail_counter" > $temp_path/"f$pdm_num".txt
 	    
 fi
-if [ "$fail_counter" = "$remove_char_retry" ]
+if [ "$fail_counter" = "$retryf_config" ]
 	then
 	    echo "2"> $temp_path/"s$pdm_num".txt
 	else
-	    echo "4"> $temp_path/"s$pdm_num".txt
-	    echo " Download Failed!reconnecting... .be patient!"
+	    ifail="0"
+	    until ping -c 1 -w 5 www.google.com >/dev/null 2>&1 || [ "$ifail" = "$retryd_config" ]
+		do
+		    clear
+		    logo
+		    echo -e "$text_color Check your internet connection!! \n$progress_color PDMT will retry after $delay_config seconds"
+		    if [ "$sound_config" = "yes" ]
+			  then
+	     			 ogg123 -q $notifications_path/connection.ogg
+     		    fi
+		    echo "#################"|cat >> $download_folder/report
+     		    date|cat >> $download_folder/report
+     		    echo "$download_link"|cat >> $download_folder/report
+     		    echo "Internet connection droped!Check your internet connection!" >> $download_folder/report
+     		    echo "#################"|cat >> $download_folder/report
+		    sleep $delay_config
+		    ((ifail ++))
+	    done
+	    sleep 10
+	    end_status=$(cat $temp_path/"e$pdm_num".txt 2> /dev/null)
+	    if [ "$end_status" != "1" ]
+     		then
+	    	    echo "4"> $temp_path/"s$pdm_num".txt
+	    	    echo " Download Failed!reconnecting... .be patient!"
+	    	    echo "#################"|cat >> $download_folder/report
+     		    date|cat >> $download_folder/report
+     		    echo "$download_link"|cat >> $download_folder/report
+	            echo "Download Failed!" | cat >> $download_folder/report
+     		    echo "#################"|cat >> $download_folder/report
+
+	        else
+	            echo "2"> $temp_path/"s$pdm_num".txt    
+	    fi        
 fi           
 }
 download_func () {
@@ -274,7 +306,7 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    echo -e "$text_color Link : $progress_color$download_link   "
    echo -e "$text_color Save as : $progress_color$file_name   "  
    echo -e "$text_color Downloaded : $progress_color$progress_title_percent    "
-   echo -e "$text_color $progress_title_percent$progress_color Downloaded " > $temp_path/"d$pdm_num".txt
+   echo -e "$progress_title_percent Downloaded " > $temp_path/"d$pdm_num".txt
    echo -e "$text_color Transfer rate : $progress_color$progress_title_rate    "
    echo -e "$text_color Estimate time left : $progress_color$progress_title_estimate    "
    echo -e "$text_color Number of connections : $progress_color$progress_title_connections     "
@@ -430,7 +462,10 @@ case $download_flag in
      echo " Download Compelete!Please Wait..."
      if [ "$my_file" = "" ]
      	then
-     	    xdg-open $download_folder >/dev/null 2>&1
+     	    if [ "$open_config" = "yes" ]
+		  then
+	     	      xdg-open $download_folder >/dev/null 2>&1
+     	    fi   
      fi	    
      if [ "$sound_config" = "yes" ]
 	  then
@@ -473,7 +508,7 @@ case $download_flag in
      if [ "$sound_config" = "yes" ]
 	  then
 	      ogg123 -q $notifications_path/fail.ogg
-     fi	   
+     fi   
      echo "#################"|cat >> $download_folder/report
      date|cat >> $download_folder/report
      echo "$download_link"|cat >> $download_folder/report
@@ -527,26 +562,48 @@ stop
 
 
 download_queue () {
-while read -r line
-	do
-	download_link=$line
-	echo "$download_link" > $temp_path/"l$pdm_num".txt 
-	download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-	if [ "$download_link" = "" ] || [ "$download_flag" = "1" ]
-	   then
-	       break
-	fi   
-	echo "3"> $temp_path/"s$pdm_num".txt
-	echo "0"> $temp_path/"f$pdm_num".txt
-	download_single
-	sleep 1
-done < "$my_file"
-
+for iq in `seq 1 $queue_config`
+      do
+	qi=1
+	while read -r line
+		do
+		download_link=$line
+		echo "$download_link" > $temp_path/"l$pdm_num".txt 
+		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
+		if [ "$download_link" = "" ] || [ "$download_flag" = "1" ]
+		   then
+		       break
+		fi  
+		echo "3"> $temp_path/"s$pdm_num".txt
+		echo "0"> $temp_path/"f$pdm_num".txt
+		download_single
+		if [ "$download_flag" = "2" ]
+			then
+			    if [ "$qi" = "1" ]
+			    	then
+			    	    echo "$download_link" > $temp_path/"qf$pdm_num".txt 2> /dev/null
+			    	else
+			    	    echo "$download_link" >> $temp_path/"qf$pdm_num".txt 2> /dev/null
+			    fi	    
+		fi	    
+		sleep 1
+		((qi++))
+	done < "$my_file"
+	if [ ! $(cat $temp_path/"qf$pdm_num".txt 2> /dev/null) ]
+	  	then
+	  	    break
+	fi
+	my_file=$temp_path/"qf$pdm_num".txt
+	sleep 5
+done
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 if [ "$download_flag" != "1" ]
   	then
-  	    echo " Queue Compelete" 
-  	    xdg-open $download_folder >/dev/null 2>&1
+  	    echo " Queue Compelete"
+  	    if [ "$open_config" = "yes" ]
+		  then
+			 xdg-open $download_folder >/dev/null 2>&1
+     	    fi 
 	    if [ "$sound_config" = "yes" ]
 	         then
 	             ogg123 -q $notifications_path/queue.ogg
@@ -584,14 +641,16 @@ echo "#########################################     "
 echo "                                              "
 }
 
-config()
+config ()
 {
 echo "PDMT Configuration"
-echo "if you dont want any changes, leave the questions empty and press enter!"
-echo "Do you want colorful output?(yes/no)"
+echo "if you don't want any changes, leave the questions empty and press enter!"
+echo -e "$progress_color\nDo you want colorful output?(yes/no)"
 read color_input
 echo "Do you want notification sound?(yes/no)"
 read sound_input
+echo "Do you want download folder to open after download?"
+read open_input
 echo "Please enter download directory?(for example ~/Downloads)"
 read download_folder_input
 if [ "$download_folder_input" = "" ]
@@ -604,20 +663,26 @@ if [ "$first_char_input" = "~/" ]
             remove_char_folder_input=`echo "${download_folder_input#*~}"`
             download_folder_input="$user$remove_char_folder_input"
 fi     	
-ls $download_folder_input &> /dev/null
-if [ "$?" != "0" ]
+
+if [ ! -d "$download_folder_input" ]
         then
             echo " Directory not exist! : $download_folder_input"
             download_folder_input=$download_folder
             echo " Download file will save as $download_folder"
 fi          
-echo "Please enter number of retry if download failed"
-read retry_input
+echo "Please enter number of retries if download failed"
+read retryf_input
+echo "Please enter number of retries if internet connection droped "
+read retryd_input
+echo "Please enter delay(in second) between retries if connection droped "
+read delay_input
+echo -e "Failed links in queue rechecked by PDMT\nand PDMT tries to download them again!\nPlease enter number of rechecking time!"
+read queue_input
 echo "Do you want restore default(yes/no)"
 read default_input
 if [ "$default_input" = "yes" ] || [ "$default_input" = "y" ]
 	then
- 	        echo -e "PDMT config file\ncolor=yes\nsound=yes\ndownload folder path=~/Downloads/PersianDM\nnumber of retry=10" > ~/.persian_download_manager_terminal/config
+ 	        echo -e "PDMT config file\ncolor=yes\nsound=yes\nopen=yes\nfolder=~/Downloads/PersianDM\nretryf=10\nretryd=10\ndelay=60\nqueue=5" > ~/.persian_download_manager_terminal/config
 	else
 		if [ "$color_input" = "" ]
 			then
@@ -638,23 +703,60 @@ if [ "$default_input" = "yes" ] || [ "$default_input" = "y" ]
 			elif [ "$sound_input" = "n" ]
 				then
 				    sound_input="no"    
-		fi	        
-		if [ "$retry_input" = "" ]
-			then
-			    retry_input="$remove_char_retry"
-			elif [ "$retry_input" = "y" ]
-				then
-				    retry_input="yes"
-			elif [ "$retry_input" = "n" ]
-				then
-				    retry_input="no"    
 		fi
-		retry_input_test=$((retry_input + 1))
-		if [ "$retry_input_test" = "1" ] && [ "$retry_input" != "1" ]
+		
+		if [ "$open_input" = "" ]
 			then
-			    retry_input="10"
-		fi	     
- 	        echo -e "PDMT config file\ncolor=$color_input\nsound=$sound_input\ndownload folder path=$download_folder_input\nnumber of retry=$retry_input" > ~/.persian_download_manager_terminal/config		
+			    open_input="$open_config"
+			elif [ "$open_input" = "y" ]
+				then
+				    open_input="yes"
+			elif [ "$open_input" = "n" ]
+				then
+				    open_input="no"    
+		fi
+			        
+		if [ "$retryd_input" = "" ]
+			then
+			    retryd_input="$retryd_config"    
+		fi
+		retryd_input_test=$((retryd_input + 1))
+		if [ "$retryd_input_test" = "1" ] && [ "$retryd_input" != "1" ]
+			then
+			    retryd_input="10"
+		fi
+		
+		if [ "$retryf_input" = "" ]
+			then
+			    retryf_input="$retryf_config"    
+		fi
+		retryf_input_test=$((retryf_input + 1))
+		if [ "$retryf_input_test" = "1" ] && [ "$retryf_input" != "1" ]
+			then
+			    retryf_input="10"
+		fi
+		
+		if [ "$delay_input" = "" ]
+			then
+			    delay_input="$delay_config"    
+		fi
+		delay_input_test=$((delay_input + 1))
+		if [ "$delay_input_test" = "1" ] && [ "$delay_input" != "1" ]
+			then
+			    delay_input="60"
+		fi
+		
+		if [ "$queue_input" = "" ]
+			then
+			    queue_input="$queue_config"    
+		fi
+		queue_input_test=$((queue_input + 1))
+		if [ "$queue_input_test" = "1" ] && [ "$queue_input" != "1" ]
+			then
+			    queue_input="5"
+		fi
+			     
+ 	        echo -e "PDMT config file\ncolor=$color_input\nsound=$sound_input\nopen=$open_input\nfolder=$download_folder_input\nretryf=$retryf_input\nretryd=$retryd_input\ndelay=$delay_input\nqueue=$queue_input" > ~/.persian_download_manager_terminal/config		
 fi	    		    
 }       
 
@@ -664,16 +766,18 @@ tput civis      -- invisible
 tput rmam
 trap finish exit
 trap ctrl_c 2
-ls ~/.persian_download_manager_terminal/config &> /dev/null
-if [ "$?" != "0" ]
+if [ ! -f ~/.persian_download_manager_terminal/config ]
 	then 
-	    echo -e "PDMT config file\ncolor=yes\nsound=yes\ndownload folder path=~/Downloads/PersianDM\nnumber of retry=10" > ~/.persian_download_manager_terminal/config
+		echo -e "PDMT config file\ncolor=yes\nsound=yes\nopen=yes\nfolder=~/Downloads/PersianDM\nretryf=10\nretryd=10\ndelay=60\nqueue=5" > ~/.persian_download_manager_terminal/config
 fi	    
 color_config=$(cat ~/.persian_download_manager_terminal/config 2> /dev/null|awk '/color/ {print $0 }'|awk -F "=" '{print $2}')
 sound_config=$(cat ~/.persian_download_manager_terminal/config 2> /dev/null|awk '/sound/ {print $0 }'|awk -F "=" '{print $2}')
-download_folder_config=$(cat ~/.persian_download_manager_terminal/config 2> /dev/null|awk '/download/ {print $0 }'|awk -F "=" '{print $2}')
-retry_config==$(cat ~/.persian_download_manager_terminal/config 2> /dev/null|awk '/retry/ {print $0 }'|awk -F "=" '{print $2}')
-remove_char_retry=`echo "${retry_config#*=}"`
+download_folder_config=$(cat ~/.persian_download_manager_terminal/config 2> /dev/null|awk '/folder/ {print $0 }'|awk -F "=" '{print $2}')
+retryf_config=$(cat ~/.persian_download_manager_terminal/config 2> /dev/null|awk '/retryf/ {print $0 }'|awk -F "=" '{print $2}')
+retryd_config=$(cat ~/.persian_download_manager_terminal/config 2> /dev/null|awk '/retryd/ {print $0 }'|awk -F "=" '{print $2}')
+delay_config=$(cat ~/.persian_download_manager_terminal/config 2> /dev/null|awk '/delay/ {print $0 }'|awk -F "=" '{print $2}')
+open_config=$(cat ~/.persian_download_manager_terminal/config 2> /dev/null|awk '/open/ {print $0 }'|awk -F "=" '{print $2}')
+queue_config=$(cat ~/.persian_download_manager_terminal/config 2> /dev/null|awk '/queue/ {print $0 }'|awk -F "=" '{print $2}')
 normal_color="\E[33;00m"
 if [ "$color_config" = "yes" ]
     then
@@ -687,9 +791,9 @@ if [ "$color_config" = "yes" ]
 	text_color0=$normal_color
 	progress_color=$normal_color
 fi
-if [ "$remove_char_retry" = "" ]
+if [ "$retryf_config" = "" ]
 	then
-	    remove_char_retry="10"
+	    retryf_config="10"
 fi
 	                
 logo
@@ -720,15 +824,16 @@ if [ "$first_char" = "~/" ]
     then
         remove_char_folder=`echo "${download_folder_config#*~}"`
         download_folder_config="$user$remove_char_folder"
-fi   
-ls $download_folder_config &> /dev/null
-if [ "$?" != "0" ]
+fi  
+
+if [ ! -d "$download_folder_config" ]
         then
             echo " Directory not exist! : $download_folder_config"
             echo " Download file will save as $download_folder"
 	else
 	    download_folder=$download_folder_config
-fi     
+fi          
+      
 tput cup 6 0
 #inputs
 while getopts "l:i:p:u:a:j:k:s:e:m:r:o:d:w:f:hvc" options ; do
@@ -947,7 +1052,7 @@ if [ "$max_num_connections" = "" ]
 fi
 
 
-#download process code
+#main code
 echo "#!/bin/bash" >$temp_path/aria_ready_file
 echo "echo "0"|cat > $temp_path/"r$pdm_num".txt" >> $temp_path/aria_ready_file
 echo "echo "3"|cat >$temp_path/"s$pdm_num".txt" >> $temp_path/aria_ready_file
