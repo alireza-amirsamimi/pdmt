@@ -29,7 +29,6 @@ echo "cp -R -f $install_path/files/* $program_path"
 cp -R -f $install_path/files/* $program_path
 chmod +x $program_path/pdmt
 chmod +x $program_path/final_script
-chmod +x $program_path/pdmt_flashgot
 chmod +x $program_path/pdmt_flashgot_gtk
 if [ ! -f ~/.Xresources ];then
 cp -R -f ~/.persian_download_manager_terminal/Xresources  ~/.Xresources 
