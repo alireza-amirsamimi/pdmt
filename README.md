@@ -58,7 +58,7 @@ for uninstall PersianDM,
 and ...
 
 + Tested on Ubuntu 14.04 , Fedora 21 , Archlinux 
-+ You can see the Screenshots of PDMT at http://amirsamimi.mihanblog.com/post/22
++ You can see the Screenshots of PDMT at http://amirsamimi.mihanblog.com/post/25
 
 ## Contact me
 Me on twiter:
