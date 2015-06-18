@@ -127,9 +127,16 @@ case "$flashgot_line" in
 			  $terminal -e pdmt -f $temp_path/flashgot_queue.txt -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -r "$reconnecting_ability" -d "$do_after_download" -w "$password_input" 
 			;;
 esac			
-if [ "$?" != "0" ]
+if [ "$?" != "0" ] && [ "$?" != "255" ]
     then
-        xterm -e pdmt -f $temp_path/flashgot_queue.txt -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -r "$reconnecting_ability" -d "$do_after_download" -w "$password_input" 
-fi
-        
+	case "$flashgot_line" in
+			1)
+			  xterm -e pdmt -l "$link" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -r "$reconnecting_ability" -d "$do_after_download" -w "$password_input" 
+			;;
+			*)  
+			  xterm -e pdmt -f $temp_path/flashgot_queue.txt -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -r "$reconnecting_ability" -d "$do_after_download" -w "$password_input" 
+			;;
+	esac			
+    	
+fi        
 exit       
