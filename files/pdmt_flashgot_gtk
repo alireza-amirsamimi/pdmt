@@ -6,7 +6,7 @@ temp_path="$user/.persian_download_manager_terminal/temp"
 mkdir $temp_path       >/dev/null 2>&1
 flashgot_function() {
 
-download_info=`zenity --forms  --text="Enter Download options \n (If you don't use any option,leave the field empty!)" --title="PDMT" --add-entry="Proxy IP(Host):"  --add-entry="Proxy Port:" --add-entry="Proxy UserName:" --add-password="Proxy PassWord:" --add-entry="Download UserName:" --add-password="Download PassWord:"  --add-entry="Start Time(24 hour format):" --add-entry="End Time(24 hour format):" --add-entry="Reconnecting(yes/no) , default is no"  --add-list="What does PDMT do after Download?" --list-values="nothing|shutdown|hibernate|suspend"`
+download_info=`zenity --forms  --text="Enter Download options \n (If you don't use any options,leave the field empty!)" --title="PDMT" --add-entry="Proxy IP(Host):"  --add-entry="Proxy Port:" --add-entry="Proxy UserName:" --add-password="Proxy PassWord:" --add-entry="Download UserName:" --add-password="Download PassWord:"  --add-entry="Start Time(24 hour format):" --add-entry="End Time(24 hour format):" --add-entry="Reconnecting(yes/no) , default is no"  --add-list="What does PDMT do after Download?" --list-values="nothing|shutdown|hibernate|suspend"`
 if [ $? -eq 1 ]
    then
        exit
