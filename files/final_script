@@ -649,7 +649,7 @@ echo -e "$progress_color\nDo you want colorful output?(yes/no)"
 read color_input
 echo "Do you want notification sound?(yes/no)"
 read sound_input
-echo "do you want download directory to open after the download has been finished?"
+echo "do you want to open containing folder after download has been finished?"
 read open_input
 echo "Please enter download directory?(for example ~/Downloads)"
 read download_folder_input
