@@ -5,21 +5,7 @@ echo "############################################################"
 echo "############# Welcome to PDMT installation #################"
 echo "############################################################"
 
-home_env=$(env | grep -e HOME )
-home_env_num=$(echo "$home_env" | grep ^ | wc -l)
-for iiiii in `seq 1 $home_env_num`;
-	do
-          home_env_line=$(echo "$home_env" | grep -e HOME | awk -F= '{ print $1 }'| head -$iiiii)
-          if [ "$home_env_line" = "HOME" ]
-              then
-                user=$(echo "$home_env"| grep -e HOME |  awk -F= '{ print $2 }' | head -$iiiii | grep -e /home)
-          fi           
-done
-if [ "$user" = "" ]
-   then
-       echo "Installation Failed!can not find home folder"
-       exit
-fi       
+user=$HOME
       
 program_path="$user/.persian_download_manager_terminal"
 install_path=`pwd`
