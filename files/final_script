@@ -499,6 +499,7 @@ case $download_flag in
                 date|cat >> $download_folder/report
                 echo "$download_link"|cat >> $download_folder/report
                 echo "Queue Paused"|cat >> $download_folder/report
+                cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
                 echo "#################"|cat >> $download_folder/report
      fi           
      ;;
