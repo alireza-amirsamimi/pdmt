@@ -314,9 +314,11 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    progress_bar
    echo -e "$text_color0 \n \n Press CTRL+C for STOP downloading   "
    line_number1=`tput lines`
+   cols_number1=`tput cols`
    sleep 2.2
    line_number2=`tput lines`
-   if [ "$line_number1" -ne "$line_number2" ]
+   cols_number2=`tput cols`
+   if [ "$line_number1" -ne "$line_number2" ] || [ "$cols_number1" -ne "$cols_number2" ] 
         then
             clear
    fi       
