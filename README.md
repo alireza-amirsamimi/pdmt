@@ -1,4 +1,4 @@
-PDMT(Perspolis Download Manager Terminal)
+PDMT(Persepolis Download Manager Terminal)
 =============
 + version : 1.14.1
 + PDMT is a download manager which is written in bash language and it is based on aria2 and improves aria2.
@@ -70,5 +70,5 @@ http://amirsamimi.mihanblog.com
 My email adress:
 alireza.amirsamimi@ubuntu.ir
 
-## Read more about PERSPOLIS
+## Read more about PERSEPOLIS
 https://en.wikipedia.org/wiki/Persepolis
