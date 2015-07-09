@@ -1073,10 +1073,10 @@ if [ "" != "$start_time" ] && [ "$var1" != "$start_time" ]
       done
       
       
-      echo "#################"|cat >> $user/Downloads/PersianDM/report
-      date|cat >> $user/Downloads/PersianDM/report
-      echo "download process starting now"|cat >> $user/Downloads/PersianDM/report
-      echo "#################"|cat >> $user/Downloads/PersianDM/report
+      echo "#################"|cat >> $download_folder/report
+      date|cat >> $download_folder/report
+      echo "download process starting now"|cat >> $download_folder/report
+      echo "#################"|cat >> $download_folder/report
       
 fi
 echo " Please Wait..."
@@ -1099,10 +1099,10 @@ if [ "" != "$end_time" ]
                        aria2_pid=$(cat $temp_path/"p$pdm_num".txt 2> /dev/null) 
 		       kill $aria2_pid 2> /dev/null
 		       echo " Time is UP!"
-		       echo "#################"|cat >> $user/Downloads/PersianDM/report
-		       date|cat >> $user/Downloads/PersianDM/report
-		       echo "Time is UP!" >> $user/Downloads/PersianDM/report
-		       echo "#################"|cat >> $user/Downloads/PersianDM/report
+		       echo "#################"|cat >> $download_folder/report
+		       date|cat >> $download_folder/report
+		       echo "Time is UP!" >> $download_folder/report
+		       echo "#################"|cat >> $download_folder/report
 		   else
 		       exit
 		fi   
