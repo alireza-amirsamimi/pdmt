@@ -803,7 +803,6 @@ user=$HOME
 notifications_path="$user/.persian_download_manager_terminal/notifications"
 download_folder="$user/Downloads/PersianDM"
 temp_path="$user/.persian_download_manager_terminal/temp"
-mkdir $download_folder >/dev/null 2>&1
 mkdir $temp_path       >/dev/null 2>&1
 if [ ! -f $temp_path/pdm_number.txt ]
     then
@@ -833,6 +832,7 @@ if [ ! -d "$download_folder_config" ]
 	else
 	    download_folder=$download_folder_config
 fi          
+mkdir $download_folder >/dev/null 2>&1
       
 tput cup 6 0
 #inputs
