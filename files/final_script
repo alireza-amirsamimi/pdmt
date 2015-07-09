@@ -829,6 +829,7 @@ if [ ! -d "$download_folder_config" ]
         then
             echo " Directory not exist! : $download_folder_config"
             echo " Download file will save as $download_folder"
+            sleep 2
 	else
 	    download_folder=$download_folder_config
 fi          
