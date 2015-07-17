@@ -323,9 +323,11 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
         then
             clear
    fi
-   if [ "$log_counter" -gt "10" ]
+   if [ "$log_counter" -gt "10" ] && [ "$log_config" = "yes" ]
    	then
-   	    echo "$progress_title" >> $download_folder/log 
+   	    echo "$progress_title" >> $download_folder/log
+   	    log_counter=0
+   	     
    fi	    
    	           
    download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
