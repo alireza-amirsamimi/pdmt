@@ -316,12 +316,18 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    line_number1=`tput lines`
    cols_number1=`tput cols`
    sleep 2.2
+   log_counter=$((log_counter + 1))
    line_number2=`tput lines`
    cols_number2=`tput cols`
    if [ "$line_number1" -ne "$line_number2" ] || [ "$cols_number1" -ne "$cols_number2" ] 
         then
             clear
-   fi       
+   fi
+   if [ "$log_counter" -gt "10" ]
+   	then
+   	    echo "$progress_title" >> $download_folder/log 
+   fi	    
+   	           
    download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
    aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
 done
@@ -650,6 +656,9 @@ echo "PDMT Configuration"
 echo "if you don't want any changes, leave the questions empty and press enter!"
 echo -e "$progress_color\nDo you want colorful output?(yes/no)"
 read color_input
+echo "The log file contains summary of download progress & updated every 22 seconds."
+echo "Do you want log file(yes/no)"
+read log_input
 echo "Do you want notification sound?(yes/no)"
 read sound_input
 echo "do you want to open containing folder after download has been finished?"
@@ -685,7 +694,7 @@ echo "Do you want restore default(yes/no)"
 read default_input
 if [ "$default_input" = "yes" ] || [ "$default_input" = "y" ]
 	then
- 	        echo -e "PDMT config file\ncolor=yes\nsound=yes\nopen=yes\nfolder=~/Downloads/PersianDM\nretryf=10\nretryd=10\ndelay=60\nqueue=5" > ~/.persian_download_manager_terminal/config
+ 	        echo -e "PDMT config file\ncolor=yes\nsound=yes\nopen=yes\nfolder=~/Downloads/PersianDM\nretryf=10\nretryd=10\ndelay=60\nqueue=5\nlog=no" > ~/.persian_download_manager_terminal/config
 	else
 		if [ "$color_input" = "" ]
 			then
@@ -696,7 +705,17 @@ if [ "$default_input" = "yes" ] || [ "$default_input" = "y" ]
 			elif [ "$color_input" = "n" ]
 				then
 				    color_input="no"
-	        fi	        
+	        fi
+	        if [ "$log_input" = "" ]
+			then
+			    log_input="$log_config"
+			elif [ "$log_input" = "y" ]
+				then
+				    log_input="yes"
+			elif [ "$log_input" = "n" ]
+				then
+				    log_input="no"
+	        fi		        
 		if [ "$sound_input" = "" ]
 			then
 			    sound_input="$sound_config"
@@ -759,7 +778,7 @@ if [ "$default_input" = "yes" ] || [ "$default_input" = "y" ]
 			    queue_input="5"
 		fi
 			     
- 	        echo -e "PDMT config file\ncolor=$color_input\nsound=$sound_input\nopen=$open_input\nfolder=$download_folder_input\nretryf=$retryf_input\nretryd=$retryd_input\ndelay=$delay_input\nqueue=$queue_input" > ~/.persian_download_manager_terminal/config		
+ 	        echo -e "PDMT config file\ncolor=$color_input\nsound=$sound_input\nopen=$open_input\nfolder=$download_folder_input\nretryf=$retryf_input\nretryd=$retryd_input\ndelay=$delay_input\nqueue=$queue_input\nlog=$log_input" > ~/.persian_download_manager_terminal/config		
 fi	    		    
 }       
 
@@ -771,7 +790,7 @@ trap finish exit
 trap ctrl_c 2
 if [ ! -f ~/.persian_download_manager_terminal/config ]
 	then 
-		echo -e "PDMT config file\ncolor=yes\nsound=yes\nopen=yes\nfolder=~/Downloads/PersianDM\nretryf=10\nretryd=10\ndelay=60\nqueue=5" > ~/.persian_download_manager_terminal/config
+		echo -e "PDMT config file\ncolor=yes\nsound=yes\nopen=yes\nfolder=~/Downloads/PersianDM\nretryf=10\nretryd=10\ndelay=60\nqueue=5\nlog=no" > ~/.persian_download_manager_terminal/config
 fi	    
 color_config=$(cat ~/.persian_download_manager_terminal/config 2> /dev/null|awk '/color/ {print $0 }'|awk -F "=" '{print $2}')
 sound_config=$(cat ~/.persian_download_manager_terminal/config 2> /dev/null|awk '/sound/ {print $0 }'|awk -F "=" '{print $2}')
@@ -781,6 +800,7 @@ retryd_config=$(cat ~/.persian_download_manager_terminal/config 2> /dev/null|awk
 delay_config=$(cat ~/.persian_download_manager_terminal/config 2> /dev/null|awk '/delay/ {print $0 }'|awk -F "=" '{print $2}')
 open_config=$(cat ~/.persian_download_manager_terminal/config 2> /dev/null|awk '/open/ {print $0 }'|awk -F "=" '{print $2}')
 queue_config=$(cat ~/.persian_download_manager_terminal/config 2> /dev/null|awk '/queue/ {print $0 }'|awk -F "=" '{print $2}')
+log_config=$(cat ~/.persian_download_manager_terminal/config 2> /dev/null|awk '/log/ {print $0 }'|awk -F "=" '{print $2}')
 normal_color="\E[33;00m"
 if [ "$color_config" = "yes" ]
     then
