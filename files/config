@@ -1,9 +1,10 @@
 PDMT config file
 color=yes
 sound=yes
-open=yes
+open=no
 folder=~/Downloads/PersianDM
 retryf=10
 retryd=10
 delay=60
 queue=5
+log=no
