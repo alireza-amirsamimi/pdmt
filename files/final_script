@@ -51,6 +51,7 @@ if [ "$aria_ready" != "0" ]
          		date|cat >> $download_folder/report
          		echo "$download_link"|cat >> $download_folder/report
          		echo "Queue Canceled by user!"|cat >> $download_folder/report
+         		cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
          		echo "#################"|cat >> $download_folder/report  
      	    fi
 	         
