@@ -326,8 +326,17 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    fi
    if [ "$log_counter" -gt "10" ] && [ "$log_config" = "yes" ]
    	then
-   	    echo "$progress_title" >> $download_folder/log
-   	    log_counter=0
+   		log_counter_link=$((log_counter_link + 1))
+   		if [ "$log_counter_link" -eq "1" ]
+   	    		then
+   	    			echo "$download_link" >> $download_folder/log
+   	    	fi
+   	        if [ "$log_counter_link" -gt "10" ]
+   	    	    then
+   	    		    log_counter_link=0
+   	        fi
+   	        echo "$progress_title" >> $download_folder/log
+   	        log_counter=0
    	     
    fi	    
    	           
