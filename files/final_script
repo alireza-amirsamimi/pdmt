@@ -329,6 +329,7 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    		log_counter_link=$((log_counter_link + 1))
    		if [ "$log_counter_link" -eq "1" ]
    	    		then
+				date|cat >> $download_folder/log
    	    			echo -e "$download_link\n$file_name" >> $download_folder/log
    	    	fi
    	        if [ "$log_counter_link" -gt "10" ]
