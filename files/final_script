@@ -63,6 +63,26 @@ ctrl_c () {
 finish2
 }
 
+log () {
+log_counter=$((log_counter + 1))
+if [ "$log_counter" -gt "10" ] && [ "$log_config" = "yes" ]
+   	then
+   		log_counter_link=$((log_counter_link + 1))
+   		if [ "$log_counter_link" -eq "1" ]
+   	    		then
+				date|cat >> $download_folder/log
+   	    			echo -e "$download_link\n$file_name" >> $download_folder/log
+   	    	fi
+   	        if [ "$log_counter_link" -gt "10" ]
+   	    	    then
+   	    		    log_counter_link=0
+   	        fi
+   	        echo "$progress_title" >> $download_folder/log
+   	        log_counter=0
+   	     
+fi	    
+}
+
 func_after () {
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 end_status=$(cat $temp_path/"e$pdm_num".txt 2> /dev/null) 
@@ -311,36 +331,18 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    echo -e "$text_color Transfer rate : $progress_color$progress_title_rate    "
    echo -e "$text_color Estimate time left : $progress_color$progress_title_estimate    "
    echo -e "$text_color Number of connections : $progress_color$progress_title_connections     "
-
    progress_bar
    echo -e "$text_color0 \n \n Press CTRL+C for STOP downloading   "
    line_number1=`tput lines`
    cols_number1=`tput cols`
    sleep 2.2
-   log_counter=$((log_counter + 1))
    line_number2=`tput lines`
    cols_number2=`tput cols`
    if [ "$line_number1" -ne "$line_number2" ] || [ "$cols_number1" -ne "$cols_number2" ] 
         then
             clear
    fi
-   if [ "$log_counter" -gt "10" ] && [ "$log_config" = "yes" ]
-   	then
-   		log_counter_link=$((log_counter_link + 1))
-   		if [ "$log_counter_link" -eq "1" ]
-   	    		then
-				date|cat >> $download_folder/log
-   	    			echo -e "$download_link\n$file_name" >> $download_folder/log
-   	    	fi
-   	        if [ "$log_counter_link" -gt "10" ]
-   	    	    then
-   	    		    log_counter_link=0
-   	        fi
-   	        echo "$progress_title" >> $download_folder/log
-   	        log_counter=0
-   	     
-   fi	    
-   	           
+   log	           
    download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
    aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null) 
 done
