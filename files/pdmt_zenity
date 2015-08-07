@@ -1,10 +1,38 @@
 #!/bin/bash
-#flashgot_status=0 ready , flashgot_status=1 not ready
-link="$1"
-user=$HOME
-temp_path="$user/.persian_download_manager_terminal/temp"
-mkdir $temp_path       >/dev/null 2>&1
-flashgot_function() {
+download_type_form () {
+download_type=`zenity --list --radiolist --title="PDMT" --text="Please select type of Download" --hide-column=2 --column="" --column="ID" --column="type" TRUE "1" "Single File" FALSE "2" "Download Queue" FALSE "3" "About PDMT"`
+if [ $? -eq 1 ]
+   then
+       exit
+fi
+case "$download_type" in
+      1)
+	link=`zenity --entry --title="PDMT" --text="Please enter download link"`
+        if [ $? -eq 1 ]
+           then
+           	download_type_form
+        fi
+        
+        ;;
+      2)
+        zenity --question --title="PDMT"  --ok-label="Continue" --text="Put your links in a Text file,in separate lines(no space between lines)\nand then click Continue"
+        if [ $? -eq 1 ]
+           then
+           	download_type_form
+        fi
+	my_file=`zenity --file-selection --title="PDMT" `
+        if [ $? -eq 1 ]
+           then
+           	download_type_form
+        fi
+	;;
+	3)
+        zenity --text-info --title="PDMT" --filename="$user/.persepolis_download_manager_terminal/about.txt"
+	download_type_form
+esac
+}
+
+download_form() {
 
 download_info=`zenity --forms  --text="Enter Download options \n (If you don't use any options,leave the fields empty!)" --title="PDMT" --add-entry="Proxy IP(Host):"  --add-entry="Proxy Port:" --add-entry="Proxy UserName:" --add-password="Proxy PassWord:" --add-entry="Download UserName:" --add-password="Download PassWord:"  --add-entry="Start Time(24 hour format):" --add-entry="End Time(24 hour format):"  --add-list="What does PDMT do after Download?" --list-values="nothing|shutdown|hibernate|suspend"`
 if [ $? -eq 1 ]
@@ -89,36 +117,36 @@ if [ "$do_after" -eq "1" ]
 fi
 }
 
-temp_path="$user/.persian_download_manager_terminal/temp"
-
-flashgot_status=$(cat $temp_path/flashgot.txt ) 
-
-if [ "$flashgot_status" != "1" ]
-   then
-       echo "1" > $temp_path/flashgot.txt
-       echo "$link" > $temp_path/flashgot_queue.txt
-       sleep 2
-       echo "0" > $temp_path/flashgot.txt
-       flashgot_function
-   else
-       echo "$link" >> $temp_path/flashgot_queue.txt
-       exit
+user=$HOME
+clipboard=$(xclip -o -sel clip|awk '/tp:\/\// {print $0}')
+if [ "$clipboard" != "" ]
+   	then
+       		download_link=`zenity --entry --title="PDMT" --text="Enter Download Link Please!" --entry-text="$clipboard"`
+       		if [ $? -eq 1 ]
+           		then
+           			download_type_form
+           		else
+           			download_type=1
+       		fi  
+	else
+		           	download_type_form
 fi 
+
+download_form
 
 for terminal in $TERMINAL x-terminal-emulator gnome-terminal xfce4-terminal lxterminal konsole mate-terminal urxvt rxvt terminator Eterm aterm roxterm termite xterm ; do
     if command -v $terminal > /dev/null 2>&1; then
         break
     fi
-done  
+done 
 
-flashgot_line=$(cat $temp_path/flashgot.txt|wc -l)
-case "$flashgot_line" in
+case "$download_type" in
 			1)
 			  $terminal -e pdmt -l "$link" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input" 
 			  a=$?
 			;;
 			*)  
-			  $terminal -e pdmt -f $temp_path/flashgot_queue.txt -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input" 
+			  $terminal -e pdmt -f "$my_file" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input" 
 			  a=$?		
 			;;
 esac
@@ -131,7 +159,7 @@ if [ "$a" != "0" ] && [ "$a" != "255" ]
 			  xterm -e pdmt -l "$link" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input" 
 			;;
 			*)  
-			  xterm -e pdmt -f $temp_path/flashgot_queue.txt -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input" 
+			  xterm -e pdmt -f "$my_file" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input" 
 			;;
 	esac			
     	

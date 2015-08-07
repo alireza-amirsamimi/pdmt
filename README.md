@@ -1,27 +1,27 @@
 PDMT(Persepolis Download Manager Terminal)
 =============
-+ version : 1.14.3
++ version : 1.15
 + PDMT is a download manager which is written in bash language and it is based on aria2 and improves aria2.
 
 ![ScreenShot](http://s6.picofile.com/file/8202702626/pdmt.jpg)
 
 ### Before running install file make sure that all dependencies are installed on your system!
-You must install `aria2` , `pm-utils`, `wget` , `bc` , `vorbis-tools`
+You must install `aria2` , `pm-utils`, `wget` , `bc` , `vorbis-tools` , `xclip`
 For using flashgot plugin on firefox , you must install `xterm` , `zenity`
 
 ## Dependencies for Ubuntu
 
-    $ sudo apt-get install aria2 pm-utils wget bc vorbis-tools xdg-utils
+    $ sudo apt-get install aria2 pm-utils wget bc vorbis-tools xdg-utils xclip
     $ sudo apt-get install xterm zenity
     
 ## Dependencies for Fedora
 
-    $ sudo yum install aria2 pm-utils wget bc vorbis-tools xdg-utils
+    $ sudo yum install aria2 pm-utils wget bc vorbis-tools xdg-utils xclip
     $ sudo yum install xterm zenity
 
 ## Dependencies for Archlinux
 
-    $ sudo pacman -S aria2 pm-utils wget bc vorbis-tools xdg-utils
+    $ sudo pacman -S aria2 pm-utils wget bc vorbis-tools xdg-utils xclip
     $ sudo pacman -S xterm zenity
     
 After installing dependencies, change your directory with cd command and run install file

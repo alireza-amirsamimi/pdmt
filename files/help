@@ -37,11 +37,6 @@ PDMT HELP
         number of connections automatically.but you can choose maximum number
         yourself(1-16).default is 16.
 
--r	(y for yes,n for no) default is no.Reconnecting ability.if aria2
-        decreases the number of connections (connections failed),PDMT will 
-        pause and resume download.I suggest that use this option if your
-        download size is bigger than 100 MB. 
-
 -o	Aria2 options
         you can write aria2 options after o,for example:
         pdmt -l "https://www.google.com/images/srpr/logo11w.png" -o --max-download-limit=10k

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Persepolis
+Comment=Download Manager
+GenericName=Download Manager
+Keywords=Internet;WWW;Web;
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;Network;
+StartupNotify=true
+
+

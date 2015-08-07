@@ -7,21 +7,27 @@ echo "############################################################"
 
 user=$HOME
       
-program_path="$user/.persian_download_manager_terminal"
+program_path="$user/.persepolis_download_manager_terminal"
 install_path=`pwd`
 echo "mkdir  $program_path"
 mkdir  $program_path >/dev/null 2>&1
 echo "cp -R -f $install_path/files/* $program_path"
 cp -R -f $install_path/files/* $program_path
+echo "Exec=$user/.persepolis_download_manager_terminal/pdmt_zenity" >>$program_path/Persepolis.desktop
+echo "Icon=$user/.persepolis_download_manager_terminal/icon.png" >>$program_path/Persepolis.desktop
 chmod +x $program_path/pdmt
-chmod +x $program_path/final_script
+chmod +x $program_path/PDMT
 chmod +x $program_path/pdmt_flashgot_gtk
+chmod +x $program_path/pdmt_zenity
+chmod +x $program_path/Persepolis.desktop
 if [ ! -f ~/.Xresources ];then
-cp -R -f ~/.persian_download_manager_terminal/Xresources  ~/.Xresources 
+cp -R -f ~/.persepolis_download_manager_terminal/Xresources  ~/.Xresources 
 xrdb -merge ~/.Xresources
 fi		  
 echo "sudo  mv -f $program_path/pdmt /usr/bin"
+echo "sudo  mv -f $program_path/Persepolis.desktop /usr/share/applications"
 sudo  mv -f $program_path/pdmt /usr/bin
+sudo  mv -f $program_path/Persepolis.desktop /usr/share/applications
 if [ "$?" -eq "0" ]
    then
       echo "Installation compeleted"

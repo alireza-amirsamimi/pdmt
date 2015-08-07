@@ -1,5 +1,5 @@
 #!/bin/bash
 user=$HOME
-cd $user/.persian_download_manager_terminal
-./final_script $@ 
+cd $user/.persepolis_download_manager_terminal
+./PDMT $@ 
 exit
