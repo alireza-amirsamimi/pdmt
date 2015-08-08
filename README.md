@@ -28,7 +28,7 @@ After installing dependencies, change your directory with cd command and run ins
 
     $ sh install
 
-for uninstall PersianDM,
+for uninstall PDMT,
 
     $ sh unistall
 

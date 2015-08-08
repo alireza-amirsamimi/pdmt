@@ -121,7 +121,7 @@ user=$HOME
 clipboard=$(xclip -o -sel clip|awk '/tp:\/\// {print $0}')
 if [ "$clipboard" != "" ]
    	then
-       		download_link=`zenity --entry --title="PDMT" --text="Enter Download Link Please!" --entry-text="$clipboard"`
+       		link=`zenity --entry --title="PDMT" --text="Enter Download Link Please!" --entry-text="$clipboard"`
        		if [ $? -eq 1 ]
            		then
            			download_type_form
