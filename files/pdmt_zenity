@@ -154,7 +154,7 @@ esac
 			
 if [ "$a" != "0" ] && [ "$a" != "255" ]
     then
-	case "$flashgot_line" in
+	case "$download_type" in
 			1)
 			  xterm -e pdmt -l "$link" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input" 
 			;;
