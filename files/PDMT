@@ -403,7 +403,8 @@ case $download_flag in
      0)
         save_as_temp=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/Download complete: / {print $0 }'|awk -F ":" '{print $4}')
      file_extension
-     mv -n $save_as_temp $save_as
+     save_as_temp=$(echo ${save_as_temp:1})
+     mv -n "$save_as_temp" "$save_as"
      echo -e " The file Saved as :"
      echo -e "$text_color $save_as \n"
 		 echo -e "$text_color0 Download Compelete!Please Wait..."
