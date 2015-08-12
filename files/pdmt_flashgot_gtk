@@ -6,7 +6,7 @@ temp_path="$user/.persepolis_download_manager_terminal/temp"
 mkdir $temp_path       >/dev/null 2>&1
 flashgot_function() {
 
-download_info=`zenity --forms  --text="Enter Download options \n (If you don't use any options,leave the fields empty!)" --title="PDMT" --add-entry="Proxy IP(Host):"  --add-entry="Proxy Port:" --add-entry="Proxy UserName:" --add-password="Proxy PassWord:" --add-entry="Download UserName:" --add-password="Download PassWord:"  --add-entry="Start Time(24 hour format):" --add-entry="End Time(24 hour format):"  --add-list="What should PDMT do after Download?" --list-values="nothing|shutdown|hibernate|suspend"`
+download_info=`zenity --forms  --text="Enter Download options \n (If you don't use any options,leave the fields empty!)" --title="PDMT" --add-entry="Proxy IP(Host):"  --add-entry="Proxy Port:" --add-entry="Proxy UserName:" --add-password="Proxy PassWord:" --add-entry="Download UserName:" --add-password="Download PassWord:"  --add-entry="Start Time(24 hour format):" --add-entry="End Time(24 hour format):"  --add-entry="Number of Connections:(default and maximum is 16)" --add-list="What should PDMT do after Download?" --list-values="nothing|shutdown|hibernate|suspend"`
 if [ $? -eq 1 ]
    then
        exit
@@ -54,7 +54,13 @@ if [ "$end_time" = "" ]
        end_time="chroniccoughallergies"
 fi       
 
-do_after_download=$(echo "$download_info" | awk -F"|" '{ print $9 }')
+maximum_connections=$(echo "$download_info" | awk -F"|" '{ print $9 }')
+if [ "$maximum_connections" = "" ]
+   then
+       maximum_connections="16"
+fi       
+
+do_after_download=$(echo "$download_info" | awk -F"|" '{ print $10 }')
 
 case "$do_after_download" in
       "shutdown" | "hibernate" | "suspend" )
@@ -114,11 +120,11 @@ done
 flashgot_line=$(cat $temp_path/flashgot_queue.txt|wc -l)
 case "$flashgot_line" in
 			1)
-			  $terminal -e pdmt -l "$link" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input" 
+			  $terminal -e pdmt -l "$link" -m "$maximum_connections" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input" 
 			  a=$?
 			;;
 			*)  
-			  $terminal -e pdmt -f $temp_path/flashgot_queue.txt -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input" 
+			  $terminal -e pdmt -f $temp_path/flashgot_queue.txt -m "$maximum_connections" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input" 
 			  a=$?		
 			;;
 esac
@@ -128,10 +134,10 @@ if [ "$a" != "0" ] && [ "$a" != "255" ]
     then
 	case "$flashgot_line" in
 			1)
-			  xterm -e pdmt -l "$link" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input" 
+			  xterm -e pdmt -l "$link" -m "$maximum_connections" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input" 
 			;;
 			*)  
-			  xterm -e pdmt -f $temp_path/flashgot_queue.txt -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input" 
+			  xterm -e pdmt -f $temp_path/flashgot_queue.txt -m "$maximum_connections" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input" 
 			;;
 	esac			
     	

@@ -1,0 +1,226 @@
+#!/bin/bash
+finish () {
+if [ "$download_info_exit" != "1" ] ;then
+	echo "1" > $temp_path/"zenityexit$pdm_num".txt
+fi
+}
+download_type_form () {
+download_type=`zenity --list --radiolist --title="Persepolis Download Manager" --text="Please select type of Download" --hide-column=2 --column="" --column="ID" --column="type" TRUE "1" "Single File" FALSE "2" "Download Queue" FALSE "3" "About Persepolis Download Manager"`
+if [ $? -eq 1 ]
+   then
+       exit
+fi
+case "$download_type" in
+      1)
+	link=`zenity --entry --title="Persepolis Download Manager" --text="Please enter download link" --width=700`
+        if [ $? -eq 1 ]
+           then
+           	download_type_form
+        fi
+        
+        ;;
+      2)
+        zenity --question --title="Persepolis Download Manager"  --ok-label="Continue" --text="Put your links in a Text file,in separate lines(no space between lines)\nand then click Continue"
+        if [ $? -eq 1 ]
+           then
+           	download_type_form
+        fi
+	my_file=`zenity --file-selection --title="Persepolis Download Manager" `
+        if [ $? -eq 1 ]
+           then
+           	download_type_form
+        fi
+	;;
+	3)
+        zenity --text-info --title="Persepolis Download Manager" --filename="$user/.persepolis_download_manager_terminal/about.txt"
+	download_type_form
+esac
+}
+
+download_form() {
+
+download_info=`zenity --forms  --text="Enter Download options \n (If you don't use any options,leave the fields empty!)" --title="Persepolis Download Manager" --add-entry="Proxy IP(Host):"  --add-entry="Proxy Port:" --add-entry="Proxy UserName:" --add-password="Proxy PassWord:" --add-entry="Download UserName:" --add-password="Download PassWord:"  --add-entry="Start Time(24 hour format):" --add-entry="End Time(24 hour format):" --add-entry="Number of Connections:(default and maximum is 16)"  --add-list="What should Persepolis do after Download?" --list-values="nothing|shutdown|hibernate|suspend"`
+if [ $? -eq 1 ]
+   then
+	download_info_exit=1
+        exit
+fi
+echo "$download_info"
+ip=$(echo "$download_info" | awk -F"|" '{ print $1 }')
+if [ "$ip" = "" ]
+   then
+       ip="chroniccoughallergies"
+fi       
+port=$(echo "$download_info" | awk -F"|" '{ print $2 }')
+if [ "$port" = "" ]
+   then
+       port="chroniccoughallergies"
+fi       
+
+proxy_user=$(echo "$download_info" | awk -F"|" '{ print $3 }')
+if [ "$proxy_user" = "" ]
+   then
+       proxy_user="chroniccoughallergies"
+fi       
+proxy_pass=$(echo "$download_info" | awk -F"|" '{ print $4 }')
+if [ "$proxy_pass" = "" ]
+   then
+       proxy_pass="chroniccoughallergies"
+fi       
+download_user=$(echo "$download_info" | awk -F"|" '{ print $5 }')
+if [ "$download_user" = "" ]
+   then
+       download_user="chroniccoughallergies"
+fi       
+download_pass=$(echo "$download_info" | awk -F"|" '{ print $6 }')
+if [ "$download_pass" = "" ]
+   then
+       download_pass="chroniccoughallergies"
+fi       
+start_time=$(echo "$download_info" | awk -F"|" '{ print $7 }')
+if [ "$start_time" = "" ]
+   then
+       start_time="chroniccoughallergies"
+fi       
+end_time=$(echo "$download_info" | awk -F"|" '{ print $8 }')
+if [ "$end_time" = "" ]
+   then
+       end_time="chroniccoughallergies"
+fi       
+
+maximum_connections=$(echo "$download_info" | awk -F"|" '{ print $9 }')
+if [ "$maximum_connections" = "" ]
+   then
+       maximum_connections="16"
+fi       
+
+do_after_download=$(echo "$download_info" | awk -F"|" '{ print $10 }')
+
+case "$do_after_download" in
+      "shutdown" | "hibernate" | "suspend" )
+      do_after="1"
+      ;;
+      * )
+      do_after="2"
+      password_input="chroniccoughallergies"
+      ;;
+      
+esac
+
+if [ "$do_after" -eq "1" ]
+   then
+       password_input=`zenity --forms  --text="Please enter your ROOT password" --title="Persepolis Download Manager" --add-password="Password : "  `
+       if [ $? -eq 1 ]
+          then
+              exit
+       fi
+       echo $password_input |sudo -S whoami
+       ss=$?
+       while [ $ss -ne 0 ]
+              do
+              password_input=`zenity --forms  --text="Wrong password! Try again!" --title="Persepolis Download Manager" --add-password="Password : "`
+              if [ $? -eq 1 ]
+                then
+                   exit
+              fi
+              echo $password_input |sudo -S whoami
+              ss=$?
+              done
+fi
+}
+trap finish exit
+user=$HOME
+temp_path="$user/.persepolis_download_manager_terminal/temp"
+mkdir $temp_path       >/dev/null 2>&1
+if [ ! -f $temp_path/pdm_number.txt ]
+    then
+    echo "0"> $temp_path/pdm_number.txt
+    pdm_num=0
+    else
+    pdm_num=`cat $temp_path/pdm_number.txt`
+    if [ $pdm_num -ge 5000 ]
+       then
+           pdm_num=0
+    fi
+    pdm_num=$((pdm_num + 1))
+    echo "$pdm_num"> $temp_path/pdm_number.txt
+fi
+
+
+while getopts "l:f:" options ; do
+case "${options}" in
+    l)
+    link=${OPTARG}
+    ;;
+    f)
+    my_file=${OPTARG}
+    ;;
+esac
+done
+
+if [ "$link" = "" ] && [ "$my_file" = "" ] ; then
+	clipboard=$(xclip -o -sel clip|awk '/tp:\/\// {print $0}')
+	if [ "$clipboard" != "" ]
+   		then
+       			link=`zenity --entry --title="Persepolis Download Manager" --text="Enter Download Link Please!" --entry-text="$clipboard" --width=700`
+       			if [ $? -eq 1 ]
+        	   		then
+        	   			download_type_form
+        	   		else
+        	   			download_type=1
+       			fi  
+		else
+			           	download_type_form
+	fi 
+	else
+		if [ "$my_file" = "" ] ; then
+			download_type=1
+			else
+				download_type=2
+		fi		
+fi
+download_form
+
+
+case "$download_type" in
+			1)
+			  ~/.persepolis_download_manager_terminal/PDM -l "$link" -m "$maximum_connections" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input"  &
+			
+			;;
+			*)  
+			  ~/.persepolis_download_manager_terminal/PDM -f "$my_file" -m "$maximum_connections" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input" &  
+			;;
+esac
+
+(
+while [ ! -f  $temp_path/"s$pdm_num".txt ] ;do
+	sleep 1
+done
+
+while [ -f  $temp_path/"s$pdm_num".txt ] ;do
+	cat $temp_path/"zenity$pdm_num".txt
+	cat $temp_path/"zenityp$pdm_num".txt
+	sleep 2
+done
+) | zenity --progress  --title="$pdm_num Persepolis Download Manager" --height=200 --width=700  --auto-close  --percentage=0 &
+
+PID_ZENITY=$(ps -C zenity h -o pid,command | grep "$pdm_num Persepolis Download Manager" | awk '{print $1}')
+while [ "$PID_ZENITY" != "" ]
+do
+  
+  PID_ZENITY=$(ps h -o pid -p ${PID_ZENITY})
+  sleep 1
+done
+zenity_percent=$(cat $temp_path/"zenityp$pdm_num".txt)
+if [ "$PID_ZENITY" = "" ] && [ "$zenity_percent" != "100" ]
+	then
+		echo "2">$temp_path/"e$pdm_num".txt
+		echo "1"> $temp_path/"s$pdm_num".txt
+		aria2_pid=$(cat $temp_path/"p$pdm_num".txt 2> /dev/null)
+		kill $aria2_pid 2> /dev/null
+
+fi
+
+
+			
+exit       

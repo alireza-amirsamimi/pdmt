@@ -1,8 +1,8 @@
 #!/bin/bash
-#install PDMT
+#install Persepolis Download Manager
 clear screen
 echo "############################################################"
-echo "############# Welcome to PDMT installation #################"
+echo "#### Welcome to Persepolis Download Manager installation ###"
 echo "############################################################"
 
 user=$HOME
@@ -13,17 +13,20 @@ echo "mkdir  $program_path"
 mkdir  $program_path >/dev/null 2>&1
 echo "cp -R -f $install_path/files/* $program_path"
 cp -R -f $install_path/files/* $program_path
-echo "Exec=$user/.persepolis_download_manager_terminal/pdmt_zenity" >>$program_path/Persepolis.desktop
+echo "Exec=$user/.persepolis_download_manager_terminal/pdm_zenity" >>$program_path/Persepolis.desktop
 echo "Icon=$user/.persepolis_download_manager_terminal/icon.png" >>$program_path/Persepolis.desktop
 chmod +x $program_path/pdmt
 chmod +x $program_path/PDMT
+chmod +x $program_path/PDM
 chmod +x $program_path/pdmt_flashgot_gtk
-chmod +x $program_path/pdmt_zenity
+chmod +x $program_path/pdm_flashgot_gtk
+chmod +x $program_path/pdm_zenity
 chmod +x $program_path/Persepolis.desktop
 if [ ! -f ~/.Xresources ];then
 cp -R -f ~/.persepolis_download_manager_terminal/Xresources  ~/.Xresources 
 xrdb -merge ~/.Xresources
-fi		  
+fi
+
 echo "sudo  mv -f $program_path/pdmt /usr/bin"
 echo "sudo  mv -f $program_path/Persepolis.desktop /usr/share/applications"
 sudo  mv -f $program_path/pdmt /usr/bin

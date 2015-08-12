@@ -1,0 +1,34 @@
+#!/bin/bash
+#flashgot_status=0 ready , flashgot_status=1 not ready
+link="$1"
+user=$HOME
+temp_path="$user/.persepolis_download_manager_terminal/temp"
+mkdir $temp_path       >/dev/null 2>&1
+
+
+temp_path="$user/.persepolis_download_manager_terminal/temp"
+
+flashgot_status=$(cat $temp_path/flashgot.txt ) 
+if [ "$flashgot_status" != "1" ]
+   then
+       echo "1" > $temp_path/flashgot.txt
+       echo "$link" > $temp_path/flashgot_queue.txt
+       sleep 2
+       echo "0" > $temp_path/flashgot.txt
+   else
+       echo "$link" >> $temp_path/flashgot_queue.txt
+       exit
+fi 
+
+pdm="$user/.persepolis_download_manager_terminal/pdm_zenity"  
+
+flashgot_line=$(cat $temp_path/flashgot_queue.txt|wc -l)
+case "$flashgot_line" in
+			1)
+			  $pdm -l "$link"
+			;;
+			*) 
+			  $pdm -f $temp_path/flashgot_queue.txt 
+			;;
+esac
+exit       

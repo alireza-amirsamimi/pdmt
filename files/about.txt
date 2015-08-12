@@ -1,4 +1,4 @@
-PDMT Version 1.15.2
+Persepolis Download Manager Version 1.16
 AliReza AmirSamimi 
 http://amirsamimi.mihanblog.com
 alireza.amirsamimi@ubuntu.ir

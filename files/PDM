@@ -1,13 +1,17 @@
 #!/bin/bash
-#Persepolis Download Manager Terminal (PDMT) written by AliReza AmirSamimi(alireza.amirsamimi@ubuntu.ir) and It is based on aria2
-#s=download status r=aria ready p=aria pid e=end status d=downloaded f=fail_counter l=download_link qf=queue failed links
+#Persepolis Download Manager written by AliReza AmirSamimi(alireza.amirsamimi@ubuntu.ir) and It is based on aria2
+#s=download status r=aria ready p=aria pid e=end status d=downloaded f=fail_counter l=download_link qf=queue failed links zenity=zenity text zenityp=zenity percent
 #0=aria ready 1=aria not ready
 #download_flag 0=completed 1=paused 2=failed 3=download 4=reconnecting
 #end_status 0=not end yet 1=time is up 2=download completed or canceled or...
 
 #functions
-
 finish (){
+rm -v $temp_path/"s$pdm_num".txt >/dev/null 2>&1
+while [ ! -f $temp_path/"zenityexit$pdm_num".txt ] ; do
+	sleep 1
+done
+rm -v $temp_path/"zenityexit$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"p$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"r$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"s$pdm_num".txt >/dev/null 2>&1
@@ -18,50 +22,10 @@ rm -v $temp_path/aria_ready_file >/dev/null 2>&1
 rm -v $temp_path/"f$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"l$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"qf$pdm_num".txt >/dev/null 2>&1
-echo -e "$text_color0 Finish!"
-echo -e "$normal_color   "
-tput cnorm   -- normal
-tput smam
+rm -v $temp_path/"zenity$pdm_num".txt >/dev/null 2>&1
+rm -v $temp_path/"zenityp$pdm_num".txt >/dev/null 2>&1
 }
-finish2 () {
-aria_ready=$(cat $temp_path/"r$pdm_num".txt 2>/dev/null)
-if [ "$aria_ready" != "0" ]
-	then
-	    kill $$
-	else
-	    clear
-	    logo
-	    if [ "$my_file" = "" ]
-     		then
-         		echo " Download Canceled by user!Please Wait..."
-         		echo -e "$text_color PDMT will resume download if you start download this file again.    "
-         		echo -e " You can find summary & history of downloads & download links in \n $download_folder/report "
-         		echo  "#################"|cat >> $download_folder/report
-         		date|cat >> $download_folder/report
-         		echo "$download_link"|cat >> $download_folder/report
-         		echo "Download Canceled by user!"|cat >> $download_folder/report
-         		cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
-         		echo "#################"|cat >> $download_folder/report
-     		else
-     		        download_link=$(cat $temp_path/"l$pdm_num".txt 2>/dev/null)
-         		echo " Queue Canceled by user!Please Wait..."
-         		echo -e "$text_color PDMT will resume download if you start download this file again.    "
-         		echo -e " You can find summary & history of downloads & download links in \n $download_folder/report   "
-         		echo "#################"|cat >> $download_folder/report
-         		date|cat >> $download_folder/report
-         		echo "$download_link"|cat >> $download_folder/report
-         		echo "Queue Canceled by user!"|cat >> $download_folder/report
-         		cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
-         		echo "#################"|cat >> $download_folder/report
-     	    fi
 
-            kill $$
-fi
-
-}
-ctrl_c () {
-finish2
-}
 
 log () {
 log_counter=$((log_counter + 1))
@@ -163,9 +127,7 @@ if [ "$fail_counter" = "$retryf_config" ]
 	    ifail="0"
 	    until ping -c 1 -w 5 www.google.com >/dev/null 2>&1 || [ "$ifail" = "$retryd_config" ]
 		do
-		    clear
-		    logo
-		    echo -e "$text_color Check your internet connection!! \n$progress_color PDMT will retry after $delay_config seconds"
+		    echo "# Check your internet connection!! \n Persepolis Download Manager will retry after $delay_config seconds" > $temp_path/"zenity$pdm_num".txt
 		    if [ "$sound_config" = "yes" ]
 			  then
 	     			 ogg123 -q $notifications_path/connection.ogg
@@ -183,12 +145,13 @@ if [ "$fail_counter" = "$retryf_config" ]
 	    if [ "$end_status" != "1" ]
      		then
 	    	    echo "4"> $temp_path/"s$pdm_num".txt
-	    	    echo " Download Failed!reconnecting... .be patient!"
+	    	    echo "# Download Failed!reconnecting... .be patient!" > $temp_path/"zenity$pdm_num".txt
 	    	    echo "#################"|cat >> $download_folder/report
      		    date|cat >> $download_folder/report
      		    echo "$download_link"|cat >> $download_folder/report
 	            echo "Download Failed!" | cat >> $download_folder/report
      		    echo "#################"|cat >> $download_folder/report
+
 	        else
 	            echo "2"> $temp_path/"s$pdm_num".txt
 	    fi
@@ -241,10 +204,11 @@ if [ "$end_status" != "1" ]
 	case $aria_status in
 		"(OK):download completed.")
 		echo "0"> $temp_path/"s$pdm_num".txt
-		echo " Please wait..."
+		echo "# Please wait..." > $temp_path/"zenity$pdm_num".txt
 		;;
 		"(INPR):download in-progress.")
 		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
+		
                 ;;
 		*)
 		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
@@ -258,99 +222,24 @@ if [ "$end_status" != "1" ]
      	echo "1"> $temp_path/"s$pdm_num".txt
 fi
 
-
-}
-
-progress_bar() {
-tput cup 12 0
-echo -e "$progress_color  "
-echo -n "["
-percent20=$((download_percent / 20))
-case "$percent20" in
-     0)
-     echo -n "<-"
-     ;;
-     1)
-      echo -n "<-||||||||||"
-     ;;
-     2)
-      echo -n "<-||||||||||||||||||||"
-     ;;
-     3)
-      echo -n "<-||||||||||||||||||||||||||||||"
-     ;;
-     4)
-      echo -n "<-||||||||||||||||||||||||||||||||||||||||"
-     ;;
-     5)
-      echo -n "<-||||||||||||||||||||||||||||||||||||||||||||||||||"
-     ;;
-esac
-percent_res=$((download_percent-20*percent20))
-percent_res2=$((percent_res / 2))
-case "$percent_res2" in
-     0)
-     echo -n "->"
-     ;;
-     1)
-      echo -n "|->"
-     ;;
-     2)
-      echo -n "||->"
-     ;;
-     3)
-      echo -n "|||->"
-     ;;
-     4)
-      echo -n "||||->"
-     ;;
-     5)
-      echo -n "|||||->"
-     ;;
-     6)
-      echo -n "||||||->"
-     ;;
-     7)
-      echo -n "|||||||->"
-     ;;
-     8)
-      echo -n "||||||||->"
-     ;;
-     9)
-      echo -n "|||||||||->"
-     ;;
-esac
-percent_res4=$((download_percent / 2))
-percent_res5=$((49 - percent_res4))
-
-for ii in `seq 0 $percent_res5`;
-	do
-          echo -n "-"
-done
-echo "]"
-
+		
 }
 
 
 progress_dialog () {
 aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-clear
-logo
-echo -e "$text_color0 Download Starting Now!"
+echo  "# Download Starting Now!" > $temp_path/"zenity$pdm_num".txt
 while [ "$aria_ready" != "0" ] && [ "$download_flag" = "3" ]
         do
 	  aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
 	  download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 	  sleep 0.5
 done
-clear
 aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    do
-   tput cup 0 0
-   logo
    save_as_temp=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/FILE:/ {print $0 }'|tail -1|awk '/FILE/ {print $0 }'|awk -F ":" '{print $2}')
    progress_title=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1)
    download_percent=$(echo "$progress_title"| awk -F/ '{ print $2 }' | awk -F"(" '{ print $2 }' | awk -F")" '{ print $1 }'|awk -F"%" '{ print $1 }')
@@ -359,31 +248,15 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    progress_title_rate=$(echo "$progress_title" | awk '{ print $4 }'| awk -F ":" '{ print $2 }')
    progress_title_estimate=$(echo "$progress_title" | awk '{ print $5 }'| awk -F ":" '{ print $2 }'| awk -F "]" '{ print $1 }')
    file_extension
-   echo -e "$text_color Link : $progress_color$download_link   "
-   echo -e "$text_color Save as : $progress_color$save_as   "
-   echo -e "$text_color Downloaded : $progress_color$progress_title_percent    "
+   echo  "# Link : ${download_link:0:70} ... \n Save as : $save_as \n Downloaded : $progress_title_percent \n Transfer rate : $progress_title_rate \n Estimate time left : $progress_title_estimate \n Number of connections : $progress_title_connections " > $temp_path/"zenity$pdm_num".txt
    echo -e "$progress_title_percent Downloaded " > $temp_path/"d$pdm_num".txt
-   echo -e "$text_color Transfer rate : $progress_color$progress_title_rate    "
-   echo -e "$text_color Estimate time left : $progress_color$progress_title_estimate    "
-   echo -e "$text_color Number of connections : $progress_color$progress_title_connections     "
-   progress_bar
-   echo -e "$text_color0 \n \n Press CTRL+C for STOP downloading   "
-   line_number1=`tput lines`
-   cols_number1=`tput cols`
-   sleep 2.2
-   line_number2=`tput lines`
-   cols_number2=`tput cols`
-   if [ "$line_number1" -ne "$line_number2" ] || [ "$cols_number1" -ne "$cols_number2" ]
-        then
-            clear
+   if [ "$download_percent" != "100" ] ; then
+	   echo "$download_percent" > $temp_path/"zenityp$pdm_num".txt
    fi
-   log
+   sleep 2.2
    download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
    aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
 done
-clear the screen
-logo
-echo -e "$text_color0  "
 }
 
 
@@ -404,16 +277,19 @@ case $download_flag in
      file_extension
      save_as_temp=$(echo ${save_as_temp:1})
      mv -n "$save_as_temp" "$save_as"
-     echo -e " The file Saved as :"
-     echo -e "$text_color $save_as \n"
-		 echo -e "$text_color0 Download Compelete!Please Wait..."
      if [ "$my_file" = "" ]
      	then
+	    echo "100" > $temp_path/"zenityp$pdm_num".txt
      	    if [ "$open_config" = "yes" ]
 		  then
 	     	      xdg-open $download_folder >/dev/null 2>&1
      	    fi
+	else
+	    echo "0" > $temp_path/"zenityp$pdm_num".txt
      fi
+     sleep 1
+     notify-send --icon=$icon_path  "Download Compelete! The file Saved as :  $save_as"
+     
      if [ "$sound_config" = "yes" ]
 	  then
 	      ogg123 -q $notifications_path/ok.ogg
@@ -428,9 +304,7 @@ case $download_flag in
      1)
      if [ "$my_file" = "" ]
         then
-     		echo " Download Paused!Please Wait..."
-	        echo -e "$text_color PDMT will resume download if you start download this file again.    "
-                echo -e " You can find summary & history of downloads & download links in \n $download_folder/report "
+     		notify-send --icon=$icon_path "Download Paused! Persepolis Download Manager will resume download if you start download this file again. You can find summary & history of downloads & download links in $download_folder/report" 
      		echo "#################"|cat >> $download_folder/report
      		date|cat >> $download_folder/report
      		echo "$download_link"|cat >> $download_folder/report
@@ -438,9 +312,7 @@ case $download_flag in
      		cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
      		echo "#################"|cat >> $download_folder/report
         else
-                echo " Queue Paused"
-                echo -e "$text_color PDMT will resume download if you start download this file again.    "
-                echo -e " You can find summary & history of downloads & download links in \n $download_folder/report "
+     		notify-send --icon=$icon_path "Queue Paused! Persepolis Download Manager will resume download if you start download this file again. You can find summary & history of downloads & download links in $download_folder/report" 
 	        echo "#################"|cat >> $download_folder/report
                 date|cat >> $download_folder/report
                 echo "$download_link"|cat >> $download_folder/report
@@ -451,9 +323,13 @@ case $download_flag in
      ;;
 
      2)
-     echo " Download Failed!Please Wait..."
-     echo -e "$text_color PDMT will resume download if you start download this file again.    "
-     echo -e " You can find summary & history of downloads & download links in \n $download_folder/report "
+     if [ "$my_file" = "" ]
+     	then
+     	     echo "100" > $temp_path/"zenityp$pdm_num".txt
+	else
+     	     echo "0" > $temp_path/"zenityp$pdm_num".txt
+     fi
+     notify-send --icon=$icon_path "Download Failed! Persepolis Download Manager will resume download if you start download this file again. You can find summary & history of downloads & download links in $download_folder/report" 
      if [ "$sound_config" = "yes" ]
 	  then
 	      ogg123 -q $notifications_path/fail.ogg
@@ -476,7 +352,6 @@ download_single () {
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 while [ "$download_flag" != "0" ] && [ "$download_flag" != "2" ] && [ "$download_flag" != "1" ]
 	do
-
 	while [ "$download_flag" = "3" ]
 		do
 		download
@@ -486,7 +361,7 @@ while [ "$download_flag" != "0" ] && [ "$download_flag" != "2" ] && [ "$download
 	while [ "$download_flag" = "4" ]
 		do
 
-		echo " Reconnecting... .be patient"
+		echo "# Reconnecting... .be patient" > $temp_path/"zenity$pdm_num".txt
 		echo "#################"|cat >> $download_folder/report
                 date|cat >> $download_folder/report
                 echo "$download_link"|cat >> $download_folder/report
@@ -548,7 +423,9 @@ done
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 if [ "$download_flag" != "1" ]
   	then
-  	    echo " Queue Compelete"
+	    echo "100" > $temp_path/"zenityp$pdm_num".txt
+	    sleep 1
+  	    notify-send --icon=$icon_path "Queue Compelete" > $temp_path/"zenity$pdm_num".txt
   	    if [ "$open_config" = "yes" ]
 		  then
 			 xdg-open $download_folder >/dev/null 2>&1
@@ -581,159 +458,8 @@ func_after
 }
 
 
-logo () {
-echo -e "$logo_color#########################################     "
-echo "#########################################     "
-echo "# Persepolis Download Manager Terminal  #     "
-echo "############  (PDMT)  ###################     "
-echo "#########################################     "
-echo "                                              "
-}
-
-config ()
-{
-echo "PDMT Configuration"
-echo "if you don't want any changes, leave the questions empty and press enter!"
-echo -e "$progress_color\nDo you want colorful output?(yes/no)"
-read color_input
-echo "The log file contains summary of download progress & updated every 22 seconds."
-echo "Do you want log file(yes/no)"
-read log_input
-echo "Do you want notification sound?(yes/no)"
-read sound_input
-echo "do you want to open containing folder after download has been finished?"
-read open_input
-echo "Please enter download directory?(for example ~/Downloads)"
-read download_folder_input
-if [ "$download_folder_input" = "" ]
-	then
-    	    download_folder_input="$download_folder_config"
-fi
-first_char_input=`echo "${download_folder_input:0:2}"`
-if [ "$first_char_input" = "~/" ]
-        then
-            remove_char_folder_input=`echo "${download_folder_input#*~}"`
-            download_folder_input="$user$remove_char_folder_input"
-fi
-
-if [ ! -d "$download_folder_input" ]
-        then
-            echo " Directory not exist! : $download_folder_input"
-	    echo " Do you want create this folder?(yes/no)"
-	    read create_folder_input
-	    if [ "$create_folder_input" = "yes" ] || [ "$create_folder_input" = "y" ]
-		then
-			mkdir $download_folder_input >/dev/null 2>&1
-		else
-            		download_folder_input=$download_folder
-            		echo " Download file will save as $download_folder"
-fi          fi
-echo "Please enter number of retries if download failed"
-read retryf_input
-echo "Please enter number of retries if internet connection droped "
-read retryd_input
-echo "Please enter delay(in second) between retries if connection droped "
-read delay_input
-echo -e "Failed links in queue rechecked by PDMT\nand PDMT tries to download them again!\nPlease enter number of rechecking time!"
-read queue_input
-echo "Do you want restore default(yes/no)"
-read default_input
-if [ "$default_input" = "yes" ] || [ "$default_input" = "y" ]
-	then
- 	        echo -e "PDMT config file\ncolor=yes\nsound=yes\nopen=yes\nfolder=~/Downloads/Persepolis\nretryf=5\nretryd=5\ndelay=60\nqueue=2\nlog=no" > ~/.persepolis_download_manager_terminal/config
-	else
-		if [ "$color_input" = "" ]
-			then
-			    color_input="$color_config"
-			elif [ "$color_input" = "y" ]
-				then
-				    color_input="yes"
-			elif [ "$color_input" = "n" ]
-				then
-				    color_input="no"
-	        fi
-	        if [ "$log_input" = "" ]
-			then
-			    log_input="$log_config"
-			elif [ "$log_input" = "y" ]
-				then
-				    log_input="yes"
-			elif [ "$log_input" = "n" ]
-				then
-				    log_input="no"
-	        fi
-		if [ "$sound_input" = "" ]
-			then
-			    sound_input="$sound_config"
-			elif [ "$sound_input" = "y" ]
-				then
-				    sound_input="yes"
-			elif [ "$sound_input" = "n" ]
-				then
-				    sound_input="no"
-		fi
-
-		if [ "$open_input" = "" ]
-			then
-			    open_input="$open_config"
-			elif [ "$open_input" = "y" ]
-				then
-				    open_input="yes"
-			elif [ "$open_input" = "n" ]
-				then
-				    open_input="no"
-		fi
-
-		if [ "$retryd_input" = "" ]
-			then
-			    retryd_input="$retryd_config"
-		fi
-		retryd_input_test=$((retryd_input + 1))
-		if [ "$retryd_input_test" = "1" ] && [ "$retryd_input" != "1" ]
-			then
-			    retryd_input="10"
-		fi
-
-		if [ "$retryf_input" = "" ]
-			then
-			    retryf_input="$retryf_config"
-		fi
-		retryf_input_test=$((retryf_input + 1))
-		if [ "$retryf_input_test" = "1" ] && [ "$retryf_input" != "1" ]
-			then
-			    retryf_input="10"
-		fi
-
-		if [ "$delay_input" = "" ]
-			then
-			    delay_input="$delay_config"
-		fi
-		delay_input_test=$((delay_input + 1))
-		if [ "$delay_input_test" = "1" ] && [ "$delay_input" != "1" ]
-			then
-			    delay_input="60"
-		fi
-
-		if [ "$queue_input" = "" ]
-			then
-			    queue_input="$queue_config"
-		fi
-		queue_input_test=$((queue_input + 1))
-		if [ "$queue_input_test" = "1" ] && [ "$queue_input" != "1" ]
-			then
-			    queue_input="5"
-		fi
-
- 	        echo -e "PDMT config file\ncolor=$color_input\nsound=$sound_input\nopen=$open_input\nfolder=$download_folder_input\nretryf=$retryf_input\nretryd=$retryd_input\ndelay=$delay_input\nqueue=$queue_input\nlog=$log_input" > ~/.persepolis_download_manager_terminal/config
-fi
-}
-
 #initialization
-clear screen
-tput civis      -- invisible
-tput rmam
 trap finish exit
-trap ctrl_c 2
 if [ ! -f ~/.persepolis_download_manager_terminal/config ]
 	then
 		echo -e "PDMT config file\ncolor=yes\nsound=yes\nopen=yes\nfolder=~/Downloads/Persepolis\nretryf=5\nretryd=5\ndelay=60\nqueue=2\nlog=no" > ~/.persepolis_download_manager_terminal/config
@@ -765,29 +491,14 @@ if [ "$retryf_config" = "" ]
 	    retryf_config="10"
 fi
 
-logo
-echo -e "$text_color0     "
 input_options=$@
 user=$HOME
 notifications_path="$user/.persepolis_download_manager_terminal/notifications"
 download_folder="$user/Downloads/Persepolis"
 download_folder_temp="$user/.persepolis"
 temp_path="$user/.persepolis_download_manager_terminal/temp"
-mkdir $temp_path       >/dev/null 2>&1
-if [ ! -f $temp_path/pdm_number.txt ]
-    then
-    echo "0"> $temp_path/pdm_number.txt
-    pdm_num=0
-    else
-    pdm_num=`cat $temp_path/pdm_number.txt`
-    if [ $pdm_num -ge 5000 ]
-       then
-           pdm_num=0
-    fi
-    pdm_num=$((pdm_num + 1))
-    echo "$pdm_num"> $temp_path/pdm_number.txt
-fi
-
+icon_path="$user/.persepolis_download_manager_terminal/icon.png"
+pdm_num=$(cat $temp_path/pdm_number.txt)
 first_char=`echo "${download_folder_config:0:2}"`
 if [ "$first_char" = "~/" ]
     then
@@ -797,8 +508,7 @@ fi
 
 if [ ! -d "$download_folder_config" ]
         then
-            echo " Directory not exist! : $download_folder_config"
-            echo " Download file will save as $download_folder"
+            echo "# Directory not exist! : $download_folder_config \n Download file will save as $download_folder" > $temp_path/"zenity$pdm_num".txt
             sleep 2
 	else
 	    download_folder=$download_folder_config
@@ -809,9 +519,8 @@ mkdir "$download_folder/Audios" >/dev/null 2>&1
 mkdir "$download_folder/Videos" >/dev/null 2>&1
 mkdir "$download_folder/Documents" >/dev/null 2>&1
 mkdir "$download_folder/Others" >/dev/null 2>&1
-tput cup 6 0
 #inputs
-while getopts "l:i:p:u:a:j:k:s:e:m:r:o:d:w:f:hvc" options ; do
+while getopts "l:i:p:u:a:j:k:s:e:m:o:d:w:f:hvc" options ; do
 case "${options}" in
     l)
     download_link=${OPTARG}
@@ -854,18 +563,6 @@ case "${options}" in
     ;;
     k)
     site_password=${OPTARG}
-    ;;
-    h)
-    cat $user/.persepolis_download_manager_terminal/help
-    exit
-    ;;
-    v)
-    cat $user/.persepolis_download_manager_terminal/about.txt
-    exit
-    ;;
-    c)
-    config
-    exit
     ;;
     *)
     echo "Wrong Input!"
@@ -924,7 +621,7 @@ if [ "$my_file" != "" ]
 		then
 	    	    download_type=2
 		else
-		    echo "ERROR!!File Not Exist. Adress : $my_file "
+		    echo "#ERROR!!File Not Exist. Adress : $my_file "
 	    	    exit
 	    fi
 
@@ -994,24 +691,6 @@ case "$do_after_download" in
       ;;
 esac
 
-if [ $do_after -ne 1 ]
-   then
-      if [ "$password_input" = "" ]
-          then
-              echo " Please enter root password"
-              read -s password_input
-      fi
-	echo $password_input |sudo -S whoami  2> /dev/null
-	ss=$?
-	while [ $ss -ne 0 ]
-              do
-		echo " WRONG password!!,Please re-enter root password"
-
-                read -s password_input
-                echo $password_input |sudo -S whoami 2> /dev/null
-                ss=$?
-	done
-fi
 #max number of connections
 if [ "$max_num_connections" = "" ]
     then
@@ -1030,22 +709,30 @@ var1=`date +%H:%M`
 if [ "" != "$start_time" ] && [ "$var1" != "$start_time" ]
    then
 
-      echo -e "\n Download will be started at $start_time !"
-      echo -e "$text_color \n \n Press CTRL+C for STOP downloading   "
-      while [ "$var1" != "$start_time" ]
+      echo "# Download will be started at $start_time !" > $temp_path/"zenity$pdm_num".txt
+      while [ "$PID_ZENITY" = "" ] ; do
+		
+		        PID_ZENITY=$(ps -C zenity h -o pid,command | grep "$pdm_num Persepolis Download Manager" | awk '{print $1}')	
+			sleep 1
+      done
+      while [ "$var1" != "$start_time" ] && [ "$PID_ZENITY" != "" ]
              do
 		sleep 10
 		var1=`date +%H:%M`
+		  PID_ZENITY=$(ps h -o pid -p ${PID_ZENITY})
       done
 
-
+	if [ "$PID_ZENITY" = "" ] ; then
+		notify-send -t 10 --icon=$icon_path "Download Canceled!"
+		exit
+	fi
       echo "#################"|cat >> $download_folder/report
       date|cat >> $download_folder/report
       echo "download process starting now"|cat >> $download_folder/report
       echo "#################"|cat >> $download_folder/report
 
 fi
-echo " Please Wait..."
+echo "# Please Wait..." > $temp_path/"zenity$pdm_num".txt
 (
 if [ "" != "$end_time" ]
 	then
@@ -1064,7 +751,10 @@ if [ "" != "$end_time" ]
 		       echo "1">$temp_path/"e$pdm_num".txt
                        aria2_pid=$(cat $temp_path/"p$pdm_num".txt 2> /dev/null)
 		       kill $aria2_pid 2> /dev/null
-		       echo " Time is UP!"
+		       echo "# Time is UP!" > $temp_path/"zenity$pdm_num".txt
+		       echo "100" > $temp_path/"zenityp$pdm_num".txt
+		       sleep 1
+		       notify-send -t 5 --icon=$icon_path "Time is UP!"
 		       echo "#################"|cat >> $download_folder/report
 		       date|cat >> $download_folder/report
 		       echo "Time is UP!" >> $download_folder/report
@@ -1076,4 +766,4 @@ fi
 ) &
 (
 download_process
-)
+) 
