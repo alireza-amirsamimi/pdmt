@@ -5,6 +5,8 @@ Persepolis Download Manager (PDM)
 
 ![ScreenShot](http://s6.picofile.com/file/8202702626/pdmt.jpg)
 
+![ScreenShot](http://s3.picofile.com/file/8205810476/Screenshot_2015_08_12_09_46_26.jpg)
+
 ### Before running install file make sure that all dependencies are installed on your system!
 You must install `aria2` , `pm-utils`, `wget` , `bc` , `vorbis-tools` , `xclip` , `xterm` , `zenity` , `libnotify-bin`
 
