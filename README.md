@@ -20,7 +20,7 @@ You must install `aria2` , `pm-utils`, `wget` , `bc` , `vorbis-tools` , `xclip` 
 
 ## Dependencies for Archlinux
 
-    $ sudo pacman -S aria2 pm-utils wget bc vorbis-tools xdg-utils xclip  libnotify-bin xterm zenity
+    $ sudo pacman -S aria2 pm-utils wget bc vorbis-tools xdg-utils xclip  libnotify xterm zenity
     
 After installing dependencies, change your directory with cd command and run install file
 
