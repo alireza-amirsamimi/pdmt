@@ -1,6 +1,6 @@
 Persepolis Download Manager (PDM)
 =============
-+ version : 1.16
++ version : 1.16.1
 + Persepolis Download Manager is a download manager which is written in bash language and it is based on aria2 and improves aria2.
 
 ![ScreenShot](http://s6.picofile.com/file/8202702626/pdmt.jpg)
@@ -20,7 +20,7 @@ You must install `aria2` , `pm-utils`, `wget` , `bc` , `vorbis-tools` , `xclip` 
 
 ## Dependencies for Archlinux
 
-    $ sudo pacman -S aria2 pm-utils wget bc vorbis-tools xdg-utils xclip  libnotify-bin xterm zenity
+    $ sudo pacman -S aria2 pm-utils wget bc vorbis-tools xdg-utils xclip  libnotify xterm zenity
     
 After installing dependencies, change your directory with cd command and run install file
 

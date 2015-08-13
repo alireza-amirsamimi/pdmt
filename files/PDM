@@ -240,7 +240,7 @@ aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    do
-   save_as_temp=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/FILE:/ {print $0 }'|tail -1|awk '/FILE/ {print $0 }'|awk -F ":" '{print $2}')
+   save_as_temp=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/FILE:/ {print $0 }'|tail -1|awk '/FILE/ {print $0 }'|awk '/\/home/ {print $0 }')   progress_title=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1)
    progress_title=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1)
    download_percent=$(echo "$progress_title"| awk -F/ '{ print $2 }' | awk -F"(" '{ print $2 }' | awk -F")" '{ print $1 }'|awk -F"%" '{ print $1 }')
    progress_title_percent=$(echo "$progress_title" | awk '{ print $2 }')
@@ -273,9 +273,9 @@ stop (){
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 case $download_flag in
      0)
-        save_as_temp=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/Download complete: / {print $0 }'|awk -F ":" '{print $4}')
+     save_as_temp=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/Download complete: / {print $0 }'|awk '/\/home/ {print $0 }')
      file_extension
-     save_as_temp=$(echo ${save_as_temp:1})
+     save_as_temp="$download_folder_temp/$file_name_extension"
      mv -n "$save_as_temp" "$save_as"
      if [ "$my_file" = "" ]
      	then

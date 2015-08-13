@@ -5,4 +5,4 @@ sudo apt-get install aria2 xclip  wget  pm-utils  bc vorbis-tools  libnotify-bin
 for fedora:
 sudo dnf install aria2  wget  xclip pm-utils  bc vorbis-tools  libnotify-bin
 for arch:
-sudo pacman -S aria2  wget xclip pm-utils  bc vorbis-tools  libnotify-bin
+sudo pacman -S aria2  wget xclip pm-utils  bc vorbis-tools  libnotify
