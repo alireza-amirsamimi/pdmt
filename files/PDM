@@ -282,7 +282,7 @@ case $download_flag in
 	    echo "100" > $temp_path/"zenityp$pdm_num".txt
      	    if [ "$open_config" = "yes" ]
 		  then
-	     	      xdg-open $download_folder >/dev/null 2>&1
+	     	      xdg-open $download_folder/$file_type >/dev/null 2>&1
      	    fi
 	else
 	    echo "0" > $temp_path/"zenityp$pdm_num".txt
