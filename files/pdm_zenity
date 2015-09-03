@@ -47,47 +47,13 @@ if [ $? -eq 1 ]
 fi
 echo "$download_info"
 ip=$(echo "$download_info" | awk -F"|" '{ print $1 }')
-if [ "$ip" = "" ]
-   then
-       ip="chroniccoughallergies"
-fi       
 port=$(echo "$download_info" | awk -F"|" '{ print $2 }')
-if [ "$port" = "" ]
-   then
-       port="chroniccoughallergies"
-fi       
-
 proxy_user=$(echo "$download_info" | awk -F"|" '{ print $3 }')
-if [ "$proxy_user" = "" ]
-   then
-       proxy_user="chroniccoughallergies"
-fi       
 proxy_pass=$(echo "$download_info" | awk -F"|" '{ print $4 }')
-if [ "$proxy_pass" = "" ]
-   then
-       proxy_pass="chroniccoughallergies"
-fi       
 download_user=$(echo "$download_info" | awk -F"|" '{ print $5 }')
-if [ "$download_user" = "" ]
-   then
-       download_user="chroniccoughallergies"
-fi       
 download_pass=$(echo "$download_info" | awk -F"|" '{ print $6 }')
-if [ "$download_pass" = "" ]
-   then
-       download_pass="chroniccoughallergies"
-fi       
 start_time=$(echo "$download_info" | awk -F"|" '{ print $7 }')
-if [ "$start_time" = "" ]
-   then
-       start_time="chroniccoughallergies"
-fi       
 end_time=$(echo "$download_info" | awk -F"|" '{ print $8 }')
-if [ "$end_time" = "" ]
-   then
-       end_time="chroniccoughallergies"
-fi       
-
 maximum_connections=$(echo "$download_info" | awk -F"|" '{ print $9 }')
 if [ "$maximum_connections" = "" ]
    then
@@ -102,7 +68,6 @@ case "$do_after_download" in
       ;;
       * )
       do_after="2"
-      password_input="chroniccoughallergies"
       ;;
       
 esac
@@ -128,6 +93,68 @@ if [ "$do_after" -eq "1" ]
               done
 fi
 }
+pdmt_command_maker () {
+i_counter=0
+for i in "$maximum_connections" "$ip" "$port" "$proxy_user" "$proxy_pass" "$download_user" "$download_pass" "$start_time" "$end_time" "$do_after_download" "$password_input" "$fname" "$referer" "$cfile" "$user_agent" "$header";do
+	((i_counter ++))	
+	if [ "$i" != "" ];then
+		case "$i_counter" in
+			"1")
+			pdmt_command="$pdmt_command -m $maximum_connections"
+			;;
+			"2")
+			pdmt_command="$pdmt_command -i $ip"
+			;;
+			"3")
+			pdmt_command="$pdmt_command -p $port"
+			;;
+			"4")
+			pdmt_command="$pdmt_command -u $proxy_user"
+			;;
+			"5")
+			pdmt_command="$pdmt_command -a $proxy_pass"
+			;;
+			"6")
+			pdmt_command="$pdmt_command -j $download_user"
+			;;
+			"7")
+			pdmt_command="$pdmt_command -k $download_pass"
+			;;
+			"8")
+			pdmt_command="$pdmt_command -s $start_time"
+			;;
+			"9")
+			pdmt_command="$pdmt_command -e $end_time"
+			;;
+			"10")
+			pdmt_command="$pdmt_command -d $do_after_download"
+			;;
+			"11")
+			pdmt_command="$pdmt_command -w $password_input"
+			;;
+			"12")
+			if [ "$download_type" == "1" ];then
+				pdmt_command="$pdmt_command -o --out=$fname"
+			fi
+			;;
+			"13")
+			pdmt_command="$pdmt_command -o --referer=\"$referer\""
+			;;
+			"14")
+			pdmt_command="$pdmt_command -o  --load-cookies=\"$cfile\""
+			;;
+			"15")
+			pdmt_command="$pdmt_command -o  --user-agent=\"$user_agent\""
+			;;
+			"16")
+			pdmt_command="$pdmt_command -o  --header=\"$header\""
+			;;
+		esac
+	fi
+done
+
+}
+
 trap finish exit
 user=$HOME
 temp_path="$user/.persepolis_download_manager_terminal/temp"
@@ -147,13 +174,28 @@ if [ ! -f $temp_path/pdm_number.txt ]
 fi
 
 
-while getopts "l:f:" options ; do
+while getopts "l:f:b:c:g:u:h:" options ; do
 case "${options}" in
     l)
     link=${OPTARG}
     ;;
     f)
     my_file=${OPTARG}
+    ;;
+    b)
+    referer=${OPTARG}
+    ;;
+    c)
+    cfile=${OPTARG}
+    ;;
+    g)
+    fname=${OPTARG}
+    ;;
+    u)
+    user_agent=${OPTARG}
+    ;;
+    h)
+    header=${OPTARG}
     ;;
 esac
 done
@@ -180,15 +222,14 @@ if [ "$link" = "" ] && [ "$my_file" = "" ] ; then
 		fi		
 fi
 download_form
-
-
+pdmt_command_maker
 case "$download_type" in
 			1)
-			  ~/.persepolis_download_manager_terminal/PDM -l "$link" -m "$maximum_connections" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input"  &
+			  ~/.persepolis_download_manager_terminal/PDM -l "$link" $pdmt_command   &
 			
 			;;
 			*)  
-			  ~/.persepolis_download_manager_terminal/PDM -f "$my_file" -m "$maximum_connections" -i "$ip" -p "$port" -u "$proxy_user" -a "$proxy_pass" -j "$download_user" -k "$download_pass" -s "$start_time" -e "$end_time" -d "$do_after_download" -w "$password_input" &  
+			  ~/.persepolis_download_manager_terminal/PDM -f "$my_file" $pdmt_command  &  
 			;;
 esac
 

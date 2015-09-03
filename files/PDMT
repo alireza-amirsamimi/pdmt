@@ -64,10 +64,10 @@ finish2
 }
 
 log () {
-log_counter=$((log_counter + 1))
+((log_counter ++))
 if [ "$log_counter" -gt "10" ] && [ "$log_config" = "yes" ]
    	then
-   		log_counter_link=$((log_counter_link + 1))
+   		((log_counter_link ++))
    		if [ "$log_counter_link" -eq "1" ]
    	    		then
 				date|cat >> $download_folder/log
@@ -94,6 +94,9 @@ case "$extension" in
 	;;
 	doc|docx|html|htm|fb2|odt|sxw|pdf|ps|rtf|tex|txt)
 	file_type="Documents"
+	;;
+        a|ar|cpio|shar|LBR|iso|lbr|mar|tar|bz2|F|gz|lz|lzma|lzo|rz|sfark|sz|xz|Z|z|infl|7z|s7z|ace|afa|alz|apk|arc|arj|b1|ba|bh|cab|cfs|cpt|dar|dd|dgc|dmg|ear|gca|ha|hki|ice|jar|kgb|lzh|lha|lzx|pac|partimg|paq6|paq7|paq8|pea|pim|pit|qda|rar|rk|sda|sea|sen|sfx|sit|sitx|sqx|tar.gz|tgz|tar.Z|tar.bz2|tbz2|tar.lzma|tlz|uc|uc0|uc2|ucn|ur2|ue2|uca|uha|war|wim|xar|xp3|yz1|zip|zipx|zoo|zpaq|zz|ecc|par|par2)
+	file_type="Compressed"
 	;;
 	*)
 	file_type="Others"
@@ -152,7 +155,7 @@ if [ "$fail_counter" = "" ]
  	    echo "0" > $temp_path/"f$pdm_num".txt
        	    fail_counter="0"
         else
-     	    fail_counter=$((fail_counter + 1))
+     	    ((fail_counter ++ ))
 	    echo "$fail_counter" > $temp_path/"f$pdm_num".txt
 
 fi
@@ -161,6 +164,13 @@ if [ "$fail_counter" = "$retryf_config" ]
 	    echo "2"> $temp_path/"s$pdm_num".txt
 	else
 	    ifail="0"
+            echo " Download Failed!reconnecting... .be patient!"
+	    echo "#################"|cat >> $download_folder/report
+     	    date|cat >> $download_folder/report
+     	    echo "$download_link"|cat >> $download_folder/report
+	    echo "Download Failed!" | cat >> $download_folder/report
+   	    cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
+	    echo "#################"|cat >> $download_folder/report
 	    until ping -c 1 -w 5 www.google.com >/dev/null 2>&1 || [ "$ifail" = "$retryd_config" ]
 		do
 		    clear
@@ -168,14 +178,21 @@ if [ "$fail_counter" = "$retryf_config" ]
 		    echo -e "$text_color Check your internet connection!! \n$progress_color PDMT will retry after $delay_config seconds"
 		    if [ "$sound_config" = "yes" ]
 			  then
-	     			 ogg123 -q $notifications_path/connection.ogg
+	     			 paplay $notifications_path/connection.ogg
      		    fi
 		    echo "#################"|cat >> $download_folder/report
      		    date|cat >> $download_folder/report
      		    echo "$download_link"|cat >> $download_folder/report
      		    echo "Internet connection droped!Check your internet connection!" >> $download_folder/report
+		    cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
      		    echo "#################"|cat >> $download_folder/report
-		    sleep $delay_config
+		    delay_config_counter=$delay_config
+		    while [ "$delay_config_counter" != "0" ];do
+			tput cup 12 0
+       			sleep 1
+       			((delay_config_counter --))
+			echo " PDMT will retry after $delay_config_counter s      "
+		    done
 		    ((ifail ++))
 	    done
 	    sleep 10
@@ -183,18 +200,13 @@ if [ "$fail_counter" = "$retryf_config" ]
 	    if [ "$end_status" != "1" ]
      		then
 	    	    echo "4"> $temp_path/"s$pdm_num".txt
-	    	    echo " Download Failed!reconnecting... .be patient!"
-	    	    echo "#################"|cat >> $download_folder/report
-     		    date|cat >> $download_folder/report
-     		    echo "$download_link"|cat >> $download_folder/report
-	            echo "Download Failed!" | cat >> $download_folder/report
-     		    echo "#################"|cat >> $download_folder/report
 	        else
 	            echo "2"> $temp_path/"s$pdm_num".txt
 	    fi
 fi
 }
-download_func () {
+download () {
+progress_dialog &
 size_remote=$(wget --spider -O "$temp_path/salam"  --no-check-certificate -T 5 -t 3 -e use-proxy=yes --proxy-user="$user_name" --proxy-password="$password_name" -e --http-proxy="$ip_port" --user="$site_user" --password="$site_password" "$download_link" 2>&1 | awk '/Length/ { print $2 }')
 if [ "$size_remote" = "" ]
    then
@@ -232,7 +244,6 @@ if [ "$?" -eq "0" ]
 fi
 
 aria2c --on-download-start="$temp_path/aria_ready_file"  --all-proxy=$ip_port --summary-interval=1 --all-proxy-passwd=$password_name --all-proxy-user=$user_name --http-user=$site_user_http --http-passwd=$site_password_http --ftp-user=$site_user_ftp --ftp-passwd=$site_password_ftp -s 16 -x $x_parameter -k 1M -c -d $download_folder_temp $aria2_options "$download_link" 2>&1 | cat > $temp_path/"$pdm_num".txt
-
 echo "1" |cat > $temp_path/"r$pdm_num".txt
 aria_status=$(cat $temp_path/"$pdm_num".txt|tail -50|egrep -a "download completed|download in-progress" )
 end_status=$(cat $temp_path/"e$pdm_num".txt 2> /dev/null)
@@ -387,15 +398,6 @@ echo -e "$text_color0  "
 }
 
 
-
-
-download (){
-
-(download_func) & (progress_dialog)
-
-}
-
-
 stop (){
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 case $download_flag in
@@ -416,7 +418,7 @@ case $download_flag in
      fi
      if [ "$sound_config" = "yes" ]
 	  then
-	      ogg123 -q $notifications_path/ok.ogg
+	      paplay $notifications_path/ok.ogg
      fi
      echo "#################"|cat >> $download_folder/report
      date|cat >> $download_folder/report
@@ -456,7 +458,7 @@ case $download_flag in
      echo -e " You can find summary & history of downloads & download links in \n $download_folder/report "
      if [ "$sound_config" = "yes" ]
 	  then
-	      ogg123 -q $notifications_path/fail.ogg
+	      paplay $notifications_path/fail.ogg
      fi
      echo "#################"|cat >> $download_folder/report
      date|cat >> $download_folder/report
@@ -473,6 +475,11 @@ esac
 
 
 download_single () {
+echo "#################"|cat >> $download_folder/report
+date|cat >> $download_folder/report
+echo "$download_link"|cat >> $download_folder/report
+echo "Download starting now!"|cat >> $download_folder/report
+echo "#################"|cat >> $download_folder/report
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 while [ "$download_flag" != "0" ] && [ "$download_flag" != "2" ] && [ "$download_flag" != "1" ]
 	do
@@ -485,14 +492,21 @@ while [ "$download_flag" != "0" ] && [ "$download_flag" != "2" ] && [ "$download
 
 	while [ "$download_flag" = "4" ]
 		do
-
+		clear
+		logo
 		echo " Reconnecting... .be patient"
 		echo "#################"|cat >> $download_folder/report
                 date|cat >> $download_folder/report
                 echo "$download_link"|cat >> $download_folder/report
                 echo "Reconnecting"|cat >> $download_folder/report
                 echo "#################"|cat >> $download_folder/report
-
+		sleep_counter=20
+		while [ "$sleep_counter" != "0" ];do
+			tput cup 12 0
+       			sleep 1
+       			((sleep_counter --))
+			echo " PDMT will retry after $sleep_counter s      "
+		done		
 		while [ "$aria_ready" != "1" ]
 		      do
 		      aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
@@ -501,7 +515,7 @@ while [ "$download_flag" != "0" ] && [ "$download_flag" != "2" ] && [ "$download
 		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 		if   [ "$download_flag" = "4" ]
 		     then
-		         echo "3"> $temp_path/"s$pdm_num".txt
+			echo "3"> $temp_path/"s$pdm_num".txt
                 fi
                 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 	done
@@ -555,7 +569,7 @@ if [ "$download_flag" != "1" ]
      	    fi
 	    if [ "$sound_config" = "yes" ]
 	         then
-	             ogg123 -q $notifications_path/queue.ogg
+	             paplay $notifications_path/queue.ogg
             fi
 	    echo "#################"|cat >> $download_folder/report
 	    date|cat >> $download_folder/report
@@ -808,6 +822,7 @@ mkdir $download_folder_temp >/dev/null 2>&1
 mkdir "$download_folder/Audios" >/dev/null 2>&1
 mkdir "$download_folder/Videos" >/dev/null 2>&1
 mkdir "$download_folder/Documents" >/dev/null 2>&1
+mkdir "$download_folder/Compressed" >/dev/null 2>&1
 mkdir "$download_folder/Others" >/dev/null 2>&1
 tput cup 6 0
 #inputs
@@ -838,7 +853,8 @@ case "${options}" in
     max_num_connections=${OPTARG}
     ;;
     o)
-    aria2_options=${OPTARG}
+    aria2_options_back=${OPTARG}
+    aria2_options="$aria2_options $aria2_options_back"
     ;;
     d)
     do_after_download=${OPTARG}
@@ -874,46 +890,6 @@ case "${options}" in
 esac
 done
 
-#flashgot_gtk input correction
-if [ "$ip_name" = "chroniccoughallergies" ]
-   then
-       ip_name=""
-fi
-
-if [ "$port_name" = "chroniccoughallergies" ]
-   then
-       port_name=""
-fi
-
-if [ "$user_name" = "chroniccoughallergies" ]
-   then
-       user_name=""
-fi
-
-if [ "$password_name" = "chroniccoughallergies" ]
-   then
-       password_name=""
-fi
-
-if [ "$start_time_input" = "chroniccoughallergies" ]
-   then
-       start_time_input=""
-fi
-
-if [ "$end_time_input" = "chroniccoughallergies" ]
-   then
-       end_time_input=""
-fi
-
-if [ "$site_user" = "chroniccoughallergies" ]
-   then
-       site_user=""
-fi
-
-if [ "$site_password" = "chroniccoughallergies" ]
-   then
-       site_password=""
-fi
 
 #find link & define download type
 if [ "$my_file" != "" ]

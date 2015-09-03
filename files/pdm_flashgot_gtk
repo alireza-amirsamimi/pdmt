@@ -1,13 +1,60 @@
 #!/bin/bash
 #flashgot_status=0 ready , flashgot_status=1 not ready
-link="$1"
+pdm_command_maker () {
+i_counter=0
+for i in "$fname" "$referer" "$cfile" "$user_agent" "$header";do
+	((i_counter ++))	
+	if [ "$i" != "" ];then
+		case "$i_counter" in
+			"1")
+			if [ "$flashgot_line" == "1" ];then
+				pdm_command="$pdm_command -g $fname"
+			fi			
+			;;
+			"2")
+			pdm_command="$pdm_command -b \"$referer\""
+			;;
+			"3")
+			pdm_command="$pdm_command -c \"$cfile\""
+			;;
+			"4")
+			pdm_command="$pdm_command -u \"$user_agent\""
+			;;
+			"5")
+			pdm_command="$pdm_command -h \"$header\""
+			;;
+		esac
+	fi
+done
+
+}
+
 user=$HOME
 temp_path="$user/.persepolis_download_manager_terminal/temp"
 mkdir $temp_path       >/dev/null 2>&1
-
-
-temp_path="$user/.persepolis_download_manager_terminal/temp"
-
+while getopts "l:c:b:g:u:h:" options ; do
+case "${options}" in
+    l)
+    link=${OPTARG}
+    ;;
+    b)
+    referer=${OPTARG}
+    ;;
+    c)
+    cfile=${OPTARG}
+    ;;
+    g)
+    fname=${OPTARG}
+    ;;
+    u)
+    user_agent=${OPTARG}
+    ;;
+    h)
+    header=${OPTARG}
+    ;;
+esac
+done
+fname=${fname// /_}
 flashgot_status=$(cat $temp_path/flashgot.txt ) 
 if [ "$flashgot_status" != "1" ]
    then
@@ -23,12 +70,13 @@ fi
 pdm="$user/.persepolis_download_manager_terminal/pdm_zenity"  
 
 flashgot_line=$(cat $temp_path/flashgot_queue.txt|wc -l)
+pdm_command_maker
 case "$flashgot_line" in
 			1)
-			  $pdm -l "$link"
+			  $pdm -l "$link" $pdm_command
 			;;
 			*) 
-			  $pdm -f $temp_path/flashgot_queue.txt 
+			  $pdm -f $temp_path/flashgot_queue.txt $pdm_command 
 			;;
 esac
 exit       
