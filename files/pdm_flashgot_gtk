@@ -29,6 +29,9 @@ done
 
 }
 
+HOME=$(eval echo ~${USER})
+export HOME
+
 user=$HOME
 temp_path="$user/.persepolis_download_manager_terminal/temp"
 mkdir $temp_path       >/dev/null 2>&1
