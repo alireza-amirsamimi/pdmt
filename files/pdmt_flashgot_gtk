@@ -1,8 +1,12 @@
 #!/bin/bash
 #flashgot_status=0 ready , flashgot_status=1 not ready
 flashgot_function() {
-
-download_info=`zenity --forms  --text="Enter Download options \n (If you don't use any options,leave the fields empty!)" --title="PDMT" --add-entry="Proxy IP(Host):"  --add-entry="Proxy Port:" --add-entry="Proxy UserName:" --add-password="Proxy PassWord:" --add-entry="Download UserName:" --add-password="Download PassWord:"  --add-entry="Start Time(24 hour format):" --add-entry="End Time(24 hour format):"  --add-entry="Number of Connections:(default and maximum is 16)" --add-list="What should PDMT do after Download?" --list-values="nothing|shutdown|hibernate|suspend"`
+if [ "$fname" == "" ];then
+	gtk_name="${link:0:40} ... ${link: -10}"
+	else
+	gtk_name="$fname"
+fi
+download_info=`zenity --forms  --text="Enter Download options \n (If you don't use any options,leave the fields empty!)" --title="$gtk_name" --add-entry="Proxy IP(Host):"  --add-entry="Proxy Port:" --add-entry="Proxy UserName:" --add-password="Proxy PassWord:" --add-entry="Download UserName:" --add-password="Download PassWord:"  --add-entry="Start Time(24 hour format):" --add-entry="End Time(24 hour format):"  --add-entry="Number of Connections:(default and maximum is 16)" --add-list="What should PDMT do after Download?" --list-values="nothing|shutdown|hibernate|suspend"`
 if [ $? -eq 1 ]
    then
        exit
@@ -113,7 +117,7 @@ done
 
 }
 user=$HOME
-temp_path="$user/.persepolis_download_manager_terminal/temp"
+temp_path="/tmp/persepolisdm"
 mkdir $temp_path       >/dev/null 2>&1
 
 while getopts "l:c:b:g:u:h:" options ; do

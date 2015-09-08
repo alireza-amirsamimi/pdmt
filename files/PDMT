@@ -14,7 +14,7 @@ rm -v $temp_path/"s$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"$pdm_num".txt  >/dev/null 2>&1
 rm -v $temp_path/"e$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"d$pdm_num".txt >/dev/null 2>&1
-rm -v $temp_path/aria_ready_file >/dev/null 2>&1
+rm -v $temp_path_2/aria_ready_file >/dev/null 2>&1
 rm -v $temp_path/"f$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"l$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"qf$pdm_num".txt >/dev/null 2>&1
@@ -212,7 +212,7 @@ if [ "$size_remote" = "" ]
    then
        size_remote="0"
 fi
-size_remote=`echo "scale=0;$size_remote / 1048576"| bc`
+size_remote=$((size_remote / 1048576))
 case $size_m in
 [2-9]|1[0-5])
 x_para=$size_m
@@ -243,7 +243,7 @@ if [ "$?" -eq "0" ]
      site_password_ftp=""
 fi
 
-aria2c --on-download-start="$temp_path/aria_ready_file"  --all-proxy=$ip_port --summary-interval=1 --all-proxy-passwd=$password_name --all-proxy-user=$user_name --http-user=$site_user_http --http-passwd=$site_password_http --ftp-user=$site_user_ftp --ftp-passwd=$site_password_ftp -s 16 -x $x_parameter -k 1M -c -d $download_folder_temp $aria2_options "$download_link" 2>&1 | cat > $temp_path/"$pdm_num".txt
+aria2c --on-download-start="$temp_path_2/aria_ready_file"  --all-proxy=$ip_port --summary-interval=1 --all-proxy-passwd=$password_name --all-proxy-user=$user_name --http-user=$site_user_http --http-passwd=$site_password_http --ftp-user=$site_user_ftp --ftp-passwd=$site_password_ftp -s 16 -x $x_parameter -k 1M -c -d $download_folder_temp $aria2_options "$download_link" 2>&1 | cat > $temp_path/"$pdm_num".txt
 echo "1" |cat > $temp_path/"r$pdm_num".txt
 aria_status=$(cat $temp_path/"$pdm_num".txt|tail -50|egrep -a "download completed|download in-progress" )
 end_status=$(cat $temp_path/"e$pdm_num".txt 2> /dev/null)
@@ -786,18 +786,16 @@ user=$HOME
 notifications_path="$user/.persepolis_download_manager_terminal/notifications"
 download_folder="$user/Downloads/Persepolis"
 download_folder_temp="$user/.persepolis"
-temp_path="$user/.persepolis_download_manager_terminal/temp"
+temp_path="/tmp/persepolisdm"
+temp_path_2="$user/.persepolis_download_manager_terminal/temp"
 mkdir $temp_path       >/dev/null 2>&1
+mkdir $temp_path_2       >/dev/null 2>&1
 if [ ! -f $temp_path/pdm_number.txt ]
     then
     echo "0"> $temp_path/pdm_number.txt
     pdm_num=0
     else
     pdm_num=`cat $temp_path/pdm_number.txt`
-    if [ $pdm_num -ge 5000 ]
-       then
-           pdm_num=0
-    fi
     pdm_num=$((pdm_num + 1))
     echo "$pdm_num"> $temp_path/pdm_number.txt
 fi
@@ -996,11 +994,11 @@ fi
 
 
 #main code
-echo "#!/bin/bash" >$temp_path/aria_ready_file
-echo "echo "0"|cat > $temp_path/"r$pdm_num".txt" >> $temp_path/aria_ready_file
-echo "echo "3"|cat >$temp_path/"s$pdm_num".txt" >> $temp_path/aria_ready_file
-echo "ps -A | grep -i aria2c | awk {'print \$1'}|tail -1|cat > $temp_path/"p$pdm_num".txt" >> $temp_path/aria_ready_file
-chmod +x $temp_path/aria_ready_file
+echo "#!/bin/bash" > $temp_path_2/aria_ready_file
+echo "echo "0"|cat > $temp_path/"r$pdm_num".txt" >> $temp_path_2/aria_ready_file
+echo "echo "3"|cat > $temp_path/"s$pdm_num".txt" >> $temp_path_2/aria_ready_file
+echo "ps -A | grep -i aria2c | awk {'print \$1'}|tail -1|cat > $temp_path/"p$pdm_num".txt" >> $temp_path_2/aria_ready_file
+chmod +x $temp_path_2/aria_ready_file
 echo "3"> $temp_path/"s$pdm_num".txt
 var1=`date +%H:%M`
 if [ "" != "$start_time" ] && [ "$var1" != "$start_time" ]

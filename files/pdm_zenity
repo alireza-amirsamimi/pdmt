@@ -38,8 +38,12 @@ esac
 }
 
 download_form() {
-
-download_info=`zenity --forms  --text="Enter Download options \n (If you don't use any options,leave the fields empty!)" --title="Persepolis Download Manager" --add-entry="Proxy IP(Host):"  --add-entry="Proxy Port:" --add-entry="Proxy UserName:" --add-password="Proxy PassWord:" --add-entry="Download UserName:" --add-password="Download PassWord:"  --add-entry="Start Time(24 hour format):" --add-entry="End Time(24 hour format):" --add-entry="Number of Connections:(default and maximum is 16)"  --add-list="What should Persepolis do after Download?" --list-values="nothing|shutdown|hibernate|suspend"`
+if [ "$fname" == "" ];then
+	gtk_name="${link:0:40} ... ${link: -10}"
+	else
+	gtk_name="$fname"
+fi
+download_info=`zenity --forms  --text="Enter Download options \n (If you don't use any options,leave the fields empty!)" --title="$gtk_name" --add-entry="Proxy IP(Host):"  --add-entry="Proxy Port:" --add-entry="Proxy UserName:" --add-password="Proxy PassWord:" --add-entry="Download UserName:" --add-password="Download PassWord:"  --add-entry="Start Time(24 hour format):" --add-entry="End Time(24 hour format):" --add-entry="Number of Connections:(default and maximum is 16)"  --add-list="What should Persepolis do after Download?" --list-values="nothing|shutdown|hibernate|suspend"`
 if [ $? -eq 1 ]
    then
 	download_info_exit=1
@@ -157,18 +161,16 @@ done
 
 trap finish exit
 user=$HOME
-temp_path="$user/.persepolis_download_manager_terminal/temp"
+temp_path="/tmp/persepolisdm"
+temp_path_2="$user/.persepolis_download_manager_terminal/temp"
 mkdir $temp_path       >/dev/null 2>&1
+mkdir $temp_path_2       >/dev/null 2>&1
 if [ ! -f $temp_path/pdm_number.txt ]
     then
     echo "0"> $temp_path/pdm_number.txt
     pdm_num=0
     else
     pdm_num=`cat $temp_path/pdm_number.txt`
-    if [ $pdm_num -ge 5000 ]
-       then
-           pdm_num=0
-    fi
     pdm_num=$((pdm_num + 1))
     echo "$pdm_num"> $temp_path/pdm_number.txt
 fi

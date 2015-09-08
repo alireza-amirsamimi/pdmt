@@ -30,7 +30,7 @@ done
 }
 
 user=$HOME
-temp_path="$user/.persepolis_download_manager_terminal/temp"
+temp_path="/tmp/persepolisdm"
 mkdir $temp_path       >/dev/null 2>&1
 while getopts "l:c:b:g:u:h:" options ; do
 case "${options}" in
