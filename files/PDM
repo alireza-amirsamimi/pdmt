@@ -265,6 +265,7 @@ while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
    if [ "$download_percent" != "100" ] ; then
 	   echo "$download_percent" > $temp_path/"zenityp$pdm_num".txt
    fi
+   log
    sleep 2.2
    download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
    aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
