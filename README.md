@@ -190,8 +190,7 @@ you can find summary of your downloads(link , ...) in a text file :
 
 	$ ~/Downloads/Persepolis/report
 
-
-
+![ScreenShot](http://s6.picofile.com/file/8205821142/report.jpg)
 ##PersepolisDM GUI
 you can use PersepolisDM simple GUI for Downloading too.
 
@@ -200,7 +199,7 @@ After installation you can find PersepolisDM in your menu
 ![ScreenShot](http://s3.picofile.com/file/8204789868/2.jpg)
 
 Click on icon
-select your Donload type (Download single file or queue)
+select your Download type (Download single file or queue)
 
 ![ScreenShot](http://s3.picofile.com/file/8205813026/single1.jpg)
 
