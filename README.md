@@ -12,15 +12,15 @@ You must install `aria2` , `pm-utils`, `wget` , `bc` , `vorbis-tools` , `xclip` 
 
 ## Dependencies for Ubuntu
 
-    $ sudo apt-get install aria2 pm-utils wget bc vorbis-tools xdg-utils xclip  libnotify-bin xterm zenity
+    $ sudo apt-get install aria2 pm-utils wget vorbis-tools xdg-utils xclip  libnotify-bin xterm zenity
     
 ## Dependencies for Fedora
 
-    $ sudo yum install aria2 pm-utils wget bc vorbis-tools xdg-utils xclip  libnotify-bin xterm zenity
+    $ sudo yum install aria2 pm-utils wget vorbis-tools xdg-utils xclip  libnotify xterm zenity
 
 ## Dependencies for Archlinux
 
-    $ sudo pacman -S aria2 pm-utils wget bc vorbis-tools xdg-utils xclip  libnotify xterm zenity
+    $ sudo pacman -S aria2 pm-utils wget vorbis-tools xdg-utils xclip  libnotify xterm zenity
     
 After installing dependencies, change your directory with cd command and run install file
 
