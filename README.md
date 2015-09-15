@@ -57,45 +57,45 @@ and ...
 
 ## Options
 
--l
++ -l
       Your Download link.(Use "" for links)
 
 	$ pdmt -l "https://www.google.com/images/srpr/logo11w.png"
 
--c
++ -c
       Configure PDMT!
 
 	$ pdmt -c
 
--i
++ -i
 	If you use proxy , Set Proxy IP.for example 127.0.0.1
 
 
--p
++ -p
 	If you use proxy , Set Proxy  Port.for example 8580
 
 	$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -i 127.0.0.1  -p 8580
 
--u
++ -u
 	If you use proxy and your proxy requires username,enter
         Proxy Username.
 
--a
++ -a
 	If you use proxy and your proxy requires password,enter
         Proxy Password.
 
 	$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -i 127.0.0.1 -p 8580 -u hasan -a kamran
         
--j
++ -j
       Set HTTP user.
 
 
--k
++ -k
       Set HTTP password.
 
 	$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -j alireza -k salam
 
--s
++ -s
 	If you want your download to start at specific time ,
         Set Start time for download in form hh:mm (24 hour format).
         for example 13:24
@@ -103,7 +103,7 @@ and ...
 
 	$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -s 13:24
 
--e
++ -e
 	If you want your download to pause at specific time ,
         Set End time for download in form hh:mm (24 hour format).
         for example 2:25
@@ -115,34 +115,34 @@ exaple for start at 2:00 and end at 7:00
 
 	$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -s 2:00 -e 7:00
 
--m
++ -m
 	PDMT selects maximum possible 
         number of connections automatically.but you can choose maximum number
         yourself(1-16).default is 16.
 
 	$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -m 3
 
--o
++ -o
 	Aria2 options
         you can write aria2 options after o,for example:
 
 	$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -o --max-download-limit=10k
         
         
--d
++ -d
 	After download PDMT can shutdown , hibernate , suspend computer.
         (options are shutdown , hibernate , suspend )
 
 
 
--w
++ -w
       Root Password.if you choose one of the after download options,you must 
         enter root password.if you don't enter password after -w or if you enter
         wrong password,PDMT will ask you for root password before start downloading.
 
 	$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -d shutdown -w salam
 
--f
++ -f
       Download queue.if you have many links and you want to download them in
         queue(one by one),you can use this option.links must enterd in a file
         in seperate lines.every line for one link with no space between lines.
@@ -150,11 +150,11 @@ exaple for start at 2:00 and end at 7:00
         for example :
 	$ pdmt -f /home/alireza/links.txt
 
--h
++ -h
       HELP
 	$ pdmt -h
 
--v
++ -v
       Version of PDMT
 
 	$ pdmt -v
@@ -207,15 +207,15 @@ then after opening firefox go to Extensions and find flashgot
 then click on preferences and click add
 write pdmt and select this file for executble path
 
-$ ~/.persepolis_download_manager_terminal/pdmt_flashgot_gtk
+	$ ~/.persepolis_download_manager_terminal/pdmt_flashgot_gtk
 
 or if you want to FlashGot use GUI use this address
 
-$ ~/.persepolis_download_manager_terminal/pdm_flashgot_gtk
+	$ ~/.persepolis_download_manager_terminal/pdm_flashgot_gtk
 
 then in the white field copy/paste the following codes
 
-$  [-l URL][-g FNAME][-b REFERER][-c COOKIE][-u UA][-h HEADERS]
+	$  [-l URL][-g FNAME][-b REFERER][-c COOKIE][-u UA][-h HEADERS]
 
 ![ScreenShot](http://s3.picofile.com/file/8210020868/Screenshot_2015_09_03_16_22_31.jpg)
 
