@@ -205,7 +205,7 @@ select your Download type (Download single file or queue)
 
 select Download type (Download single file or queue)
 
-after that PersepolisDM guide you :)
+after that PersepolisDM will guide you :)
 
 ##Configuring PersepolisDM to use with FlashGot
 open firefox
