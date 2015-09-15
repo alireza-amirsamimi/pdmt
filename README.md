@@ -63,7 +63,7 @@ and ...
 	$ pdmt -l "https://www.google.com/images/srpr/logo11w.png"
 
  -c
-      Configure PDMT!
+      Configure PDMT!change download folder and ...
 
 	$ pdmt -c
 
@@ -151,7 +151,8 @@ exaple for start at 2:00 and end at 7:00
 	$ pdmt -f /home/alireza/links.txt
 
  -h
-      HELP
+      See help of pdmt
+
 	$ pdmt -h
 
  -v
@@ -174,6 +175,21 @@ or (with proxy and start time and end time and shutdown after end time)
 or for download queue
 
 	$ pdmt -f /home/alireza/links.txt  -i 127.0.0.1 -p 8580 -s 2:30 -e 7:00 -d shutdown -w mypass
+
+When download completes you can find your file in :
+	
+	$ ~/Downloads/Persepolis
+
+before download completes you can find your file in :
+
+	$ ~/.persepolis 
+
+if your download canceled or failed you can get link to PDMT again .PDMT will resume download.
+
+you can find summary of your downloads(link , ...) in a text file :
+
+	$ ~/Downloads/Persepolis/report
+
 
 
 ##PersepolisDM GUI
