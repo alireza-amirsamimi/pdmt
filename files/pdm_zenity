@@ -4,15 +4,40 @@ if [ "$download_info_exit" != "1" ] ;then
 	echo "1" > $temp_path/"zenityexit$pdm_num".txt
 fi
 }
+youtube () {
+if [ "$ip" == "" ];then
+	ip_port=""
+   else
+	ip_port="$ip:$port"
+fi
+youtube-dl -F --proxy "$ip_port" -u "$download_user" -p "$download_pass"  $link > $temp_path/"youtube$pdm_num".txt
+if [ "$?" != "0" ];then
+	notify-send --icon=$icon_path "Error!"
+	exit
+fi
+info_line_number_y=$(cat "$temp_path/youtube$pdm_num".txt|grep -n "Available formats"|awk -F ":" '{print $1}')
+line_nambers_y=$(cat "$temp_path/youtube$pdm_num".txt | wc -l)
+diffrence_line_number_y=$((line_nambers_y - info_line_number_y -1))
+fname=`youtube-dl --get-filename --proxy "$ip_port" -u "$download_user" -p "$download_pass"  $link | tail -1`
+if [ "$fname" == "" ];then
+	fname="videoplayback"
+fi
+f_number=`cat $temp_path/"youtube$pdm_num".txt | tail -$diffrence_line_number_y|zenity --list --width=700 --height=450 --title="$fname" --column="information"|awk '{print $1}'`
+if [ "$f_number" == "" ];then
+	f_number="best"
+fi
+link=`youtube-dl -f $f_number --get-url --proxy "$ip_port" -u "$download_user" -p "$download_pass"  $link | tail -1`
+fname=${fname// /_}
+}
 download_type_form () {
-download_type=`zenity --list --radiolist --title="Persepolis Download Manager" --text="Please select type of Download" --hide-column=2 --column="" --column="ID" --column="type" TRUE "1" "Single File" FALSE "2" "Download Queue" FALSE "3" "About Persepolis Download Manager"`
+download_type=`zenity --list --height="250" --width="300" --radiolist --title="Persepolis Download Manager" --text="Please select type of Download" --hide-column=2 --column="" --column="ID" --column="type" TRUE "1" "Single File" FALSE "2" "Download Queue" FALSE "3" "Download from Youtube & Aparat & ..." FALSE "4" "About Persepolis Download Manager"`
 if [ $? -eq 1 ]
    then
        exit
 fi
 case "$download_type" in
       1)
-	link=`zenity --entry --title="Persepolis Download Manager" --text="Please enter download link" --width=700`
+	link=`zenity --entry --title="Persepolis Download Manager" --text="Please enter download link" --entry-text="$clipboard" --width=700`
         if [ $? -eq 1 ]
            then
            	download_type_form
@@ -31,7 +56,30 @@ case "$download_type" in
            	download_type_form
         fi
 	;;
-	3)
+      3)
+	download_type_y=`zenity --list --height="250" --width="300" --radiolist --title="Persepolis Download Manager" --text="Please select type of Download" --hide-column=2 --column="" --column="ID" --column="type" TRUE "1" "Single File(Youtube & ...)" FALSE "2" "Download Queue (Youtube & ...)"`		
+	if [ $? -eq 1 ]
+           then
+           	exit
+        fi
+	if [ "$download_type_y" == "1" ];then
+		link=`zenity --entry --title="Persepolis Download Manager" --text="Please enter download link" --entry-text="$clipboard" --width=700`
+		if [ $? -eq 1 ];then
+           		exit
+        	fi		
+		
+		else
+			zenity --question --title="Persepolis Download Manager"  --ok-label="Continue" --text="Put your links in a Text file,in separate lines(no space between lines)\nand then click Continue"	
+			if [ $? -eq 1 ];then
+		           	exit
+        		fi
+			my_file_y=`zenity --file-selection --title="Persepolis Download Manager" `
+        		if [ $? -eq 1 ];then
+		           	exit
+        		fi
+	fi	
+	;;
+      4)
         zenity --text-info --title="Persepolis Download Manager" --filename="$user/.persepolis_download_manager_terminal/about.txt"
 	download_type_form
 esac
@@ -49,7 +97,6 @@ if [ $? -eq 1 ]
 	download_info_exit=1
         exit
 fi
-echo "$download_info"
 ip=$(echo "$download_info" | awk -F"|" '{ print $1 }')
 port=$(echo "$download_info" | awk -F"|" '{ print $2 }')
 proxy_user=$(echo "$download_info" | awk -F"|" '{ print $3 }')
@@ -137,7 +184,7 @@ for i in "$maximum_connections" "$ip" "$port" "$proxy_user" "$proxy_pass" "$down
 			pdmt_command="$pdmt_command -w $password_input"
 			;;
 			"12")
-			if [ "$download_type" == "1" ];then
+			if [ "$download_type" == "1" ] || [ "$download_type_y" == "1" ]  ;then
 				pdmt_command="$pdmt_command -o --out=$fname"
 			fi
 			;;
@@ -161,6 +208,7 @@ done
 
 trap finish exit
 user=$HOME
+icon_path="$user/.persepolis_download_manager_terminal/icon.png"
 temp_path="/tmp/persepolisdm"
 temp_path_2="$user/.persepolis_download_manager_terminal/temp"
 mkdir $temp_path       >/dev/null 2>&1
@@ -204,18 +252,10 @@ done
 
 if [ "$link" = "" ] && [ "$my_file" = "" ] ; then
 	clipboard=$(xclip -o -sel clip|awk '/tp:\/\// {print $0}')
-	if [ "$clipboard" != "" ]
-   		then
-       			link=`zenity --entry --title="Persepolis Download Manager" --text="Enter Download Link Please!" --entry-text="$clipboard" --width=700`
-       			if [ $? -eq 1 ]
-        	   		then
-        	   			download_type_form
-        	   		else
-        	   			download_type=1
-       			fi  
-		else
-			           	download_type_form
-	fi 
+	if [ "$clipboard" == "" ];then
+		clipboard=$(xclip -o -sel clip|awk '/tps:\/\// {print $0}')
+	fi
+	download_type_form	
 	else
 		if [ "$my_file" = "" ] ; then
 			download_type=1
@@ -224,13 +264,31 @@ if [ "$link" = "" ] && [ "$my_file" = "" ] ; then
 		fi		
 fi
 download_form
+if [ "$download_type" == "3" ];then
+
+	if [ "$download_type_y" == "1" ];then
+		youtube
+		download_type="1"
+		else
+			while read -r line;do
+				link="$line"				
+				youtube				
+				echo "$link" >> $temp_path/"youtubeq$pdm_num".txt
+				echo "$fname" >> $temp_path/"fnameq$pdm_num".txt
+			done < "$my_file_y"
+			my_file="$temp_path/"youtubeq$pdm_num".txt"
+			download_type="2"	
+	fi
+
+
+fi
 pdmt_command_maker
 case "$download_type" in
 			1)
 			  ~/.persepolis_download_manager_terminal/PDM -l "$link" $pdmt_command   &
 			
 			;;
-			*)  
+			2)  
 			  ~/.persepolis_download_manager_terminal/PDM -f "$my_file" $pdmt_command  &  
 			;;
 esac

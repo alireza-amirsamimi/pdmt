@@ -18,6 +18,10 @@ rm -v $temp_path_2/aria_ready_file >/dev/null 2>&1
 rm -v $temp_path/"f$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"l$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"qf$pdm_num".txt >/dev/null 2>&1
+rm -v $temp_path/"youtube$pdm_num".txt >/dev/null 2>&1
+rm -v $temp_path/"youtubeq$pdm_num".txt >/dev/null 2>&1
+rm -v $temp_path/"fnameq$pdm_num".txt >/dev/null 2>&1
+rm -v $temp_path/"fnameqf$pdm_num".txt >/dev/null 2>&1
 echo -e "$text_color0 Finish!"
 echo -e "$normal_color   "
 tput cnorm   -- normal
@@ -62,7 +66,52 @@ fi
 ctrl_c () {
 finish2
 }
+youtube () {
 
+
+if [ "$ip_name" == "" ];then
+	ip_port=""
+   else
+	ip_port="$ip_name:$port_name"
+fi
+youtube-dl -F --proxy "$ip_port" -u "$site_user" -p "$site_password"  $download_link > $temp_path/"youtube$pdm_num".txt
+if [ "$?" != "0" ];then
+	echo "Error"
+	exit
+fi
+info_line_number_y=$(cat "$temp_path/youtube$pdm_num".txt|grep -n "Available formats"|awk -F ":" '{print $1}')
+line_nambers_y=$(cat "$temp_path/youtube$pdm_num".txt | wc -l)
+diffrence_line_number_y=$((line_nambers_y - info_line_number_y ))
+fname=`youtube-dl --get-filename --proxy "$ip_port" -u "$site_user" -p "$site_password"  $download_link | tail -1`
+if [ "$fname" == "" ];then
+	fname="videoplayback"
+fi
+echo -e "$text_color Link : $progress_color$download_link \n$text_color File Name : $progress_color$fname  \n \n######################"
+echo -e "$text_color0"
+cat $temp_path/"youtube$pdm_num".txt | tail -$diffrence_line_number_y
+echo -e "\n$progress_color######################"
+echo -e "\n \n$text_color0 Please enter your desired$progress_color format code$text_color0 & PRESS ENTER! \n$text_color If you want the best quality , leave it empty  & JUST PRESS ENTER"
+tput cnorm   -- normal
+if [ $download_type == 1 ];then
+	read  f_number
+	else
+	read -u 3 f_number
+fi
+tput civis      -- invisible
+if  [ "$f_number" == "" ];then
+	f_number="best"
+fi
+youtube-dl -f $f_number --get-url --proxy "$ip_port" -u "$site_user" -p "$site_password"  $download_link > $temp_path/"youtube$pdm_num".txt
+if [ "$?" != "0" ];then
+	echo "ERROR!"
+	exit
+fi
+download_link=`cat "$temp_path/youtube$pdm_num".txt| tail -1`
+fname=${fname// /_}
+
+
+
+}
 log () {
 ((log_counter ++))
 if [ "$log_counter" -gt "10" ] && [ "$log_config" = "yes" ]
@@ -539,14 +588,24 @@ for iq in `seq 1 $queue_config`
 		fi
 		echo "3"> $temp_path/"s$pdm_num".txt
 		echo "0"> $temp_path/"f$pdm_num".txt
+		if [ -f $temp_path/"fnameq$pdm_num".txt ];then
+			fname=`sed "$qi q;d" $temp_path/"fnameq$pdm_num".txt`
+			aria2_options="$aria2_options --out=$fname"
+		fi
 		download_single
 		if [ "$download_flag" = "2" ]
 			then
 			    if [ "$qi" = "1" ]
 			    	then
 			    	    echo "$download_link" > $temp_path/"qf$pdm_num".txt 2> /dev/null
+				    if [ -f $temp_path/"fnameq$pdm_num".txt ];then
+					    	echo "$fname" > $temp_path/"fnameqf$pdm_num".txt
+				    fi
 			    	else
 			    	    echo "$download_link" >> $temp_path/"qf$pdm_num".txt 2> /dev/null
+				    if [ -f $temp_path/"fnameq$pdm_num".txt ];then
+					    	echo "$fname" > $temp_path/"fnameqf$pdm_num".txt
+				    fi
 			    fi
 		fi
 		sleep 1
@@ -555,6 +614,9 @@ for iq in `seq 1 $queue_config`
 	if [ ! $(cat $temp_path/"qf$pdm_num".txt 2> /dev/null) ]
 	  	then
 	  	    break
+	fi
+	if [ -f $temp_path/"fnameq$pdm_num".txt ];then
+		cat $temp_path/"fnameqf$pdm_num".txt > $temp_path/"fnameq$pdm_num".txt
 	fi
 	my_file=$temp_path/"qf$pdm_num".txt
 	sleep 5
@@ -824,7 +886,7 @@ mkdir "$download_folder/Compressed" >/dev/null 2>&1
 mkdir "$download_folder/Others" >/dev/null 2>&1
 tput cup 6 0
 #inputs
-while getopts "l:i:p:u:a:j:k:s:e:m:r:o:d:w:f:hvc" options ; do
+while getopts "l:i:p:u:a:j:k:s:e:m:r:o:d:w:f:hvcy" options ; do
 case "${options}" in
     l)
     download_link=${OPTARG}
@@ -873,6 +935,9 @@ case "${options}" in
     cat $user/.persepolis_download_manager_terminal/help
     exit
     ;;
+    y)
+    youtube_switch="1"
+    ;;
     v)
     cat $user/.persepolis_download_manager_terminal/about.txt
     exit
@@ -906,7 +971,6 @@ if [ "$my_file" != "" ]
                    download_type=1
 
 fi
-
 #proxy
 if [ "$ip_name" != "" ] && [ "$port_name" != "" ]
        then ip_port="$ip_name:$port_name"
@@ -991,8 +1055,26 @@ if [ "$max_num_connections" = "" ]
     then
         max_num_connections=16
 fi
+# youtube-dl
+if [ "$youtube_switch" == "1" ];then
 
-
+	if [ "$download_type" == "1" ];then
+		clear
+		logo		
+		youtube
+		aria2_options="$aria2_options --out=$fname"
+		else
+			while read -r line;do
+				download_link="$line"
+				clear
+				logo				
+				youtube			
+				echo "$download_link" >> $temp_path/"youtubeq$pdm_num".txt
+				echo "$fname" >> $temp_path/"fnameq$pdm_num".txt
+			done  3<&0 < "$my_file"
+			my_file="$temp_path/"youtubeq$pdm_num".txt"
+	fi
+fi
 #main code
 echo "#!/bin/bash" > $temp_path_2/aria_ready_file
 echo "echo "0"|cat > $temp_path/"r$pdm_num".txt" >> $temp_path_2/aria_ready_file

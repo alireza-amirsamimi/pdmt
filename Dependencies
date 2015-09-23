@@ -1,8 +1,8 @@
 Before running install file please install Dependencies
 you must install aria2 pm-utils wget vorbis-tools
 for debian base distributions :  debian , ubuntu , mint , ...
-sudo apt-get install aria2 xclip  wget  pm-utils vorbis-tools  libnotify
+sudo apt-get install aria2 xclip  wget  pm-utils vorbis-tools  libnotify youtube-dl
 for fedora:
-sudo dnf install aria2  wget  xclip pm-utils vorbis-tools  libnotify-bin
+sudo dnf install aria2  wget  xclip pm-utils vorbis-tools  libnotify-bin youtube-dl
 for arch:
-sudo pacman -S aria2  wget xclip pm-utils vorbis-tools  libnotify
+sudo pacman -S aria2  wget xclip pm-utils vorbis-tools  libnotify youtube-dl

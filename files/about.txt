@@ -1,4 +1,4 @@
-Persepolis Download Manager Version 1.17.1
+Persepolis Download Manager Version 1.18
 AliReza AmirSamimi 
 http://amirsamimi.mihanblog.com
 alireza.amirsamimi@ubuntu.ir

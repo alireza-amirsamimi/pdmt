@@ -56,6 +56,13 @@ PDMT HELP
         for example :
         pdmt -f /home/alireza/links.txt
 
+
+-y      Downloading from Youtube and ...
+	enter your youtube link after l and use y switch
+        pdmt -l "https://www.youtube.com/watch?v=MMwXF9Kveus" -y
+	you can use queu too.
+	pdmt -f /home/alireza/links.txt -y
+
 -h      HELP
 
 -v      Version of PDMT
@@ -70,9 +77,9 @@ pdmt -f /home/alireza/links.txt
 
 or (with proxy and start time and end time and shutdown after end time)
 
-pdmt -l "http://www.example.com/2.iso"  -i 127.0.0.1 -p 8580 -s 2:30 -e 7:00 -d shutdown -w mypass
+pdmt -l "http://www.example.com/2.iso"  -i 127.0.0.1 -p 8580 -s 2:30 -e 7:00 -r yes -d shutdown -w mypass
 
 or for download queue
 
-pdmt -f /home/alireza/links.txt  -i 127.0.0.1 -p 8580 -s 2:30 -e 7:00 -d shutdown -w mypass
+pdmt -f /home/alireza/links.txt  -i 127.0.0.1 -p 8580 -s 2:30 -e 7:00 -r yes -d shutdown -w mypass
 

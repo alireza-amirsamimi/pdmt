@@ -1,6 +1,6 @@
 Persepolis Download Manager (PDM)
 =============
-+ version : 1.17.1
++ version : 1.18
 + Persepolis Download Manager is a download manager which is written in bash language and it is based on aria2 and improves aria2.
 
 ![ScreenShot](http://s6.picofile.com/file/8202702626/pdmt.jpg)
@@ -8,19 +8,19 @@ Persepolis Download Manager (PDM)
 ![ScreenShot](http://s3.picofile.com/file/8205810476/Screenshot_2015_08_12_09_46_26.jpg)
 
 ### Before running install file make sure that all dependencies are installed on your system!
-You must install `aria2` , `pm-utils`, `wget` , `bc` , `vorbis-tools` , `xclip` , `xterm` , `zenity` , `libnotify-bin`
+You must install `aria2` , `pm-utils`, `wget` , `bc` , `vorbis-tools` , `xclip` , `xterm` , `zenity` , `libnotify-bin` , `youtube-dl`
 
 ## Dependencies for Ubuntu
 
-    $ sudo apt-get install aria2 pm-utils wget vorbis-tools xdg-utils xclip  libnotify-bin xterm zenity
+    $ sudo apt-get install aria2 pm-utils wget vorbis-tools xdg-utils xclip  libnotify-bin xterm zenity youtube-dl
     
 ## Dependencies for Fedora
 
-    $ sudo yum install aria2 pm-utils wget vorbis-tools xdg-utils xclip  libnotify xterm zenity
+    $ sudo yum install aria2 pm-utils wget vorbis-tools xdg-utils xclip  libnotify xterm zenity youtube-dl
 
 ## Dependencies for Archlinux
 
-    $ sudo pacman -S aria2 pm-utils wget vorbis-tools xdg-utils xclip  libnotify xterm zenity
+    $ sudo pacman -S aria2 pm-utils wget vorbis-tools xdg-utils xclip  libnotify xterm zenity youtube-dl
     
 After installing dependencies, change your directory with cd command and run install file
 
@@ -48,6 +48,8 @@ for uninstall PDM,
 + download queue
 
 + PDM can shutdown or suspend or hibernate system  after download 
+
++ Downloading from youtube & aparat & ...
 
 + If download failed by aria2,PDM retries to download failed links
 
@@ -150,6 +152,20 @@ exaple for start at 2:00 and end at 7:00
         for example :
 	$ pdmt -f /home/alireza/links.txt
 
+-y      Downloading from Youtube and ...
+	enter your youtube link after l and use y switch
+
+        $ pdmt -l "https://www.youtube.com/watch?v=MMwXF9Kveus" -y
+	
+	you can use queu too.
+
+	$ pdmt -f /home/alireza/links.txt -y
+
+	you can find supported video site here:
+	
+	https://github.com/rg3/youtube-dl/blob/master/docs/supportedsites.md
+
+
  -h
       See help of pdmt
 
@@ -201,9 +217,9 @@ After installation you can find PersepolisDM in your menu
 Click on icon
 select your Download type (Download single file or queue)
 
-![ScreenShot](http://s3.picofile.com/file/8205813026/single1.jpg)
+![ScreenShot](http://s6.picofile.com/file/8213595650/1.jpg)
 
-select Download type (Download single file or queue)
+select Download type (Download single file or queue or Yotube)
 
 after that PersepolisDM will guide you :)
 
