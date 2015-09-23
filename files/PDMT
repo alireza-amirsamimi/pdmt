@@ -74,7 +74,7 @@ if [ "$ip_name" == "" ];then
    else
 	ip_port="$ip_name:$port_name"
 fi
-youtube-dl -F --proxy "$ip_port" -u "$site_user" -p "$site_password"  $download_link > $temp_path/"youtube$pdm_num".txt
+youtube-dl -F --proxy "$ip_port" -u "$site_user" -p "$site_password"  $download_link 2> /dev/null > $temp_path/"youtube$pdm_num".txt
 if [ "$?" != "0" ];then
 	echo "Error"
 	exit
@@ -82,7 +82,7 @@ fi
 info_line_number_y=$(cat "$temp_path/youtube$pdm_num".txt|grep -n "Available formats"|awk -F ":" '{print $1}')
 line_nambers_y=$(cat "$temp_path/youtube$pdm_num".txt | wc -l)
 diffrence_line_number_y=$((line_nambers_y - info_line_number_y ))
-fname=`youtube-dl --get-filename --proxy "$ip_port" -u "$site_user" -p "$site_password"  $download_link | tail -1`
+fname=`youtube-dl --get-filename --proxy "$ip_port" -u "$site_user" -p "$site_password"  $download_link 2> /dev/null | tail -1`
 if [ "$fname" == "" ];then
 	fname="videoplayback"
 fi
@@ -101,7 +101,7 @@ tput civis      -- invisible
 if  [ "$f_number" == "" ];then
 	f_number="best"
 fi
-youtube-dl -f $f_number --get-url --proxy "$ip_port" -u "$site_user" -p "$site_password"  $download_link > $temp_path/"youtube$pdm_num".txt
+youtube-dl -f $f_number --get-url --proxy "$ip_port" -u "$site_user" -p "$site_password"  $download_link 2> /dev/null > $temp_path/"youtube$pdm_num".txt
 if [ "$?" != "0" ];then
 	echo "ERROR!"
 	exit
