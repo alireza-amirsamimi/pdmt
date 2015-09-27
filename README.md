@@ -287,5 +287,8 @@ http://amirsamimi.mihanblog.com
 My email adress:
 alireza.amirsamimi@ubuntu.ir
 
+PersepolisDM Telegram Channel:
+https://telegram.me/persepolisdm
+
 ## Read more about PERSEPOLIS
 https://en.wikipedia.org/wiki/Persepolis
