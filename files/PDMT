@@ -91,6 +91,10 @@ echo -e "$text_color0"
 cat $temp_path/"youtube$pdm_num".txt | tail -$diffrence_line_number_y
 echo -e "\n$progress_color######################"
 echo -e "\n \n$text_color0 Please enter your desired$progress_color format code$text_color0 & PRESS ENTER! \n$text_color If you want the best quality , leave it empty  & JUST PRESS ENTER"
+if [ "$sound_config" = "yes" ]
+	then
+		paplay $notifications_path/you.ogg
+fi
 tput cnorm   -- normal
 if [ $download_type == 1 ];then
 	read  f_number
