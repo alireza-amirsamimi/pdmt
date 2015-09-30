@@ -68,7 +68,7 @@ finish2
 }
 youtube () {
 
-
+echo -e "$text_color0 Please Wait ...!"
 if [ "$ip_name" == "" ];then
 	ip_port=""
    else
