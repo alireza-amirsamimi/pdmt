@@ -113,7 +113,7 @@ and ...
 
 	$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -e 2:25
 
-exaple for start at 2:00 and end at 7:00
+example for start at 2:00 and end at 7:00
 
 	$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -s 2:00 -e 7:00
 

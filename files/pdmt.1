@@ -1,0 +1,292 @@
+.TH "PDMT" "1" "October 1, 2015" "1.19" "pdmt"
+.SH NAME
+pdmt \- Persepolis Download Manager Terminal
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.\" Man page generated from reStructuredText.
+.
+.SH SYNOPSIS
+.sp
+\fBpdmt\fP -l [<URI>] [<OPTIONS>] 
+
+\fBpdmt\fP -f [<path of text file>] [<OPTIONS>] 
+.SH DESCRIPTION
+.sp
+Persepolis Download Manager Terminal (PDMT) is utility for download easier and faster 
+with aria2 and improved it.It support HTTP(S) & FTP.PDMT configure aria2 automatically
+for maximum speed. 
+You can adjust start time and end time for downloads.PDMT can shutdown or suspend or 
+hibernate system  after download.PDMT can Download video from youtube & .. . If download
+failed by aria2,PDMT retries to download failed links.PDMT is Compatible with Firefox flashgot
+.SH OPTIONS
+.SS Basic Options
+.INDENT 0.0
+.TP
+.B \-l
+Your Download link.(Use "" for links)
+
+$ pdmt -l "https://www.google.com/images/srpr/logo11w.png"
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-i
+If you use proxy , Set Proxy IP.for example 127.0.0.1
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-p
+If you use proxy , Set Proxy  Port.for example 8580
+
+$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -i 127.0.0.1  -p 8580
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-u
+If you use proxy and your proxy requires username,enter Proxy Username.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-a
+If you use proxy and your proxy requires password,enter Proxy Password.
+
+$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -i 127.0.0.1 -p 8580 -u hasan -a kamran
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-j
+Set HTTP user.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-k
+Set HTTP password.
+
+$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -j alireza -k salam
+
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-s
+If you want your download to start at specific time ,
+Set Start time for download in form hh:mm (24 hour format).
+for example 13:24
+Download will be Started at start time.
+
+$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -s 13:24
+
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-e
+If you want your download to pause at specific time ,
+Set End time for download in form hh:mm (24 hour format).
+for example 2:25
+Download will be Paused at end time.
+
+$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -e 2:25
+
+example for start at 2:00 and end at 7:00
+
+$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -s 2:00 -e 7:00
+
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-m
+PDMT selects maximum possible 
+number of connections automatically.but you can choose maximum number
+yourself(1-16).default is 16.
+
+$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -m 3
+
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-o
+Aria2 options
+you can write aria2 options after o,for example:
+
+$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -o --max-download-limit=10k
+        
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-d
+After download PDMT can shutdown , hibernate , suspend computer.
+(options are shutdown , hibernate , suspend )
+
+$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -d shutdown
+
+after you press enter PDMT will ask you for root password befor start downloading.
+
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-w
+Root Password.if you choose one of the after download options,you must 
+enter root password.if you don't enter password after -w or if you enter
+wrong password,PDMT will ask you for root password before start downloading.
+
+$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -d shutdown -w salam
+
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-f
+Download queue.if you have many links and you want to download them in
+queue(one by one),you can use this option.links must enterd in a file
+in seperate lines.every line for one link with no space between lines.
+after that you must enter the file's address that you save links in it.
+
+
+$ pdmt -f /home/alireza/links.txt
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-y
+Downloading from Youtube and ...
+enter your youtube link after l and use y switch
+
+$ pdmt -l "https://www.youtube.com/watch?v=MMwXF9Kveus" -y
+
+.UNINDENT
+.INDENT 0.0
+.TP	
+you can use queu too.
+
+$ pdmt -f /home/alireza/links.txt -y
+
+you can find supported video site here:
+
+https://github.com/rg3/youtube-dl/blob/master/docs/supportedsites.md
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-c
+Configure PDMT!change download folder and ...
+
+$ pdmt -c
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-h
+See help of pdmt
+
+$ pdmt -h
+
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-v
+Version of PDMT
+
+$ pdmt -v
+
+.SH MORE EXAMPLES
+
+Download single link
+
+$ pdmt -l "http://www.example.com/2.iso"
+
+for queue
+
+$ pdmt -f /home/alireza/links.txt
+
+or (with proxy and start time and end time and shutdown after end time)
+
+$ pdmt -l "http://www.example.com/2.iso"  -i 127.0.0.1 -p 8580 -s 2:30 -e 7:00 -d shutdown -w mypass
+
+or for download queue
+
+$ pdmt -f /home/alireza/links.txt  -i 127.0.0.1 -p 8580 -s 2:30 -e 7:00 -d shutdown -w mypass
+
+.SH EXTRA DESCRIPTION
+.UNINDENT
+.INDENT 0.0
+.TP
+When download completes you can find your file in 
+	
+~/Downloads/Persepolis
+.UNINDENT
+.INDENT 0.0
+.TP
+
+before download completes you can find your file in 
+
+~/.persepolis 
+.UNINDENT
+.INDENT 0.0
+.TP
+if your download canceled or failed you can get link to PDMT again .PDMT will resume download.
+.UNINDENT
+.INDENT 0.0
+.TP
+
+you can find summary of your downloads(link , ...) in a text file 
+
+~/Downloads/Persepolis/report
+
+.SH MORE HELP
+for configure firefox flashgot please see README.md file on github
+https://github.com/alireza-amirsamimi
+
+
+
+.SH AUTHOR
+.B AliReza AmirSamimi
+.UNINDENT
+.INDENT 0.0
+.TP
+.B My Github 
+https://github.com/alireza-amirsamimi
+.UNINDENT
+.INDENT 0.0
+.TP
+.B Me on twiter
+https://twitter.com/AR_AmirSamimi
+.UNINDENT
+.INDENT 0.0
+.TP
+.B My weblog
+http://amirsamimi.mihanblog.com
+.UNINDENT
+.INDENT 0.0
+.TP
+.B My email adress
+alireza.amirsamimi@ubuntu.ir
+.UNINDENT
+.INDENT 0.0
+.TP
+.B PersepolisDM Telegram Channel
+https://telegram.me/persepolisdm
+
+
+
+
+
+
