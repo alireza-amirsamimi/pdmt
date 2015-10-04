@@ -22,7 +22,7 @@ rm -v $temp_path/"youtube$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"youtubeq$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"fnameq$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"fnameqf$pdm_num".txt >/dev/null 2>&1
-echo -e "$text_color0 Finish!"
+echo -e "$text_color0 EXIT!"
 echo -e "$normal_color   "
 tput cnorm   -- normal
 tput smam
@@ -1035,7 +1035,7 @@ case "$do_after_download" in
       do_after="1"
       ;;
 esac
-
+tput cnorm   -- normal
 if [ $do_after -ne 1 ]
    then
       if [ "$password_input" = "" ]
@@ -1054,6 +1054,7 @@ if [ $do_after -ne 1 ]
                 ss=$?
 	done
 fi
+tput civis      -- invisible
 #max number of connections
 if [ "$max_num_connections" = "" ]
     then

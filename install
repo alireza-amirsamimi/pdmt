@@ -30,8 +30,7 @@ fi
 echo "sudo  mv -f $program_path/pdmt /usr/bin"
 echo "sudo  mv -f $program_path/Persepolis.desktop /usr/share/applications"
 sudo  mv -f $program_path/pdmt /usr/bin
-sudo  mv -f $program_path/pdmt.1 /usr/share/man/man1/pdmt.1
-sudo gzip -f /usr/share/man/man1/pdmt.1
+sudo  mv -f $program_path/pdmt.1.gz /usr/share/man/man1/pdmt.1.gz
 sudo  mv -f $program_path/Persepolis.desktop /usr/share/applications
 if [ "$?" -eq "0" ]
    then
