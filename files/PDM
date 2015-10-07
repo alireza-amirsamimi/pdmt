@@ -297,7 +297,7 @@ case $download_flag in
 	    echo "0" > $temp_path/"zenityp$pdm_num".txt
      fi
      sleep 1
-     notify-send --icon=$icon_path  "Download Compelete! The file Saved as :  $save_as"
+     notify-send --icon=$icon_path  "Download Complete! The file Saved as :  $save_as"
      
      if [ "$sound_config" = "yes" ]
 	  then
@@ -455,7 +455,7 @@ if [ "$download_flag" != "1" ]
   	then
 	    echo "100" > $temp_path/"zenityp$pdm_num".txt
 	    sleep 1
-  	    notify-send --icon=$icon_path "Queue Compelete" > $temp_path/"zenity$pdm_num".txt
+  	    notify-send --icon=$icon_path "Queue Complete" > $temp_path/"zenity$pdm_num".txt
   	    if [ "$open_config" = "yes" ]
 		  then
 			 xdg-open $download_folder >/dev/null 2>&1
@@ -466,7 +466,7 @@ if [ "$download_flag" != "1" ]
             fi
 	    echo "#################"|cat >> $download_folder/report
 	    date|cat >> $download_folder/report
-            echo "Queue Compelete"|cat >> $download_folder/report
+            echo "Queue Complete"|cat >> $download_folder/report
             echo "#################"|cat >> $download_folder/report
 
 fi
