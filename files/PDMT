@@ -1,12 +1,13 @@
 #!/bin/bash
 #Persepolis Download Manager Terminal (PDMT) written by AliReza AmirSamimi(alireza.amirsamimi@ubuntu.ir) and It is based on aria2
-#s=download status r=aria ready p=aria pid e=end status d=downloaded f=fail_counter l=download_link qf=queue failed links
-#0=aria ready 1=aria not ready
-#download_flag 0=completed 1=paused 2=failed 3=download 4=reconnecting
-#end_status 0=not end yet 1=time is up 2=download completed or canceled or...
+#files : s means   s$pdm_num.txt,p means   p$pdm_num.txt & ...  
+#s=download status r=aria ready p=aria2c pid e=end status d=downloaded f=fail_counter l=download_link qf=queue failed links
+#aria2 status : 0=aria ready 1=aria not ready
+#dowload manager status(download_flag) : 0=completed 1=paused 2=failed 3=download 4=reconnecting
+#end_status(end time that defined by user with e switch) 0=not end yet 1=time is up 2=download completed or canceled or...
 
 #functions
-#finish & finish2 atrl_c functions delete text file that PDMT create after exit!
+#finish & finish2 atrl_c are functions.they are delete text files that created by PDMT after exit!in other word it's for clearance!
 finish (){
 rm -v $temp_path/"p$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"r$pdm_num".txt >/dev/null 2>&1
@@ -24,6 +25,7 @@ rm -v $temp_path/"fnameq$pdm_num".txt >/dev/null 2>&1
 rm -v $temp_path/"fnameqf$pdm_num".txt >/dev/null 2>&1
 echo -e "$text_color0 EXIT!"
 echo -e "$normal_color   "
+#makes cursor visible & change color of texts in terminal to normal after exit.
 tput cnorm   -- normal
 tput smam
 }
@@ -67,7 +69,7 @@ ctrl_c () {
 finish2
 }
 
-#youtube function use youtube-dl program to find download link of video
+#youtube function uses youtube-dl program to find download link of video
 youtube () {
 
 echo -e "$text_color0 Please Wait ...!"
@@ -76,7 +78,7 @@ if [ "$ip_name" == "" ];then
    else
 	ip_port="$ip_name:$port_name"
 fi
-#Finding deffrent qualities available for Video
+#Finding diffrent qualities available for Video
 youtube-dl -F --proxy "$ip_port" -u "$site_user" -p "$site_password"  $download_link 2> /dev/null > $temp_path/"youtube$pdm_num".txt
 if [ "$?" != "0" ];then
 	echo "Error"
@@ -99,7 +101,7 @@ if [ "$sound_config" = "yes" ]
 	then
 		paplay $notifications_path/you.ogg
 fi
-#input the number of format that user select
+#inputs the number of format that user selected
 tput cnorm   -- normal
 if [ $download_type == 1 ];then
 	read  f_number
@@ -121,7 +123,7 @@ fname=${fname// /_}
 
 }
 
-#this function create log file (information about download).log file is deactived by default.
+#this function creates log file (information about download,percent & time remaining & ...).log file is deactived by default.
 log () {
 ((log_counter ++))
 if [ "$log_counter" -gt "10" ] && [ "$log_config" = "yes" ]
@@ -142,7 +144,9 @@ if [ "$log_counter" -gt "10" ] && [ "$log_config" = "yes" ]
 fi
 }
 
-#this function get the file extention from output of aria and define the output path after download. 
+#this function gets the file extension from output of aria and defines the output path after download.
+#Files are downloaded in ~/.persepolis folder and after download finished , PDMT moves them to download folder(defined by user) according to file extension.  
+#files will be moved to Videos Audios Documents Compressed & Others sub-folder in Download folder
 file_extension (){
 file_name_extension="${save_as_temp##*/}"
 extension="${file_name_extension##*.}"
@@ -186,7 +190,7 @@ fi
 #this function uses pm-utils package and needs root password
 #users can replace code with DBUS. so PDMT can shutdown & ... system without root password.
 #plesae see this link for more help : http://askubuntu.com/questions/454039/what-command-is-executed-when-shutdown-from-the-graphical-menu-in-14-04
-#but dbus code won't work in all distros!
+#but dbus code won't work in all distros!so I use pm-utils!
 func_after () {
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 end_status=$(cat $temp_path/"e$pdm_num".txt 2> /dev/null)
@@ -214,9 +218,9 @@ esac
 exit
 }
 
-#If Download failed this function check the internet connceton and if connection drroped play a notification sound and inform the user!
-#If connection not drroped PDMT try download again
-#the number of retries can defined by user
+#If Download failed,this function checks the internet connceton and if connection dropped,notification sound played!
+#If Download failed by aria2,PDMT tries download again.The number of retries can be difined by user.
+#the number of retries can be defined by user
 fail_reconnecting (){
 fail_counter=$(cat $temp_path/"f$pdm_num".txt 2> /dev/null)
 if [ "$fail_counter" = "" ]
@@ -240,7 +244,7 @@ if [ "$fail_counter" = "$retryf_config" ]
 	    echo "Download Failed!" | cat >> $download_folder/report
    	    cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
 	    echo "#################"|cat >> $download_folder/report
-#check the internet connection by ping www.google.com
+#checking the internet connection by ping www.google.com
 	    until ping -c 1 -w 5 www.google.com >/dev/null 2>&1 || [ "$ifail" = "$retryd_config" ]
 		do
 		    clear
@@ -275,7 +279,7 @@ if [ "$fail_counter" = "$retryf_config" ]
 	    fi
 fi
 }
-#this function use wget to find size of file and set aria2 according to the size file
+#this function uses wget to find size of file and sets aria2 according to the file size.
 download () {
 progress_dialog &
 size_remote=$(wget --spider -O "$temp_path/salam"  --no-check-certificate -T 5 -t 3 -e use-proxy=yes --proxy-user="$user_name" --proxy-password="$password_name" -e --http-proxy="$ip_port" --user="$site_user" --password="$site_password" "$download_link" 2>&1 | awk '/Length/ { print $2 }')
@@ -318,7 +322,7 @@ aria2c --on-download-start="$temp_path_2/aria_ready_file"  --all-proxy=$ip_port 
 echo "1" |cat > $temp_path/"r$pdm_num".txt
 aria_status=$(cat $temp_path/"$pdm_num".txt|tail -50|egrep -a "download completed|download in-progress" )
 end_status=$(cat $temp_path/"e$pdm_num".txt 2> /dev/null)
-#PDMT check output of aria2 and define that download completed or failed or canceled or the time of downloading is up(end_status)
+#PDMT checks end status and then checks output of aria2 and defines that download completed or failed or canceled.
 if [ "$end_status" != "1" ]
      then
 	case $aria_status in
@@ -415,7 +419,7 @@ echo "]"
 
 }
 
-#this function checks the output of aria2 and shows download information to the user
+#this function checks the output of aria2 and shows gownload informations(Percent & time remaining & ...)
 progress_dialog () {
 aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
@@ -545,8 +549,9 @@ case $download_flag in
 esac
 
 }
-
-
+#download single link.
+#dowload manager status(download_flag) : 0=completed 1=paused 2=failed 3=download 4=reconnecting
+#aria2 status : 0=aria ready 1=aria not ready
 download_single () {
 echo "#################"|cat >> $download_folder/report
 date|cat >> $download_folder/report
@@ -596,7 +601,9 @@ done
 stop
 }
 
-
+#download_queue uses download_single function to download multiple links
+#this function stores failed links in a file(qf$pdm_num.txt) for retrying.
+# "fnameq$pdm_num".txt is for saving the name of video files that youtube function creates 
 download_queue () {
 for iq in `seq 1 $queue_config`
       do
@@ -666,7 +673,7 @@ fi
 
 }
 
-
+#this function defines type of download.
 download_process () {
 case "$download_type" in
       1)
@@ -680,7 +687,7 @@ esac
 func_after
 }
 
-
+#logo of pdmt
 logo () {
 echo -e "$logo_color#########################################     "
 echo "#########################################     "
@@ -690,6 +697,7 @@ echo "#########################################     "
 echo "                                              "
 }
 
+#User can change setting by this function(pdmt -c).
 config ()
 {
 echo "PDMT Configuration"
@@ -740,6 +748,7 @@ echo "Do you want restore default(yes/no)"
 read default_input
 if [ "$default_input" = "yes" ] || [ "$default_input" = "y" ]
 	then
+#default setting.
  	        echo -e "PDMT config file\ncolor=yes\nsound=yes\nopen=yes\nfolder=~/Downloads/Persepolis\nretryf=5\nretryd=5\ndelay=60\nqueue=2\nlog=no" > ~/.persepolis_download_manager_terminal/config
 	else
 		if [ "$color_input" = "" ]
@@ -829,15 +838,18 @@ fi
 }
 
 #initialization
+#make cursor invisible
 clear screen
 tput civis      -- invisible
 tput rmam
+#trap finish function and CTRL+C keys for canceling download progress and clearance(see the finish function!).
 trap finish exit
 trap ctrl_c 2
 if [ ! -f ~/.persepolis_download_manager_terminal/config ]
 	then
 		echo -e "PDMT config file\ncolor=yes\nsound=yes\nopen=yes\nfolder=~/Downloads/Persepolis\nretryf=5\nretryd=5\ndelay=60\nqueue=2\nlog=no" > ~/.persepolis_download_manager_terminal/config
 fi
+#PDMT imports user configs.
 color_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/color/ {print $0 }'|awk -F "=" '{print $2}')
 sound_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/sound/ {print $0 }'|awk -F "=" '{print $2}')
 download_folder_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/folder/ {print $0 }'|awk -F "=" '{print $2}')
@@ -847,6 +859,7 @@ delay_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|a
 open_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/open/ {print $0 }'|awk -F "=" '{print $2}')
 queue_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/queue/ {print $0 }'|awk -F "=" '{print $2}')
 log_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/log/ {print $0 }'|awk -F "=" '{print $2}')
+#PDMT defines colors
 normal_color="\E[33;00m"
 if [ "$color_config" = "yes" ]
     then
@@ -868,6 +881,7 @@ fi
 logo
 echo -e "$text_color0     "
 input_options=$@
+#PDMT difines folders path.
 user=$HOME
 notifications_path="$user/.persepolis_download_manager_terminal/notifications"
 download_folder="$user/Downloads/Persepolis"
@@ -876,6 +890,7 @@ temp_path="/tmp/persepolisdm"
 temp_path_2="$user/.persepolis_download_manager_terminal/temp"
 mkdir $temp_path       >/dev/null 2>&1
 mkdir $temp_path_2       >/dev/null 2>&1
+#PDMT assigns a unic number to every call.and store it in pdm_number.txt
 if [ ! -f $temp_path/pdm_number.txt ]
     then
     echo "0"> $temp_path/pdm_number.txt
@@ -909,7 +924,7 @@ mkdir "$download_folder/Documents" >/dev/null 2>&1
 mkdir "$download_folder/Compressed" >/dev/null 2>&1
 mkdir "$download_folder/Others" >/dev/null 2>&1
 tput cup 6 0
-#inputs
+#switches
 while getopts "l:i:p:u:a:j:k:s:e:m:r:o:d:w:f:hvcy" options ; do
 case "${options}" in
     l)
@@ -978,7 +993,7 @@ esac
 done
 
 
-#find link & define download type
+#PDMT finds link & defines download type
 if [ "$my_file" != "" ]
 	then
 
@@ -1055,6 +1070,7 @@ case "$do_after_download" in
       do_after="1"
       ;;
 esac
+#user inputs password & PDMT checkes it.
 tput cnorm   -- normal
 if [ $do_after -ne 1 ]
    then
@@ -1080,7 +1096,9 @@ if [ "$max_num_connections" = "" ]
     then
         max_num_connections=16
 fi
-# youtube-dl
+# if youtube_switch is 1 so user has been used y switch
+# if user has been used -y switch,it means that user has been inputed a page link and PDMT must find download link (youtube function)
+
 if [ "$youtube_switch" == "1" ];then
 
 	if [ "$download_type" == "1" ];then

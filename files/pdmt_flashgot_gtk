@@ -6,6 +6,7 @@ if [ "$fname" == "" ];then
 	else
 	gtk_name="$fname"
 fi
+#getting download options
 download_info=`zenity --forms  --text="Enter Download options \n (If you don't use any options,leave the fields empty!)" --title="$gtk_name" --add-entry="Proxy IP(Host):"  --add-entry="Proxy Port:" --add-entry="Proxy UserName:" --add-password="Proxy PassWord:" --add-entry="Download UserName:" --add-password="Download PassWord:"  --add-entry="Start Time(24 hour format):" --add-entry="End Time(24 hour format):"  --add-entry="Number of Connections:(default and maximum is 16)" --add-list="What should PDMT do after Download?" --list-values="nothing|shutdown|hibernate|suspend"`
 if [ $? -eq 1 ]
    then
@@ -54,7 +55,7 @@ if [ "$do_after" -eq "1" ]
               done
 fi
 }
-
+#making a command for sending to pdmt according to the options.
 pdmt_command_maker () {
 i_counter=0
 for i in "$maximum_connections" "$ip" "$port" "$proxy_user" "$proxy_pass" "$download_user" "$download_pass" "$start_time" "$end_time" "$do_after_download" "$password_input" "$fname" "$referer" "$cfile" "$user_agent" "$header";do
@@ -160,14 +161,14 @@ if [ "$flashgot_status" != "1" ]
        echo "$link" >> $temp_path/flashgot_queue.txt
        exit
 fi 
-
+#selecting terminal
 for terminal in $TERMINAL x-terminal-emulator gnome-terminal xfce4-terminal lxterminal konsole mate-terminal urxvt rxvt terminator Eterm aterm roxterm termite xterm ; do
     if command -v $terminal > /dev/null 2>&1; then
         break
     fi
 done
 
-  
+#checking number of links,after that type of download can be defined(single link or queue)  
 flashgot_line=$(cat $temp_path/flashgot_queue.txt|wc -l)
 case "$flashgot_line" in
 			1)
@@ -184,7 +185,7 @@ case "$flashgot_line" in
 			;;
 esac
 
-			
+#if selected terminal didn't respond program will use XTERM. 			
 if [ "$a" != "0" ] && [ "$a" != "255" ]
     then
 	  xterm -e "$pdmt_command"

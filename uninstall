@@ -6,6 +6,7 @@ program_path="$user/.persepolis_download_manager_terminal"
 rm -f -r $program_path
 sudo  rm -f /usr/bin/pdmt
 sudo rm -f /usr/share/applications/Persepolis.desktop
+sudo rm -f /usr/share/man/man1/pdmt.1.gz
 if [ "$?" -eq "0" ]
    then
        echo "Uninstallation compeleted"
