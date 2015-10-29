@@ -1,3 +1,4 @@
+Persepolis Download Manager Version 1.18.2
 AliReza AmirSamimi 			   
 http://amirsamimi.mihanblog.com           
 alireza.amirsamimi@ubuntu.ir		   
