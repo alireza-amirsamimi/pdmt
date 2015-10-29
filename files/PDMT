@@ -779,7 +779,7 @@ case "$no_password_input" in
 	done
 	dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Suspend" boolean:true > /dev/null 2>&1
 	if [ "$?" = "0" ];then
-		echo "Your system suspended successful !"
+		echo "Your system suspended successfully !"
 		no_password_config="yes"
 	else
 		echo "Test was unsuccessfull !your system needs root password for shutdown & ..."
