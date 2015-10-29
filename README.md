@@ -141,6 +141,7 @@ example for start at 2:00 and end at 7:00
       Root Password.if you choose one of the after download options,you must 
         enter root password.if you don't enter password after -w or if you enter
         wrong password,PDMT will ask you for root password before start downloading.
+	You can activate shutdown or ... with out entering root password from pdmt config!(If your system support dbus-send)
 
 	$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -d shutdown -w salam
 
