@@ -34,7 +34,7 @@ case "$do_after_download" in
       
 esac
 
-if [ "$do_after" -eq "1" ]
+if [ "$do_after" -eq "1" ] && [ "$no_password_config" = "no" ]
    then
        password_input=`zenity --forms  --text="Please enter your ROOT password" --title="PDMT" --add-password="Password : "  `
        if [ $? -eq 1 ]
@@ -120,7 +120,7 @@ done
 user=$HOME
 temp_path="/tmp/persepolisdm"
 mkdir $temp_path       >/dev/null 2>&1
-
+no_password_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/nopassword/ {print $0 }'|awk -F "=" '{print $2}')
 while getopts "l:c:b:g:u:h:" options ; do
 case "${options}" in
     l)

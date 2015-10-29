@@ -189,7 +189,7 @@ fi
 #this function shutdown or suspend or hibernate system according to  the user selection
 #this function uses pm-utils package and needs root password
 #users can replace code with DBUS. so PDMT can shutdown & ... system without root password.
-#plesae see this link for more help : http://askubuntu.com/questions/454039/what-command-is-executed-when-shutdown-from-the-graphical-menu-in-14-04
+#Please see this link for more help : http://askubuntu.com/questions/454039/what-command-is-executed-when-shutdown-from-the-graphical-menu-in-14-04
 #but dbus code won't work in all distros!so I use pm-utils!
 func_after () {
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
@@ -200,22 +200,39 @@ if [ "" != "$end_time" ] && [ $end_status -eq 0 ]
 	sleep 20
 fi
 sleep 5
-
-case "$do_after" in
-    2)
-    killall aria2c 2> /dev/null
-    echo $password_input |sudo -S shutdown -h now
-    ;;
-    3)
-    killall aria2c 2> /dev/null
-    echo $password_input |sudo -S pm-suspend
-    ;;
-    4)
-    killall aria2c 2> /dev/null
-    echo $password_input |sudo -S pm-hibernate
-    ;;
-esac
-exit
+if [ "$no_password_config" = "no" ];then
+	case "$do_after" in
+    	2)
+    	killall aria2c 2> /dev/null
+    	echo $password_input |sudo -S shutdown -h now
+    	;;
+    	3)
+    	killall aria2c 2> /dev/null
+    	echo $password_input |sudo -S pm-suspend
+    	;;
+    	4)
+    	killall aria2c 2> /dev/null
+    	echo $password_input |sudo -S pm-hibernate
+    	;;
+	esac
+	exit
+else
+	case "$do_after" in
+    	2)
+    	killall aria2c 2> /dev/null
+	dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.PowerOff" boolean:true
+    	;;
+    	3)
+    	killall aria2c 2> /dev/null
+	dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Suspend" boolean:true > /dev/null 2>&1
+    	;;
+    	4)
+    	killall aria2c 2> /dev/null
+	dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Hibernate" boolean:true
+    	;;
+	esac
+	exit
+fi
 }
 
 #If Download failed,this function checks the internet connceton and if connection dropped,notification sound played!
@@ -700,6 +717,7 @@ echo "                                              "
 #User can change setting by this function(pdmt -c).
 config ()
 {
+tput cnorm   -- normal
 echo "PDMT Configuration"
 echo "if you don't want any changes, leave the questions empty and press enter!"
 echo -e "$progress_color\nDo you want colorful output?(yes/no)"
@@ -744,12 +762,37 @@ echo "Please enter delay(in second) between retries if connection droped "
 read delay_input
 echo -e "Failed links in queue rechecked by PDMT\nand PDMT tries to download them again!\nPlease enter number of rechecking time!"
 read queue_input
+echo "Do you want shutdown or suspend or hibernate system after download with out asking root password?"
+echo "This ability won't work in all distributions!"
+read no_password_input
+case "$no_password_input" in
+	"")
+	no_password="$no_password_config";;
+	"n"|"no")
+	no_password_config="no";;
+	"y"|"yes")
+	echo "PDMT will test your system!Your system will suspend after 10 seconds!"
+	for pass_counter in {10..1};do
+		tput cup 35 0
+		echo "$pass_counter   "
+		sleep 1
+	done
+	dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Suspend" boolean:true > /dev/null 2>&1
+	if [ "$?" = "0" ];then
+		echo "Your system suspended successful !"
+		no_password_config="yes"
+	else
+		echo "Test was unsuccessfull !your system needs root password for shutdown & ..."
+		no_password_config="no"
+	fi
+	;;
+esac
 echo "Do you want restore default(yes/no)"
 read default_input
 if [ "$default_input" = "yes" ] || [ "$default_input" = "y" ]
 	then
 #default setting.
- 	        echo -e "PDMT config file\ncolor=yes\nsound=yes\nopen=yes\nfolder=~/Downloads/Persepolis\nretryf=5\nretryd=5\ndelay=60\nqueue=2\nlog=no" > ~/.persepolis_download_manager_terminal/config
+ 	        echo -e "PDMT config file\ncolor=yes\nsound=yes\nopen=yes\nfolder=~/Downloads/Persepolis\nretryf=5\nretryd=5\ndelay=60\nqueue=2\nlog=no\nnopassword=no" > ~/.persepolis_download_manager_terminal/config
 	else
 		if [ "$color_input" = "" ]
 			then
@@ -833,7 +876,7 @@ if [ "$default_input" = "yes" ] || [ "$default_input" = "y" ]
 			    queue_input="5"
 		fi
 
- 	        echo -e "PDMT config file\ncolor=$color_input\nsound=$sound_input\nopen=$open_input\nfolder=$download_folder_input\nretryf=$retryf_input\nretryd=$retryd_input\ndelay=$delay_input\nqueue=$queue_input\nlog=$log_input" > ~/.persepolis_download_manager_terminal/config
+ 	        echo -e "PDMT config file\ncolor=$color_input\nsound=$sound_input\nopen=$open_input\nfolder=$download_folder_input\nretryf=$retryf_input\nretryd=$retryd_input\ndelay=$delay_input\nqueue=$queue_input\nlog=$log_input\nnopassword=$no_password_config" > ~/.persepolis_download_manager_terminal/config
 fi
 }
 
@@ -847,7 +890,7 @@ trap finish exit
 trap ctrl_c 2
 if [ ! -f ~/.persepolis_download_manager_terminal/config ]
 	then
-		echo -e "PDMT config file\ncolor=yes\nsound=yes\nopen=yes\nfolder=~/Downloads/Persepolis\nretryf=5\nretryd=5\ndelay=60\nqueue=2\nlog=no" > ~/.persepolis_download_manager_terminal/config
+		echo -e "PDMT config file\ncolor=yes\nsound=yes\nopen=yes\nfolder=~/Downloads/Persepolis\nretryf=5\nretryd=5\ndelay=60\nqueue=2\nlog=no\nnopassword=no" > ~/.persepolis_download_manager_terminal/config
 fi
 #PDMT imports user configs.
 color_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/color/ {print $0 }'|awk -F "=" '{print $2}')
@@ -859,6 +902,7 @@ delay_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|a
 open_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/open/ {print $0 }'|awk -F "=" '{print $2}')
 queue_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/queue/ {print $0 }'|awk -F "=" '{print $2}')
 log_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/log/ {print $0 }'|awk -F "=" '{print $2}')
+no_password_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/nopassword/ {print $0 }'|awk -F "=" '{print $2}')
 #PDMT defines colors
 normal_color="\E[33;00m"
 if [ "$color_config" = "yes" ]
@@ -1072,7 +1116,7 @@ case "$do_after_download" in
 esac
 #user inputs password & PDMT checkes it.
 tput cnorm   -- normal
-if [ $do_after -ne 1 ]
+if [ $do_after -ne 1 ] && [ "$no_password_config" = "no" ]
    then
       if [ "$password_input" = "" ]
           then

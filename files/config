@@ -1,10 +1,11 @@
 PDMT config file
 color=yes
 sound=yes
-open=no
-folder=~/Downloads/Persepolis
+open=yes
+folder=/home/alireza/Downloads/Persepolis
 retryf=5
 retryd=5
 delay=60
 queue=2
 log=no
+nopassword=yes

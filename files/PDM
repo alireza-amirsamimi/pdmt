@@ -99,22 +99,39 @@ if [ "" != "$end_time" ] && [ $end_status -eq 0 ]
 	sleep 20
 fi
 sleep 5
-
-case "$do_after" in
-    2)
-    killall aria2c 2> /dev/null
-    echo $password_input |sudo -S shutdown -h now
-    ;;
-    3)
-    killall aria2c 2> /dev/null
-    echo $password_input |sudo -S pm-suspend
-    ;;
-    4)
-    killall aria2c 2> /dev/null
-    echo $password_input |sudo -S pm-hibernate
-    ;;
-esac
-exit
+if [ "$no_password_config" = "no" ];then
+	case "$do_after" in
+    	2)
+    	killall aria2c 2> /dev/null
+    	echo $password_input |sudo -S shutdown -h now
+    	;;
+    	3)
+    	killall aria2c 2> /dev/null
+    	echo $password_input |sudo -S pm-suspend
+    	;;
+    	4)
+    	killall aria2c 2> /dev/null
+    	echo $password_input |sudo -S pm-hibernate
+    	;;
+	esac
+	exit
+else
+	case "$do_after" in
+    	2)
+    	killall aria2c 2> /dev/null
+	dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.PowerOff" boolean:true
+    	;;
+    	3)
+    	killall aria2c 2> /dev/null
+	dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Suspend" boolean:true > /dev/null 2>&1
+    	;;
+    	4)
+    	killall aria2c 2> /dev/null
+	dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Hibernate" boolean:true
+    	;;
+	esac
+	exit
+fi
 }
 
 fail_reconnecting (){
@@ -493,7 +510,7 @@ trap finish exit
 tput civis      -- invisible
 if [ ! -f ~/.persepolis_download_manager_terminal/config ]
 	then
-		echo -e "PDMT config file\ncolor=yes\nsound=yes\nopen=yes\nfolder=~/Downloads/Persepolis\nretryf=5\nretryd=5\ndelay=60\nqueue=2\nlog=no" > ~/.persepolis_download_manager_terminal/config
+		echo -e "PDMT config file\ncolor=yes\nsound=yes\nopen=yes\nfolder=~/Downloads/Persepolis\nretryf=5\nretryd=5\ndelay=60\nqueue=2\nlog=no\nnopassword=no" > ~/.persepolis_download_manager_terminal/config
 fi
 color_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/color/ {print $0 }'|awk -F "=" '{print $2}')
 sound_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/sound/ {print $0 }'|awk -F "=" '{print $2}')
@@ -504,6 +521,7 @@ delay_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|a
 open_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/open/ {print $0 }'|awk -F "=" '{print $2}')
 queue_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/queue/ {print $0 }'|awk -F "=" '{print $2}')
 log_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/log/ {print $0 }'|awk -F "=" '{print $2}')
+no_password_config=$(cat ~/.persepolis_download_manager_terminal/config 2> /dev/null|awk '/nopassword/ {print $0 }'|awk -F "=" '{print $2}')
 normal_color="\E[33;00m"
 if [ "$color_config" = "yes" ]
     then
