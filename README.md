@@ -1,6 +1,6 @@
 Persepolis Download Manager (PDM)
 =============
-+ version : 1.18.1
++ version : 1.18.2
 + Persepolis Download Manager is a download manager which is written in bash language and it is based on aria2 and improves aria2.
 
 ![ScreenShot](http://s6.picofile.com/file/8202702626/pdmt.jpg)
