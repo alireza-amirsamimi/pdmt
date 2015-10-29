@@ -48,6 +48,8 @@ PDMT HELP
 -w      Root Password.if you choose one of the after download options,you must 
         enter root password.if you don't enter password after -w or if you enter
         wrong password,PDMT will ask you for root password before start downloading.
+	You can activate shutdown or ... with out entering root password from pdmt
+	config!(If your system support dbus-send)
 
 -f      Download queue.if you have many links and you want to download them in
         queue(one by one),you can use this option.links must enterd in a file
