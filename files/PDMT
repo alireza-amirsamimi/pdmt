@@ -771,7 +771,7 @@ case "$no_password_input" in
 	"n"|"no")
 	no_password_config="no";;
 	"y"|"yes")
-	echo "PDMT will test your system!Your system will suspend after 10 seconds!"
+	echo "PDMT will test your system!Your system will be suspended after 10 seconds!"
 	for pass_counter in {10..1};do
 		tput cup 35 0
 		echo "$pass_counter   "
