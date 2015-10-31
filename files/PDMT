@@ -99,7 +99,7 @@ echo -e "\n$progress_color######################"
 echo -e "\n \n$text_color0 Please enter your desired$progress_color format code$text_color0 & PRESS ENTER! \n$text_color If you want the best quality , leave it empty  & JUST PRESS ENTER"
 if [ "$sound_config" = "yes" ]
 	then
-		paplay $notifications_path/you.ogg
+		paplay $notifications_path/you.ogg 2> /dev/null
 fi
 #inputs the number of format that user selected
 tput cnorm   -- normal
@@ -269,7 +269,7 @@ if [ "$fail_counter" = "$retryf_config" ]
 		    echo -e "$text_color Check your internet connection!! \n$progress_color PDMT will retry after $delay_config seconds"
 		    if [ "$sound_config" = "yes" ]
 			  then
-	     			 paplay $notifications_path/connection.ogg
+	     			 paplay $notifications_path/connection.ogg 2> /dev/null
      		    fi
 		    echo "#################"|cat >> $download_folder/report
      		    date|cat >> $download_folder/report
@@ -512,7 +512,7 @@ case $download_flag in
      fi
      if [ "$sound_config" = "yes" ]
 	  then
-	      paplay $notifications_path/ok.ogg
+	      paplay $notifications_path/ok.ogg 2> /dev/null
      fi
      echo "#################"|cat >> $download_folder/report
      date|cat >> $download_folder/report
@@ -552,7 +552,7 @@ case $download_flag in
      echo -e " You can find summary & history of downloads & download links in \n $download_folder/report "
      if [ "$sound_config" = "yes" ]
 	  then
-	      paplay $notifications_path/fail.ogg
+	      paplay $notifications_path/fail.ogg 2> /dev/null
      fi
      echo "#################"|cat >> $download_folder/report
      date|cat >> $download_folder/report
@@ -679,7 +679,7 @@ if [ "$download_flag" != "1" ]
      	    fi
 	    if [ "$sound_config" = "yes" ]
 	         then
-	             paplay $notifications_path/queue.ogg
+	             paplay $notifications_path/queue.ogg 2> /dev/null
             fi
 	    echo "#################"|cat >> $download_folder/report
 	    date|cat >> $download_folder/report
