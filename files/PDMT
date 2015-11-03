@@ -236,7 +236,7 @@ fi
 }
 
 #If Download failed,this function checks the internet connceton and if connection dropped,notification sound played!
-#If Download failed by aria2,PDMT tries download again.The number of retries can be difined by user.
+#If Download failed by aria2,PDMT tries download again.The number of retries can be defined by user.
 #the number of retries can be defined by user
 fail_reconnecting (){
 fail_counter=$(cat $temp_path/"f$pdm_num".txt 2> /dev/null)
@@ -925,7 +925,7 @@ fi
 logo
 echo -e "$text_color0     "
 input_options=$@
-#PDMT difines folders path.
+#PDMT defines folders path.
 user=$HOME
 notifications_path="$user/.persepolis_download_manager_terminal/notifications"
 download_folder="$user/Downloads/Persepolis"
