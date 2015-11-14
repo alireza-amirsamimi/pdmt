@@ -242,7 +242,7 @@ if [ "$end_status" != "1" ]
 		;;
 		"(INPR):download in-progress.")
 		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-		
+
                 ;;
 		*)
 		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
@@ -256,7 +256,7 @@ if [ "$end_status" != "1" ]
      	echo "1"> $temp_path/"s$pdm_num".txt
 fi
 
-		
+
 }
 
 
@@ -315,7 +315,7 @@ case $download_flag in
      fi
      sleep 1
      notify-send --icon=$icon_path  "Download Complete! The file Saved as :  $save_as"
-     
+
      if [ "$sound_config" = "yes" ]
 	  then
 	      paplay $notifications_path/ok.ogg
@@ -330,7 +330,7 @@ case $download_flag in
      1)
      if [ "$my_file" = "" ]
         then
-     		notify-send --icon=$icon_path "Download Paused! Persepolis Download Manager will resume download if you start download this file again. You can find summary & history of downloads & download links in $download_folder/report" 
+     		notify-send --icon=$icon_path "Download Paused! Persepolis Download Manager will resume download if you start download this file again. You can find summary & history of downloads & download links in $download_folder/report"
      		echo "#################"|cat >> $download_folder/report
      		date|cat >> $download_folder/report
      		echo "$download_link"|cat >> $download_folder/report
@@ -338,7 +338,7 @@ case $download_flag in
      		cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
      		echo "#################"|cat >> $download_folder/report
         else
-     		notify-send --icon=$icon_path "Queue Paused! Persepolis Download Manager will resume download if you start download this file again. You can find summary & history of downloads & download links in $download_folder/report" 
+     		notify-send --icon=$icon_path "Queue Paused! Persepolis Download Manager will resume download if you start download this file again. You can find summary & history of downloads & download links in $download_folder/report"
 	        echo "#################"|cat >> $download_folder/report
                 date|cat >> $download_folder/report
                 echo "$download_link"|cat >> $download_folder/report
@@ -355,7 +355,7 @@ case $download_flag in
 	else
      	     echo "0" > $temp_path/"zenityp$pdm_num".txt
      fi
-     notify-send --icon=$icon_path "Download Failed! Persepolis Download Manager will resume download if you start download this file again. You can find summary & history of downloads & download links in $download_folder/report" 
+     notify-send --icon=$icon_path "Download Failed! Persepolis Download Manager will resume download if you start download this file again. You can find summary & history of downloads & download links in $download_folder/report"
      if [ "$sound_config" = "yes" ]
 	  then
 	      paplay $notifications_path/fail.ogg
@@ -401,7 +401,7 @@ while [ "$download_flag" != "0" ] && [ "$download_flag" != "2" ] && [ "$download
        			sleep 1
        			((sleep_counter --))
 			echo "# Reconnecting... .be patient \n PersepolisDM will retry after $sleep_counter s      " > $temp_path/"zenity$pdm_num".txt
-		done	
+		done
 		while [ "$aria_ready" != "1" ]
 		      do
 		      aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
@@ -420,39 +420,52 @@ stop
 
 
 download_queue () {
+first_char_queue=`echo "${my_file:0:2}"`
+if [ "$first_char_queue" = "~/" ]
+        then
+            remove_char_queue=`echo "${my_file#*~}"`
+            my_file="$user$remove_char_queue"
+fi
 for iq in `seq 1 $queue_config`
       do
 	qi=1
-	while read -r line
-		do
-		download_link=$line
-		echo "$download_link" > $temp_path/"l$pdm_num".txt
-		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-		if [ "$download_link" = "" ] || [ "$download_flag" = "1" ]
-		   then
-		       break
-		fi
-		echo "3"> $temp_path/"s$pdm_num".txt
-		echo "0"> $temp_path/"f$pdm_num".txt
-		if [ -f $temp_path/"fnameq$pdm_num".txt ];then
-			fname=`sed "$qi q;d" $temp_path/"fnameq$pdm_num".txt`
-			aria2_options="$aria2_options --out=$fname"
-		fi		
-		download_single
-		if [ "$download_flag" = "2" ]
-			then
-			    if [ "$qi" = "1" ]
-			    	then
+	while read -r line ;do
+			if [ "${line:0:1}" == "#" ];then
+				    ((qi++))
+				    continue
+			fi
+		  download_link=$line
+		  echo "$download_link" > $temp_path/"l$pdm_num".txt
+		  download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
+		  if [ "$download_link" = "" ] || [ "$download_flag" = "1" ]
+		     then
+		         break
+		  fi
+		  echo "3"> $temp_path/"s$pdm_num".txt
+		  echo "0"> $temp_path/"f$pdm_num".txt
+		  if [ -f $temp_path/"fnameq$pdm_num".txt ];then
+			      fname=`sed "$qi q;d" $temp_path/"fnameq$pdm_num".txt`
+			      aria2_options="$aria2_options --out=$fname"
+		  fi
+		  download_single
+		  if [ "$download_flag" = "2" ];then
+			      if [ "$qi" = "1" ];then
 			    	        echo "$download_link" > $temp_path/"qf$pdm_num".txt 2> /dev/null
-					if [ -f $temp_path/"fnameq$pdm_num".txt ];then
-					    	echo "$fname" > $temp_path/"fnameqf$pdm_num".txt
-					fi					    	
-				else
+					  			  if [ -f $temp_path/"fnameq$pdm_num".txt ];then
+					        					echo "$fname" > $temp_path/"fnameqf$pdm_num".txt
+					  				fi
+				    else
 			    	        echo "$download_link" >> $temp_path/"qf$pdm_num".txt 2> /dev/null
-			   		if [ -f $temp_path/"fnameq$pdm_num".txt ];then
-					    	echo "$fname" > $temp_path/"fnameqf$pdm_num".txt
-					fi
-			    fi
+			   	        	if [ -f $temp_path/"fnameq$pdm_num".txt ];then
+					        					echo "$fname" > $temp_path/"fnameqf$pdm_num".txt
+					          fi
+			      fi
+		fi
+		if [ "$download_flag" = "0" ];then
+				new_line=$(echo "$download_link" | sed 's/^/#/g')
+				sed -i "$qi d" $my_file
+				echo "$new_line" >> $my_file
+				((qi--))
 		fi
 		sleep 1
 		((qi++))
@@ -722,8 +735,8 @@ if [ "" != "$start_time" ] && [ "$var1" != "$start_time" ]
 
       echo "# Download will be started at $start_time !" > $temp_path/"zenity$pdm_num".txt
       while [ "$PID_ZENITY" = "" ] ; do
-		
-		        PID_ZENITY=$(ps -C zenity h -o pid,command | grep "$pdm_num Persepolis Download Manager" | awk '{print $1}')	
+
+		        PID_ZENITY=$(ps -C zenity h -o pid,command | grep "$pdm_num Persepolis Download Manager" | awk '{print $1}')
 			sleep 1
       done
       while [ "$var1" != "$start_time" ] && [ "$PID_ZENITY" != "" ]
@@ -777,4 +790,4 @@ fi
 ) &
 (
 download_process
-) 
+)

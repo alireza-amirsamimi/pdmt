@@ -1,6 +1,6 @@
 #!/bin/bash
 #Persepolis Download Manager Terminal (PDMT) written by AliReza AmirSamimi(alireza.amirsamimi@ubuntu.ir) and It is based on aria2
-#files : s means   s$pdm_num.txt,p means   p$pdm_num.txt & ...  
+#files : s means   s$pdm_num.txt,p means   p$pdm_num.txt & ...
 #s=download status r=aria ready p=aria2c pid e=end status d=downloaded f=fail_counter l=download_link qf=queue failed links
 #aria2 status : 0=aria ready 1=aria not ready
 #dowload manager status(download_flag) : 0=completed 1=paused 2=failed 3=download 4=reconnecting
@@ -99,7 +99,7 @@ echo -e "\n$progress_color######################"
 echo -e "\n \n$text_color0 Please enter your desired$progress_color format code$text_color0 & PRESS ENTER! \n$text_color If you want the best quality , leave it empty  & JUST PRESS ENTER"
 if [ "$sound_config" = "yes" ]
 	then
-		paplay $notifications_path/you.ogg 2> /dev/null
+		paplay $notifications_path/you.ogg
 fi
 #inputs the number of format that user selected
 tput cnorm   -- normal
@@ -145,7 +145,7 @@ fi
 }
 
 #this function gets the file extension from output of aria and defines the output path after download.
-#Files are downloaded in ~/.persepolis folder and after download finished , PDMT moves them to download folder(defined by user) according to file extension.  
+#Files are downloaded in ~/.persepolis folder and after download finished , PDMT moves them to download folder(defined by user) according to file extension.
 #files will be moved to Videos Audios Documents Compressed & Others sub-folder in Download folder
 file_extension (){
 file_name_extension="${save_as_temp##*/}"
@@ -236,7 +236,7 @@ fi
 }
 
 #If Download failed,this function checks the internet connceton and if connection dropped,notification sound played!
-#If Download failed by aria2,PDMT tries download again.The number of retries can be defined by user.
+#If Download failed by aria2,PDMT tries download again.The number of retries can be difined by user.
 #the number of retries can be defined by user
 fail_reconnecting (){
 fail_counter=$(cat $temp_path/"f$pdm_num".txt 2> /dev/null)
@@ -269,7 +269,7 @@ if [ "$fail_counter" = "$retryf_config" ]
 		    echo -e "$text_color Check your internet connection!! \n$progress_color PDMT will retry after $delay_config seconds"
 		    if [ "$sound_config" = "yes" ]
 			  then
-	     			 paplay $notifications_path/connection.ogg 2> /dev/null
+	     			 paplay $notifications_path/connection.ogg
      		    fi
 		    echo "#################"|cat >> $download_folder/report
      		    date|cat >> $download_folder/report
@@ -491,7 +491,7 @@ logo
 echo -e "$text_color0  "
 }
 
-#this function writes summary of download in the report file and informs user & moves the file to the download folder if download completed 
+#this function writes summary of download in the report file and informs user & moves the file to the download folder if download completed
 stop (){
 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 case $download_flag in
@@ -503,16 +503,13 @@ case $download_flag in
      echo -e " The file Saved as :"
      echo -e "$text_color $save_as \n"
 		 echo -e "$text_color0 Download Complete!Please Wait..."
-     if [ "$my_file" = "" ]
-     	then
-     	    if [ "$open_config" = "yes" ]
-		  then
-	     	      xdg-open $download_folder/$file_type >/dev/null 2>&1
+     if [ "$my_file" = "" ];then
+     	    if [ "$open_config" = "yes" ];then
+	     	          xdg-open $download_folder/$file_type >/dev/null 2>&1
      	    fi
      fi
-     if [ "$sound_config" = "yes" ]
-	  then
-	      paplay $notifications_path/ok.ogg 2> /dev/null
+     if [ "$sound_config" = "yes" ];then
+	           paplay $notifications_path/ok.ogg
      fi
      echo "#################"|cat >> $download_folder/report
      date|cat >> $download_folder/report
@@ -552,7 +549,7 @@ case $download_flag in
      echo -e " You can find summary & history of downloads & download links in \n $download_folder/report "
      if [ "$sound_config" = "yes" ]
 	  then
-	      paplay $notifications_path/fail.ogg 2> /dev/null
+	      paplay $notifications_path/fail.ogg
      fi
      echo "#################"|cat >> $download_folder/report
      date|cat >> $download_folder/report
@@ -601,7 +598,7 @@ while [ "$download_flag" != "0" ] && [ "$download_flag" != "2" ] && [ "$download
        			sleep 1
        			((sleep_counter --))
 			echo " PDMT will retry after $sleep_counter s      "
-		done		
+		done
 		while [ "$aria_ready" != "1" ]
 		      do
 		      aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
@@ -620,13 +617,22 @@ stop
 
 #download_queue uses download_single function to download multiple links
 #this function stores failed links in a file(qf$pdm_num.txt) for retrying.
-# "fnameq$pdm_num".txt is for saving the name of video files that youtube function creates 
+# "fnameq$pdm_num".txt is for saving the name of video files that youtube function creates
 download_queue () {
+first_char_queue=`echo "${my_file:0:2}"`
+if [ "$first_char_queue" = "~/" ]
+        then
+            remove_char_queue=`echo "${my_file#*~}"`
+            my_file="$user$remove_char_queue"
+fi
 for iq in `seq 1 $queue_config`
       do
 	qi=1
-	while read -r line
-		do
+	while read -r line	;do
+			if [ "${line:0:1}" == "#" ];then
+				    ((qi++))
+				    continue
+			fi
 		download_link=$line
 		echo "$download_link" > $temp_path/"l$pdm_num".txt
 		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
@@ -656,6 +662,12 @@ for iq in `seq 1 $queue_config`
 				    fi
 			    fi
 		fi
+		if [ "$download_flag" = "0" ];then
+				new_line=$(echo "$download_link" | sed 's/^/#/g')
+				sed -i "$qi d" $my_file
+				echo "$new_line" >> $my_file
+				((qi--))
+		fi
 		sleep 1
 		((qi++))
 	done < "$my_file"
@@ -679,7 +691,7 @@ if [ "$download_flag" != "1" ]
      	    fi
 	    if [ "$sound_config" = "yes" ]
 	         then
-	             paplay $notifications_path/queue.ogg 2> /dev/null
+	             paplay $notifications_path/queue.ogg
             fi
 	    echo "#################"|cat >> $download_folder/report
 	    date|cat >> $download_folder/report
@@ -925,7 +937,7 @@ fi
 logo
 echo -e "$text_color0     "
 input_options=$@
-#PDMT defines folders path.
+#PDMT difines folders path.
 user=$HOME
 notifications_path="$user/.persepolis_download_manager_terminal/notifications"
 download_folder="$user/Downloads/Persepolis"
@@ -1147,15 +1159,15 @@ if [ "$youtube_switch" == "1" ];then
 
 	if [ "$download_type" == "1" ];then
 		clear
-		logo		
+		logo
 		youtube
 		aria2_options="$aria2_options --out=$fname"
 		else
 			while read -r line;do
 				download_link="$line"
 				clear
-				logo				
-				youtube			
+				logo
+				youtube
 				echo "$download_link" >> $temp_path/"youtubeq$pdm_num".txt
 				echo "$fname" >> $temp_path/"fnameq$pdm_num".txt
 			done  3<&0 < "$my_file"
