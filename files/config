@@ -2,7 +2,7 @@ PDMT config file
 color=yes
 sound=yes
 open=yes
-folder=/home/alireza/Downloads/Persepolis
+folder=~/Downloads/Persepolis
 retryf=5
 retryd=5
 delay=60
