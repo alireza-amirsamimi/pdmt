@@ -99,6 +99,9 @@ if [ "" != "$end_time" ] && [ $end_status -eq 0 ]
 	sleep 20
 fi
 sleep 5
+if [ "$download_flag" = "1" ];then
+	do_after=1
+fi
 if [ "$no_password_config" = "no" ];then
 	case "$do_after" in
     	2)
