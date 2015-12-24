@@ -1,8 +1,7 @@
-Persepolis Download Manager Version 1.18.3
-AliReza AmirSamimi 			   
-http://amirsamimi.mihanblog.com           
-alireza.amirsamimi@ubuntu.ir		   
-https://twitter.com/AR_AmirSamimi	   
-Persepolis Telegram Channel:		   
-https://telegram.me/persepolisdm	   
-
+Persepolis Download Manager Version 1.18.4
+AliReza AmirSamimi
+http://amirsamimi.mihanblog.com
+alireza.amirsamimi@ubuntu.ir
+https://twitter.com/AR_AmirSamimi
+Persepolis Telegram Channel:
+https://telegram.me/persepolisdm

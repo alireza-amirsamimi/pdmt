@@ -1,0 +1,5 @@
+#!/bin/bash
+user=$HOME
+cd $user/.persepolis_download_manager_terminal
+./pdm_zenity
+exit

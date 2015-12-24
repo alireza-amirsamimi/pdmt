@@ -7,5 +7,5 @@ Terminal=false
 Type=Application
 Categories=GNOME;GTK;Network;
 StartupNotify=true
-
-
+Exec=persepolisdm
+Icon=/usr/share/persepolisdm/icon/icon.png

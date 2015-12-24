@@ -1,6 +1,6 @@
 Persepolis Download Manager (PDM)
 =============
-+ version : 1.18.3
++ version : 1.18.4
 + Persepolis Download Manager is a download manager which is written in bash language and it is based on aria2 and improves aria2.
 
 ![ScreenShot](http://s6.picofile.com/file/8202702626/pdmt.jpg)
@@ -13,7 +13,7 @@ You must install `aria2` , `pm-utils`, `wget` , `bc` , `vorbis-tools` , `xclip` 
 ## Dependencies for Ubuntu
 
     $ sudo apt-get install aria2 pm-utils wget vorbis-tools xdg-utils xclip  libnotify-bin xterm zenity youtube-dl
-    
+
 ## Dependencies for Fedora
 
     $ sudo yum install aria2 pm-utils wget vorbis-tools xdg-utils xclip  libnotify xterm zenity youtube-dl
@@ -21,7 +21,7 @@ You must install `aria2` , `pm-utils`, `wget` , `bc` , `vorbis-tools` , `xclip` 
 ## Dependencies for Archlinux
 
     $ sudo pacman -S aria2 pm-utils wget vorbis-tools xdg-utils xclip  libnotify xterm zenity youtube-dl
-    
+
 After installing dependencies, change your directory with cd command and run install file
 
     $ sh install
@@ -47,7 +47,7 @@ for uninstall PDM,
 
 + download queue
 
-+ PDM can shutdown or suspend or hibernate system  after download 
++ PDM can shutdown or suspend or hibernate system  after download
 
 + Downloading from youtube & aparat & ...
 
@@ -87,7 +87,7 @@ and ...
         Proxy Password.
 
 	$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -i 127.0.0.1 -p 8580 -u hasan -a kamran
-        
+
  -j
       Set HTTP user.
 
@@ -118,7 +118,7 @@ example for start at 2:00 and end at 7:00
 	$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -s 2:00 -e 7:00
 
  -m
-	PDMT selects maximum possible 
+	PDMT selects maximum possible
         number of connections automatically.but you can choose maximum number
         yourself(1-16).default is 16.
 
@@ -129,8 +129,8 @@ example for start at 2:00 and end at 7:00
         you can write aria2 options after o,for example:
 
 	$ pdmt -l "https://www.google.com/images/srpr/logo11w.png" -o --max-download-limit=10k
-        
-        
+
+
  -d
 	After download PDMT can shutdown , hibernate , suspend computer.
         (options are shutdown , hibernate , suspend )
@@ -138,7 +138,7 @@ example for start at 2:00 and end at 7:00
 
 
  -w
-      Root Password.if you choose one of the after download options,you must 
+      Root Password.if you choose one of the after download options,you must
         enter root password.if you don't enter password after -w or if you enter
         wrong password,PDMT will ask you for root password before start downloading.
 	You can activate shutdown or ... with out entering root password from pdmt config!(If your system support dbus-send)
@@ -157,13 +157,13 @@ example for start at 2:00 and end at 7:00
 	enter your youtube link after l and use y switch
 
         $ pdmt -l "https://www.youtube.com/watch?v=MMwXF9Kveus" -y
-	
+
 	you can use queu too.
 
 	$ pdmt -f /home/alireza/links.txt -y
 
 	you can find supported video site here:
-	
+
 	https://github.com/rg3/youtube-dl/blob/master/docs/supportedsites.md
 
 
@@ -194,12 +194,12 @@ or for download queue
 	$ pdmt -f /home/alireza/links.txt  -i 127.0.0.1 -p 8580 -s 2:30 -e 7:00 -d shutdown -w mypass
 
 When download completes you can find your file in :
-	
+
 	$ ~/Downloads/Persepolis
 
 before download completes you can find your file in :
 
-	$ ~/.persepolis 
+	$ ~/.persepolis
 
 if your download canceled or failed you can get link to PDMT again .PDMT will resume download.
 
