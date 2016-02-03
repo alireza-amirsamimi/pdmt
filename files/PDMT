@@ -9,124 +9,124 @@
 #functions
 #finish & finish2 atrl_c are functions.they are delete text files that created by PDMT after exit!in other word it's for clearance!
 finish (){
-rm -v $temp_path/"p$pdm_num".txt >/dev/null 2>&1
-rm -v $temp_path/"r$pdm_num".txt >/dev/null 2>&1
-rm -v $temp_path/"s$pdm_num".txt >/dev/null 2>&1
-rm -v $temp_path/"$pdm_num".txt  >/dev/null 2>&1
-rm -v $temp_path/"e$pdm_num".txt >/dev/null 2>&1
-rm -v $temp_path/"d$pdm_num".txt >/dev/null 2>&1
-rm -v $temp_path_2/aria_ready_file >/dev/null 2>&1
-rm -v $temp_path/"f$pdm_num".txt >/dev/null 2>&1
-rm -v $temp_path/"l$pdm_num".txt >/dev/null 2>&1
-rm -v $temp_path/"qf$pdm_num".txt >/dev/null 2>&1
-rm -v $temp_path/"youtube$pdm_num".txt >/dev/null 2>&1
-rm -v $temp_path/"youtubeq$pdm_num".txt >/dev/null 2>&1
-rm -v $temp_path/"fnameq$pdm_num".txt >/dev/null 2>&1
-rm -v $temp_path/"fnameqf$pdm_num".txt >/dev/null 2>&1
-echo -e "$text_color0 EXIT!"
-echo -e "$normal_color   "
-#makes cursor visible & change color of texts in terminal to normal after exit.
-tput cnorm   -- normal
-tput smam
+  rm -v $temp_path/"p$pdm_num".txt >/dev/null 2>&1
+  rm -v $temp_path/"r$pdm_num".txt >/dev/null 2>&1
+  rm -v $temp_path/"s$pdm_num".txt >/dev/null 2>&1
+  rm -v $temp_path/"$pdm_num".txt  >/dev/null 2>&1
+  rm -v $temp_path/"e$pdm_num".txt >/dev/null 2>&1
+  rm -v $temp_path/"d$pdm_num".txt >/dev/null 2>&1
+  rm -v $temp_path_2/aria_ready_file >/dev/null 2>&1
+  rm -v $temp_path/"f$pdm_num".txt >/dev/null 2>&1
+  rm -v $temp_path/"l$pdm_num".txt >/dev/null 2>&1
+  rm -v $temp_path/"qf$pdm_num".txt >/dev/null 2>&1
+  rm -v $temp_path/"youtube$pdm_num".txt >/dev/null 2>&1
+  rm -v $temp_path/"youtubeq$pdm_num".txt >/dev/null 2>&1
+  rm -v $temp_path/"fnameq$pdm_num".txt >/dev/null 2>&1
+  rm -v $temp_path/"fnameqf$pdm_num".txt >/dev/null 2>&1
+  echo -e "$text_color0 EXIT!"
+  echo -e "$normal_color   "
+  #makes cursor visible & change color of texts in terminal to normal after exit.
+  tput cnorm   -- normal
+  tput smam
 }
 finish2 () {
-aria_ready=$(cat $temp_path/"r$pdm_num".txt 2>/dev/null)
-if [ "$aria_ready" != "0" ]
-	then
-	    kill $$
-	else
-	    clear
-	    logo
-	    if [ "$my_file" = "" ]
-     		then
-         		echo " Download Canceled by user!Please Wait..."
-         		echo -e "$text_color PDMT will resume download if you start download this file again.    "
-         		echo -e " You can find summary & history of downloads & download links in \n $download_folder/report "
-         		echo  "#################"|cat >> $download_folder/report
-         		date|cat >> $download_folder/report
-         		echo "$download_link"|cat >> $download_folder/report
-         		echo "Download Canceled by user!"|cat >> $download_folder/report
-         		cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
-         		echo "#################"|cat >> $download_folder/report
-     		else
-     		        download_link=$(cat $temp_path/"l$pdm_num".txt 2>/dev/null)
-         		echo " Queue Canceled by user!Please Wait..."
-         		echo -e "$text_color PDMT will resume download if you start download this file again.    "
-         		echo -e " You can find summary & history of downloads & download links in \n $download_folder/report   "
-         		echo "#################"|cat >> $download_folder/report
-         		date|cat >> $download_folder/report
-         		echo "$download_link"|cat >> $download_folder/report
-         		echo "Queue Canceled by user!"|cat >> $download_folder/report
-         		cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
-         		echo "#################"|cat >> $download_folder/report
+  aria_ready=$(cat $temp_path/"r$pdm_num".txt 2>/dev/null)
+  if [ "$aria_ready" != "0" ]
+  	then
+  	    kill $$
+  	else
+  	    clear
+  	    logo
+  	    if [ "$my_file" = "" ]
+       		then
+           		echo " Download Canceled by user!Please Wait..."
+           		echo -e "$text_color PDMT will resume download if you start download this file again.    "
+           		echo -e " You can find summary & history of downloads & download links in \n $download_folder/report "
+          		echo  "#################"|cat >> $download_folder/report
+          		date|cat >> $download_folder/report
+          		echo "$download_link"|cat >> $download_folder/report
+          		echo "Download Canceled by user!"|cat >> $download_folder/report
+          		cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
+          		echo "#################"|cat >> $download_folder/report
+     	  	else
+     	  	        download_link=$(cat $temp_path/"l$pdm_num".txt 2>/dev/null)
+          		echo " Queue Canceled by user!Please Wait..."
+          		echo -e "$text_color PDMT will resume download if you start download this file again.    "
+          		echo -e " You can find summary & history of downloads & download links in \n $download_folder/report   "
+          		echo "#################"|cat >> $download_folder/report
+          		date|cat >> $download_folder/report
+          		echo "$download_link"|cat >> $download_folder/report
+          		echo "Queue Canceled by user!"|cat >> $download_folder/report
+          		cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
+          		echo "#################"|cat >> $download_folder/report
      	    fi
 
             kill $$
-fi
+  fi
 
 }
 ctrl_c () {
-finish2
+  finish2
 }
 
 #youtube function uses youtube-dl program to find download link of video
 youtube () {
 
-echo -e "$text_color0 Please Wait ...!"
-if [ "$ip_name" == "" ];then
+  echo -e "$text_color0 Please Wait ...!"
+  if [ "$ip_name" == "" ];then
 	ip_port=""
-   else
+     else
 	ip_port="$ip_name:$port_name"
-fi
-#Finding diffrent qualities available for Video
-youtube-dl -F --proxy "$ip_port" -u "$site_user" -p "$site_password"  $download_link 2> /dev/null > $temp_path/"youtube$pdm_num".txt
-if [ "$?" != "0" ];then
+  fi
+  #Finding diffrent qualities available for Video
+  youtube-dl -F --proxy "$ip_port" -u "$site_user" -p "$site_password"  $download_link 2> /dev/null > $temp_path/"youtube$pdm_num".txt
+  if [ "$?" != "0" ];then
 	echo "Error"
 	exit
-fi
-info_line_number_y=$(cat "$temp_path/youtube$pdm_num".txt|grep -n "Available formats"|awk -F ":" '{print $1}')
-line_nambers_y=$(cat "$temp_path/youtube$pdm_num".txt | wc -l)
-diffrence_line_number_y=$((line_nambers_y - info_line_number_y ))
-#finding the name of video
-fname=`youtube-dl --get-filename --proxy "$ip_port" -u "$site_user" -p "$site_password"  $download_link 2> /dev/null | tail -1`
-if [ "$fname" == "" ];then
+  fi
+  info_line_number_y=$(cat "$temp_path/youtube$pdm_num".txt|grep -n "Available formats"|awk -F ":" '{print $1}')
+  line_nambers_y=$(cat "$temp_path/youtube$pdm_num".txt | wc -l)
+  diffrence_line_number_y=$((line_nambers_y - info_line_number_y ))
+  #finding the name of video
+  fname=`youtube-dl --get-filename --proxy "$ip_port" -u "$site_user" -p "$site_password"  $download_link 2> /dev/null | tail -1`
+  if [ "$fname" == "" ];then
 	fname="videoplayback"
-fi
-echo -e "$text_color Link : $progress_color$download_link \n$text_color File Name : $progress_color$fname  \n \n######################"
-echo -e "$text_color0"
-cat $temp_path/"youtube$pdm_num".txt | tail -$diffrence_line_number_y
-echo -e "\n$progress_color######################"
-echo -e "\n \n$text_color0 Please enter your desired$progress_color format code$text_color0 & PRESS ENTER! \n$text_color If you want the best quality , leave it empty  & JUST PRESS ENTER"
-if [ "$sound_config" = "yes" ]
+  fi
+  echo -e "$text_color Link : $progress_color$download_link \n$text_color File Name : $progress_color$fname  \n \n######################"
+  echo -e "$text_color0"
+  cat $temp_path/"youtube$pdm_num".txt | tail -$diffrence_line_number_y
+  echo -e "\n$progress_color######################"
+  echo -e "\n \n$text_color0 Please enter your desired$progress_color format code$text_color0 & PRESS ENTER! \n$text_color If you want the best quality , leave it empty  & JUST PRESS ENTER"
+  if [ "$sound_config" = "yes" ]
 	then
 		paplay $notifications_path/you.ogg
-fi
-#inputs the number of format that user selected
-tput cnorm   -- normal
-if [ $download_type == 1 ];then
+  fi
+  #inputs the number of format that user selected
+  tput cnorm   -- normal
+  if [ $download_type == 1 ];then
 	read  f_number
 	else
-	read -u 3 f_number
-fi
-tput civis      -- invisible
-if  [ "$f_number" == "" ];then
+        	read -u 3 f_number
+  fi
+  tput civis      -- invisible
+  if  [ "$f_number" == "" ];then
 	f_number="best"
-fi
-#finding download link
-youtube-dl -f $f_number --get-url --proxy "$ip_port" -u "$site_user" -p "$site_password"  $download_link 2> /dev/null > $temp_path/"youtube$pdm_num".txt
-if [ "$?" != "0" ];then
+  fi
+  #finding download link
+  youtube-dl -f $f_number --get-url --proxy "$ip_port" -u "$site_user" -p "$site_password"  $download_link 2> /dev/null > $temp_path/"youtube$pdm_num".txt
+  if [ "$?" != "0" ];then
 	echo "ERROR!"
 	exit
-fi
-download_link=`cat "$temp_path/youtube$pdm_num".txt| tail -1`
-fname=${fname// /_}
+  fi
+  download_link=`cat "$temp_path/youtube$pdm_num".txt| tail -1`
+  fname=${fname// /_}
 
 }
 
 #this function creates log file (information about download,percent & time remaining & ...).log file is deactived by default.
 log () {
-((log_counter ++))
-if [ "$log_counter" -gt "10" ] && [ "$log_config" = "yes" ]
+  ((log_counter ++))
+  if [ "$log_counter" -gt "10" ] && [ "$log_config" = "yes" ]
    	then
    		((log_counter_link ++))
    		if [ "$log_counter_link" -eq "1" ]
@@ -141,16 +141,16 @@ if [ "$log_counter" -gt "10" ] && [ "$log_config" = "yes" ]
    	        echo "$progress_title" >> $download_folder/log
    	        log_counter=0
 
-fi
+  fi
 }
 
 #this function gets the file extension from output of aria and defines the output path after download.
 #Files are downloaded in ~/.persepolis folder and after download finished , PDMT moves them to download folder(defined by user) according to file extension.
 #files will be moved to Videos Audios Documents Compressed & Others sub-folder in Download folder
 file_extension (){
-file_name_extension="${save_as_temp##*/}"
-extension="${file_name_extension##*.}"
-case "$extension" in
+  file_name_extension="${save_as_temp##*/}"
+  extension="${file_name_extension##*.}"
+  case "$extension" in
 	act|aiff|aac|amr|ape|au|awb|dct|dss|dvf|flac|gsm|iklax|ivs|m4a|m4p|mmf|mp3|mpc|msv|ogg|oga|opus|ra|raw|sln|tta|vox|wav|wma|wv)
         file_type="Audios"
 	;;
@@ -166,24 +166,24 @@ case "$extension" in
 	*)
 	file_type="Others"
 	;;
-esac
+  esac
 
-if  [ "$file_name_extension" = "videoplayback" ]
+  if  [ "$file_name_extension" = "videoplayback" ]
 	then
 		file_type="Videos"
-fi
+  fi
 
-suffix=0
-file_name_extension_prime=$file_name_extension
-while test -e "$download_folder/$file_type/$file_name_extension_prime"; do
+  suffix=0
+  file_name_extension_prime=$file_name_extension
+  while test -e "$download_folder/$file_type/$file_name_extension_prime"; do
     file_name_extension_prime="($((++suffix))).$file_name_extension"
-done
-if [ "$save_as_temp" != "" ]
+  done
+  if [ "$save_as_temp" != "" ]
 	then
 		save_as="$download_folder/$file_type/$file_name_extension_prime"
 	else
 		save_as=""
-fi
+  fi
 }
 
 #this function shutdown or suspend or hibernate system according to  the user selection
@@ -192,15 +192,15 @@ fi
 #Please see this link for more help : http://askubuntu.com/questions/454039/what-command-is-executed-when-shutdown-from-the-graphical-menu-in-14-04
 #but dbus code won't work in all distros!so I use pm-utils!
 func_after () {
-download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-end_status=$(cat $temp_path/"e$pdm_num".txt 2> /dev/null)
-if [ "" != "$end_time" ] && [ $end_status -eq 0 ]
+  download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
+  end_status=$(cat $temp_path/"e$pdm_num".txt 2> /dev/null)
+  if [ "" != "$end_time" ] && [ $end_status -eq 0 ]
 	then
 	echo "2"|cat >$temp_path/"e$pdm_num".txt
 	sleep 20
-fi
-sleep 5
-if [ "$no_password_config" = "no" ];then
+  fi
+  sleep 5
+  if [ "$no_password_config" = "no" ];then
 	case "$do_after" in
     	2)
     	killall aria2c 2> /dev/null
@@ -216,7 +216,7 @@ if [ "$no_password_config" = "no" ];then
     	;;
 	esac
 	exit
-else
+  else
 	case "$do_after" in
     	2)
     	killall aria2c 2> /dev/null
@@ -232,15 +232,15 @@ else
     	;;
 	esac
 	exit
-fi
+  fi
 }
 
 #If Download failed,this function checks the internet connceton and if connection dropped,notification sound played!
 #If Download failed by aria2,PDMT tries download again.The number of retries can be difined by user.
 #the number of retries can be defined by user
 fail_reconnecting (){
-fail_counter=$(cat $temp_path/"f$pdm_num".txt 2> /dev/null)
-if [ "$fail_counter" = "" ]
+  fail_counter=$(cat $temp_path/"f$pdm_num".txt 2> /dev/null)
+  if [ "$fail_counter" = "" ]
         then
  	    echo "0" > $temp_path/"f$pdm_num".txt
        	    fail_counter="0"
@@ -248,8 +248,8 @@ if [ "$fail_counter" = "" ]
      	    ((fail_counter ++ ))
 	    echo "$fail_counter" > $temp_path/"f$pdm_num".txt
 
-fi
-if [ "$fail_counter" = "$retryf_config" ]
+  fi
+  if [ "$fail_counter" = "$retryf_config" ]
 	then
 	    echo "2"> $temp_path/"s$pdm_num".txt
 	else
@@ -261,7 +261,7 @@ if [ "$fail_counter" = "$retryf_config" ]
 	    echo "Download Failed!" | cat >> $download_folder/report
    	    cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
 	    echo "#################"|cat >> $download_folder/report
-#checking the internet connection by ping www.google.com
+  #checking the internet connection by ping www.google.com
 	    until ping -c 1 -w 5 www.google.com >/dev/null 2>&1 || [ "$ifail" = "$retryd_config" ]
 		do
 		    clear
@@ -294,36 +294,35 @@ if [ "$fail_counter" = "$retryf_config" ]
 	        else
 	            echo "2"> $temp_path/"s$pdm_num".txt
 	    fi
-fi
+  fi
 }
 #this function uses wget to find size of file and sets aria2 according to the file size.
 download () {
-progress_dialog &
-size_remote=$(wget --spider -O "$temp_path/salam"  --no-check-certificate -T 5 -t 3 -e use-proxy=yes --proxy-user="$user_name" --proxy-password="$password_name" -e --http-proxy="$ip_port" --user="$site_user" --password="$site_password" "$download_link" 2>&1 | awk '/Length/ { print $2 }')
-if [ "$size_remote" = "" ]
-   then
-       size_remote="0"
-fi
-size_remote=$((size_remote / 1048576))
-case $size_m in
-[2-9]|1[0-5])
-x_para=$size_m
-;;
-*)
-x_para=16
-;;
-esac
+  progress_dialog &
+  size_remote=$(wget --spider -O "$temp_path/salam"  --no-check-certificate -T 5 -t 3 -e use-proxy=yes --proxy-user="$user_name" --proxy-password="$password_name" -e --http-proxy="$ip_port" --user="$site_user" --password="$site_password" "$download_link" 2>&1 | awk '/Length/ { print $2 }')
+  if [ "$size_remote" = "" ]
+     then
+         size_remote="0"
+  fi
+  size_remote=$((size_remote / 1048576))
+  case $size_m in
+      [2-9]|1[0-5])
+      x_para=$size_m
+      ;;
+      *)
+      x_para=16
+      ;;
+  esac
 
-if [ $x_para -gt $max_num_connections ]
+  if [ $x_para -gt $max_num_connections ]
    then
        x_parameter=$max_num_connections
    else
        x_parameter=$x_para
-fi
+  fi
 
-echo "$download_link"|grep -e "ftp://"
-if [ "$?" -eq "0" ]
-   then
+  echo "$download_link"|grep -e "ftp://"
+  if [ "$?" -eq "0" ];then
      site_user_http=""
      site_password_http=""
      site_user_ftp="$site_user"
@@ -333,16 +332,16 @@ if [ "$?" -eq "0" ]
      site_password_http="$site_password"
      site_user_ftp=""
      site_password_ftp=""
-fi
+  fi
 
-aria2c --on-download-start="$temp_path_2/aria_ready_file"  --all-proxy=$ip_port --summary-interval=1 --all-proxy-passwd=$password_name --all-proxy-user=$user_name --http-user=$site_user_http --http-passwd=$site_password_http --ftp-user=$site_user_ftp --ftp-passwd=$site_password_ftp -s 16 -x $x_parameter -k 1M -c -d $download_folder_temp $aria2_options "$download_link" 2>&1 | cat > $temp_path/"$pdm_num".txt
-echo "1" |cat > $temp_path/"r$pdm_num".txt
-aria_status=$(cat $temp_path/"$pdm_num".txt|tail -50|egrep -a "download completed|download in-progress" )
-end_status=$(cat $temp_path/"e$pdm_num".txt 2> /dev/null)
-#PDMT checks end status and then checks output of aria2 and defines that download completed or failed or canceled.
-if [ "$end_status" != "1" ]
+  aria2c --on-download-start="$temp_path_2/aria_ready_file"  --all-proxy=$ip_port --summary-interval=1 --all-proxy-passwd=$password_name --all-proxy-user=$user_name --http-user=$site_user_http --http-passwd=$site_password_http --ftp-user=$site_user_ftp --ftp-passwd=$site_password_ftp -s 16 -x $x_parameter -k 1M -c -d $download_folder_temp $aria2_options "$download_link" 2>&1 | cat > $temp_path/"$pdm_num".txt
+  echo "1" |cat > $temp_path/"r$pdm_num".txt
+  aria_status=$(cat $temp_path/"$pdm_num".txt|tail -50|egrep -a "download completed|download in-progress" )
+  end_status=$(cat $temp_path/"e$pdm_num".txt 2> /dev/null)
+  #PDMT checks end status and then checks output of aria2 and defines that download completed or failed or canceled.
+  if [ "$end_status" != "1" ]
      then
-	case $aria_status in
+  	case $aria_status in
 		"(OK):download completed.")
 		echo "0"> $temp_path/"s$pdm_num".txt
 		echo " Please wait..."
@@ -357,170 +356,167 @@ if [ "$end_status" != "1" ]
   		        fail_reconnecting
 		fi
 		;;
-        esac
-    else
-     	echo "1"> $temp_path/"s$pdm_num".txt
-fi
+          esac
+     else
+       	echo "1"> $temp_path/"s$pdm_num".txt
+  fi
 
 
 }
 
 #a simple progress bar
 progress_bar() {
-tput cup 12 0
-echo -e "$progress_color  "
-echo -n "["
-percent20=$((download_percent / 20))
-case "$percent20" in
-     0)
-     echo -n "<-"
-     ;;
-     1)
-      echo -n "<-||||||||||"
-     ;;
-     2)
-      echo -n "<-||||||||||||||||||||"
-     ;;
-     3)
-      echo -n "<-||||||||||||||||||||||||||||||"
-     ;;
-     4)
-      echo -n "<-||||||||||||||||||||||||||||||||||||||||"
-     ;;
-     5)
-      echo -n "<-||||||||||||||||||||||||||||||||||||||||||||||||||"
-     ;;
-esac
-percent_res=$((download_percent-20*percent20))
-percent_res2=$((percent_res / 2))
-case "$percent_res2" in
-     0)
-     echo -n "->"
-     ;;
-     1)
-      echo -n "|->"
-     ;;
-     2)
-      echo -n "||->"
-     ;;
-     3)
-      echo -n "|||->"
-     ;;
-     4)
-      echo -n "||||->"
-     ;;
-     5)
-      echo -n "|||||->"
-     ;;
-     6)
-      echo -n "||||||->"
-     ;;
-     7)
-      echo -n "|||||||->"
-     ;;
-     8)
-      echo -n "||||||||->"
-     ;;
-     9)
-      echo -n "|||||||||->"
-     ;;
-esac
-percent_res4=$((download_percent / 2))
-percent_res5=$((49 - percent_res4))
+  tput cup 12 0
+  echo -e "$progress_color  "
+  echo -n "["
+  percent20=$((download_percent / 20))
+  case "$percent20" in
+       0)
+       echo -n "<-"
+      ;;
+      1)
+       echo -n "<-||||||||||"
+      ;;
+      2)
+       echo -n "<-||||||||||||||||||||"
+      ;;
+      3)
+       echo -n "<-||||||||||||||||||||||||||||||"
+      ;;
+      4)
+       echo -n "<-||||||||||||||||||||||||||||||||||||||||"
+      ;;
+      5)
+       echo -n "<-||||||||||||||||||||||||||||||||||||||||||||||||||"
+      ;;
+  esac
+  percent_res=$((download_percent-20*percent20))
+  percent_res2=$((percent_res / 2))
+  case "$percent_res2" in
+       0)
+       echo -n "->"
+      ;;
+      1)
+        echo -n "|->"
+      ;;
+      2)
+       echo -n "||->"
+      ;;
+      3)
+        echo -n "|||->"
+      ;;
+      4)
+       echo -n "||||->"
+      ;;
+      5)
+       echo -n "|||||->"
+      ;;
+      6)
+       echo -n "||||||->"
+      ;;
+      7)
+       echo -n "|||||||->"
+      ;;
+      8)
+       echo -n "||||||||->"
+      ;;
+      9)
+       echo -n "|||||||||->"
+      ;;
+  esac
+  percent_res4=$((download_percent / 2))
+  percent_res5=$((49 - percent_res4))
 
-for ii in `seq 0 $percent_res5`;
-	do
-          echo -n "-"
-done
-echo "]"
+  for ii in `seq 0 $percent_res5`;
+  	do
+            echo -n "-"
+  done
+  echo "]"
 
 }
 
 #this function checks the output of aria2 and shows gownload informations(Percent & time remaining & ...)
 progress_dialog () {
-aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
-download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-clear
-logo
-echo -e "$text_color0 Download Starting Now!"
-while [ "$aria_ready" != "0" ] && [ "$download_flag" = "3" ]
+  aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
+  download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
+  clear
+  logo
+  echo -e "$text_color0 Download Starting Now!"
+  while [ "$aria_ready" != "0" ] && [ "$download_flag" = "3" ]
         do
-	  aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
+      	  aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
 	  download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
 	  sleep 0.5
-done
-clear
-aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
-download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ]
-   do
-   tput cup 0 0
-   logo
-   save_as_temp=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/FILE:/ {print $0 }'|tail -1|awk '/FILE/ {print $0 }'|awk '/\/home/ {print $0 }')
-   progress_title=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1)
-   download_percent=$(echo "$progress_title"| awk -F/ '{ print $2 }' | awk -F"(" '{ print $2 }' | awk -F")" '{ print $1 }'|awk -F"%" '{ print $1 }')
-   progress_title_percent=$(echo "$progress_title" | awk '{ print $2 }')
-   progress_title_connections=$(echo "$progress_title" | awk '{ print $3 }'| awk -F ":" '{ print $2 }')
-   progress_title_rate=$(echo "$progress_title" | awk '{ print $4 }'| awk -F ":" '{ print $2 }')
-   progress_title_estimate=$(echo "$progress_title" | awk '{ print $5 }'| awk -F ":" '{ print $2 }'| awk -F "]" '{ print $1 }')
-   file_extension
-   echo -e "$text_color Link : $progress_color$download_link   "
-   echo -e "$text_color Save as : $progress_color$save_as   "
-   echo -e "$text_color Downloaded : $progress_color$progress_title_percent    "
-   echo -e "$progress_title_percent Downloaded " > $temp_path/"d$pdm_num".txt
-   echo -e "$text_color Transfer rate : $progress_color$progress_title_rate    "
-   echo -e "$text_color Estimate time left : $progress_color$progress_title_estimate    "
-   echo -e "$text_color Number of connections : $progress_color$progress_title_connections     "
-   progress_bar
-   echo -e "$text_color0 \n \n Press CTRL+C for STOP downloading   "
-   line_number1=`tput lines`
-   cols_number1=`tput cols`
-   sleep 2.2
-   line_number2=`tput lines`
-   cols_number2=`tput cols`
-   if [ "$line_number1" -ne "$line_number2" ] || [ "$cols_number1" -ne "$cols_number2" ]
-        then
-            clear
-   fi
-   log
-   download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-   aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
-done
-clear the screen
-logo
-echo -e "$text_color0  "
+  done
+  clear
+  aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
+  download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
+  while [  "$aria_ready" = "0" ] && [ "$download_flag" = "3" ];do
+      tput cup 0 0
+      logo
+      save_as_temp=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/FILE:/ {print $0 }'|tail -1|awk '/FILE/ {print $0 }'|awk '/\/home/ {print $0 }')
+      progress_title=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/CN/ {print $0 }'|tail -1)
+      download_percent=$(echo "$progress_title"| awk -F/ '{ print $2 }' | awk -F"(" '{ print $2 }' | awk -F")" '{ print $1 }'|awk -F"%" '{ print $1 }')
+      progress_title_percent=$(echo "$progress_title" | awk '{ print $2 }')
+      progress_title_connections=$(echo "$progress_title" | awk '{ print $3 }'| awk -F ":" '{ print $2 }')
+      progress_title_rate=$(echo "$progress_title" | awk '{ print $4 }'| awk -F ":" '{ print $2 }')
+      progress_title_estimate=$(echo "$progress_title" | awk '{ print $5 }'| awk -F ":" '{ print $2 }'| awk -F "]" '{ print $1 }')
+      file_extension
+      echo -e "$text_color Link : $progress_color$download_link   "
+      echo -e "$text_color Save as : $progress_color$save_as   "
+      echo -e "$text_color Downloaded : $progress_color$progress_title_percent    "
+      echo -e "$progress_title_percent Downloaded " > $temp_path/"d$pdm_num".txt
+      echo -e "$text_color Transfer rate : $progress_color$progress_title_rate    "
+      echo -e "$text_color Estimate time left : $progress_color$progress_title_estimate    "
+      echo -e "$text_color Number of connections : $progress_color$progress_title_connections     "
+      progress_bar
+      echo -e "$text_color0 \n \n Press CTRL+C for STOP downloading   "
+      line_number1=`tput lines`
+      cols_number1=`tput cols`
+      sleep 2.2
+      line_number2=`tput lines`
+      cols_number2=`tput cols`
+      if [ "$line_number1" -ne "$line_number2" ] || [ "$cols_number1" -ne "$cols_number2" ];then
+              clear
+      fi
+      log
+      download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
+      aria_ready=$(cat $temp_path/"r$pdm_num".txt 2> /dev/null)
+  done
+  clear the screen
+  logo
+  echo -e "$text_color0  "
 }
 
 #this function writes summary of download in the report file and informs user & moves the file to the download folder if download completed
 stop (){
-download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-case $download_flag in
-     0)
-     save_as_temp=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/Download complete: / {print $0 }'|awk '/\/home/ {print $0 }')
-     file_extension
-     save_as_temp="$download_folder_temp/$file_name_extension"
-     mv -n "$save_as_temp" "$save_as"
-     echo -e " The file Saved as :"
-     echo -e "$text_color $save_as \n"
-		 echo -e "$text_color0 Download Complete!Please Wait..."
-     if [ "$my_file" = "" ];then
+  download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
+  case $download_flag in
+       0)
+        save_as_temp=$(cat $temp_path/"$pdm_num".txt 2> /dev/null|tail -50|awk '/Download complete: / {print $0 }'|awk '/\/home/ {print $0 }')
+        file_extension
+        save_as_temp="$download_folder_temp/$file_name_extension"
+        mv -n "$save_as_temp" "$save_as"
+        echo -e " The file Saved as :"
+        echo -e "$text_color $save_as \n"
+        echo -e "$text_color0 Download Complete!Please Wait..."
+        if [ "$my_file" = "" ];then
      	    if [ "$open_config" = "yes" ];then
 	     	          xdg-open $download_folder/$file_type >/dev/null 2>&1
      	    fi
-     fi
-     if [ "$sound_config" = "yes" ];then
+       fi
+       if [ "$sound_config" = "yes" ];then
 	           paplay $notifications_path/ok.ogg
-     fi
-     echo "#################"|cat >> $download_folder/report
-     date|cat >> $download_folder/report
-     echo "$download_link"|cat >> $download_folder/report
-     echo "download complete!"|cat >> $download_folder/report
-     echo "$save_as"|cat >> $download_folder/report
-     echo "#################"|cat >> $download_folder/report
-     ;;
-     1)
-     if [ "$my_file" = "" ]
-        then
+       fi
+       echo "#################"|cat >> $download_folder/report
+       date|cat >> $download_folder/report
+       echo "$download_link"|cat >> $download_folder/report
+       echo "download complete!"|cat >> $download_folder/report
+       echo "$save_as"|cat >> $download_folder/report
+       echo "#################"|cat >> $download_folder/report
+       ;;
+      1)
+        if [ "$my_file" = "" ];then
      		echo " Download Paused!Please Wait..."
 	        echo -e "$text_color PDMT will resume download if you start download this file again.    "
                 echo -e " You can find summary & history of downloads & download links in \n $download_folder/report "
@@ -540,50 +536,46 @@ case $download_flag in
                 echo "Queue Paused"|cat >> $download_folder/report
                 cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
                 echo "#################"|cat >> $download_folder/report
-     fi
-     ;;
+      fi
+      ;;
 
      2)
-     echo " Download Failed!Please Wait..."
-     echo -e "$text_color PDMT will resume download if you start download this file again.    "
-     echo -e " You can find summary & history of downloads & download links in \n $download_folder/report "
-     if [ "$sound_config" = "yes" ]
-	  then
+      echo " Download Failed!Please Wait..."
+      echo -e "$text_color PDMT will resume download if you start download this file again.    "
+      echo -e " You can find summary & history of downloads & download links in \n $download_folder/report "
+      if [ "$sound_config" = "yes" ];then
 	      paplay $notifications_path/fail.ogg
-     fi
-     echo "#################"|cat >> $download_folder/report
-     date|cat >> $download_folder/report
-     echo "$download_link"|cat >> $download_folder/report
-     echo "download Failed!"|cat >> $download_folder/report
-     cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
-     echo "#################"|cat >> $download_folder/report
-     ;;
+      fi
+      echo "#################"|cat >> $download_folder/report
+      date|cat >> $download_folder/report
+      echo "$download_link"|cat >> $download_folder/report
+      echo "download Failed!"|cat >> $download_folder/report
+      cat $temp_path/"d$pdm_num".txt >> $download_folder/report 2> /dev/null
+      echo "#################"|cat >> $download_folder/report
+      ;;
 
 
-esac
+  esac
 
 }
 #download single link.
 #dowload manager status(download_flag) : 0=completed 1=paused 2=failed 3=download 4=reconnecting
 #aria2 status : 0=aria ready 1=aria not ready
 download_single () {
-echo "#################"|cat >> $download_folder/report
-date|cat >> $download_folder/report
-echo "$download_link"|cat >> $download_folder/report
-echo "Download starting now!"|cat >> $download_folder/report
-echo "#################"|cat >> $download_folder/report
-download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-while [ "$download_flag" != "0" ] && [ "$download_flag" != "2" ] && [ "$download_flag" != "1" ]
-	do
+  echo "#################"|cat >> $download_folder/report
+  date|cat >> $download_folder/report
+  echo "$download_link"|cat >> $download_folder/report
+  echo "Download starting now!"|cat >> $download_folder/report
+  echo "#################"|cat >> $download_folder/report
+  download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
+  while [ "$download_flag" != "0" ] && [ "$download_flag" != "2" ] && [ "$download_flag" != "1" ];do
 
-	while [ "$download_flag" = "3" ]
-		do
-		download
-		download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-	done
+      	  while [ "$download_flag" = "3" ];do
+		     download
+		     download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
+          done
 
-	while [ "$download_flag" = "4" ]
-		do
+	  while [ "$download_flag" = "4" ];do
 		clear
 		logo
 		echo " Reconnecting... .be patient"
@@ -610,23 +602,21 @@ while [ "$download_flag" != "0" ] && [ "$download_flag" != "2" ] && [ "$download
 			echo "3"> $temp_path/"s$pdm_num".txt
                 fi
                 download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-	done
-done
-stop
+	  done
+  done
+  stop
 }
 
 #download_queue uses download_single function to download multiple links
 #this function stores failed links in a file(qf$pdm_num.txt) for retrying.
 # "fnameq$pdm_num".txt is for saving the name of video files that youtube function creates
 download_queue () {
-first_char_queue=`echo "${my_file:0:2}"`
-if [ "$first_char_queue" = "~/" ]
-        then
+  first_char_queue=`echo "${my_file:0:2}"`
+  if [ "$first_char_queue" = "~/" ];then
             remove_char_queue=`echo "${my_file#*~}"`
             my_file="$user$remove_char_queue"
-fi
-for iq in `seq 1 $queue_config`
-      do
+  fi
+  for iq in `seq 1 $queue_config`;do
 	qi=1
 	while read -r line	;do
 			if [ "${line:0:1}" == "#" ];then
@@ -680,9 +670,9 @@ for iq in `seq 1 $queue_config`
 	fi
 	my_file=$temp_path/"qf$pdm_num".txt
 	sleep 5
-done
-download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
-if [ "$download_flag" != "1" ]
+  done
+  download_flag=$(cat $temp_path/"s$pdm_num".txt 2> /dev/null)
+  if [ "$download_flag" != "1" ]
   	then
   	    echo " Queue Complete"
   	    if [ "$open_config" = "yes" ]
@@ -698,13 +688,13 @@ if [ "$download_flag" != "1" ]
             echo "Queue Complete"|cat >> $download_folder/report
             echo "#################"|cat >> $download_folder/report
 
-fi
+  fi
 
 }
 
 #this function defines type of download.
 download_process () {
-case "$download_type" in
+  case "$download_type" in
       1)
 	download_single
         ;;
@@ -712,49 +702,49 @@ case "$download_type" in
 	download_queue
 	;;
 
-esac
-func_after
+  esac
+  func_after
 }
 
 #logo of pdmt
 logo () {
-echo -e "$logo_color#########################################     "
-echo "#########################################     "
-echo "# Persepolis Download Manager Terminal  #     "
-echo "############  (PDMT)  ###################     "
-echo "#########################################     "
-echo "                                              "
+  echo -e "$logo_color#########################################     "
+  echo "#########################################     "
+  echo "# Persepolis Download Manager Terminal  #     "
+  echo "############  (PDMT)  ###################     "
+  echo "#########################################     "
+  echo "                                              "
 }
 
 #User can change setting by this function(pdmt -c).
 config ()
 {
-tput cnorm   -- normal
-echo "PDMT Configuration"
-echo "if you don't want any changes, leave the questions empty and press enter!"
-echo -e "$progress_color\nDo you want colorful output?(yes/no)"
-read color_input
-echo "The log file contains summary of download progress & updated every 22 seconds."
-echo "Do you want log file(yes/no)"
-read log_input
-echo "Do you want notification sound?(yes/no)"
-read sound_input
-echo "do you want to open containing folder after download has been finished?"
-read open_input
-echo "Please enter download directory?(for example ~/Downloads)"
-read download_folder_input
-if [ "$download_folder_input" = "" ]
+  tput cnorm   -- normal
+  echo "PDMT Configuration"
+  echo "if you don't want any changes, leave the questions empty and press enter!"
+  echo -e "$progress_color\nDo you want colorful output?(yes/no)"
+  read color_input
+  echo "The log file contains summary of download progress & updated every 22 seconds."
+  echo "Do you want log file(yes/no)"
+  read log_input
+  echo "Do you want notification sound?(yes/no)"
+  read sound_input
+  echo "do you want to open containing folder after download has been finished?"
+  read open_input
+  echo "Please enter download directory?(for example ~/Downloads)"
+  read download_folder_input
+  if [ "$download_folder_input" = "" ]
 	then
     	    download_folder_input="$download_folder_config"
-fi
-first_char_input=`echo "${download_folder_input:0:2}"`
-if [ "$first_char_input" = "~/" ]
+  fi
+  first_char_input=`echo "${download_folder_input:0:2}"`
+  if [ "$first_char_input" = "~/" ]
         then
             remove_char_folder_input=`echo "${download_folder_input#*~}"`
             download_folder_input="$user$remove_char_folder_input"
-fi
+  fi
 
-if [ ! -d "$download_folder_input" ]
+  if [ ! -d "$download_folder_input" ]
         then
             echo " Directory not exist! : $download_folder_input"
 	    echo " Do you want create this folder?(yes/no)"
@@ -765,19 +755,19 @@ if [ ! -d "$download_folder_input" ]
 		else
             		download_folder_input=$download_folder
             		echo " Download file will save as $download_folder"
-fi          fi
-echo "Please enter number of retries if download failed"
-read retryf_input
-echo "Please enter number of retries if internet connection droped "
-read retryd_input
-echo "Please enter delay(in second) between retries if connection droped "
-read delay_input
-echo -e "Failed links in queue rechecked by PDMT\nand PDMT tries to download them again!\nPlease enter number of rechecking time!"
-read queue_input
-echo "Do you want shutdown or suspend or hibernate system after download with out asking root password?"
-echo "This ability won't work in all distributions!"
-read no_password_input
-case "$no_password_input" in
+  fi          fi
+  echo "Please enter number of retries if download failed"
+  read retryf_input
+  echo "Please enter number of retries if internet connection droped "
+  read retryd_input
+  echo "Please enter delay(in second) between retries if connection droped "
+  read delay_input
+  echo -e "Failed links in queue rechecked by PDMT\nand PDMT tries to download them again!\nPlease enter number of rechecking time!"
+  read queue_input
+  echo "Do you want shutdown or suspend or hibernate system after download with out asking root password?"
+  echo "This ability won't work in all distributions!"
+  read no_password_input
+  case "$no_password_input" in
 	"")
 	no_password="$no_password_config";;
 	"n"|"no")
@@ -798,14 +788,14 @@ case "$no_password_input" in
 		no_password_config="no"
 	fi
 	;;
-esac
-echo "Do you want restore default(yes/no)"
-read default_input
-if [ "$default_input" = "yes" ] || [ "$default_input" = "y" ]
+  esac
+  echo "Do you want restore default(yes/no)"
+  read default_input
+  if [ "$default_input" = "yes" ] || [ "$default_input" = "y" ]
 	then
-#default setting.
+  #default setting.
  	        echo -e "PDMT config file\ncolor=yes\nsound=yes\nopen=yes\nfolder=~/Downloads/Persepolis\nretryf=5\nretryd=5\ndelay=60\nqueue=2\nlog=no\nnopassword=no" > ~/.persepolis_download_manager_terminal/config
-	else
+  else
 		if [ "$color_input" = "" ]
 			then
 			    color_input="$color_config"
@@ -889,7 +879,7 @@ if [ "$default_input" = "yes" ] || [ "$default_input" = "y" ]
 		fi
 
  	        echo -e "PDMT config file\ncolor=$color_input\nsound=$sound_input\nopen=$open_input\nfolder=$download_folder_input\nretryf=$retryf_input\nretryd=$retryd_input\ndelay=$delay_input\nqueue=$queue_input\nlog=$log_input\nnopassword=$no_password_config" > ~/.persepolis_download_manager_terminal/config
-fi
+  fi
 }
 
 #initialization
