@@ -1,5 +1,6 @@
 Persepolis Download Manager (PDM)
 =============
++ This repository is not developed anymore!
 + version : 1.18.4
 + Persepolis Download Manager is a download manager which is written in bash language and it is based on aria2 and improves aria2.
 
@@ -35,7 +36,7 @@ for uninstall PDM,
     $ cd
     $ cd /tmp
     $ wget -O pdmt.tar.gz https://github.com/alireza-amirsamimi/pdmt/archive/master.tar.gz
-    $ tar  --overwrite --overwrite-dir -xf pdmt.tar.gz
+    $ tar  --overwrite-dir -xf pdmt.tar.gz
     $ cd pdmt-master
     $ sh install
 
