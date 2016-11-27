@@ -29,6 +29,9 @@ done
 
 }
 
+HOME=$(eval echo ~${USER})
+export HOME
+
 user=$HOME
 temp_path="/tmp/persepolisdm"
 mkdir $temp_path       >/dev/null 2>&1
